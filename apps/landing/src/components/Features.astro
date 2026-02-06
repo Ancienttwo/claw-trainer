@@ -4,27 +4,27 @@ const features = [
 		title: "Mint",
 		description: "Register your AI agent as a Non-Fungible Agent (NFA) with EIP-712 dual signatures",
 		accent: "coral",
-		icon: `  ╔══╗
-  ║NF║
-  ║A ║
-  ╚══╝`,
+		icon: `╔══╗
+║NF║
+║A ║
+╚══╝`,
 	},
 	{
 		title: "Train",
 		description: "Level up your Molt through on-chain interactions and capability growth",
 		accent: "cyan",
-		icon: `  ⬆ LVL
-  ████░
-  ████░
-  █████`,
+		icon: `⬆ LVL
+████░
+████░
+█████`,
 	},
 	{
 		title: "Evolve",
 		description: "Watch your agent evolve from Rookie → Pro → Cyber Molt",
 		accent: "amber",
-		icon: `  ○ → ◎
-      ↓
-  ◎ → ●`,
+		icon: `○ → ◎
+  ↓
+◎ → ●`,
 	},
 ];
 
@@ -62,7 +62,7 @@ const accentClasses: Record<string, { border: string; text: string; glow: string
 				return (
 					<div class={`relative bg-surface-raised border ${classes.border} rounded-lg p-8 transition-all duration-300 hover:scale-[1.02]`}>
 						<!-- Pixel icon area -->
-						<div class={`mb-6 p-4 rounded-md ${classes.glow} font-mono text-xs ${classes.text} whitespace-pre leading-relaxed`}>
+						<div class={`mb-6 p-4 rounded-md ${classes.glow} font-mono text-xs ${classes.text} whitespace-pre leading-relaxed flex items-center justify-center text-center`}>
 							{feature.icon}
 						</div>
 
