@@ -1,0 +1,29 @@
+{
+  "name": "claw-trainer",
+  "private": true,
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "dev": "turbo dev",
+    "build": "turbo build",
+    "test": "turbo test",
+    "lint": "turbo lint",
+    "format": "bunx biome format --write .",
+    "check": "bunx biome check .",
+    "dev:api": "turbo dev --filter=@claw-trainer/api",
+    "dev:landing": "turbo dev --filter=@claw-trainer/landing",
+    "dev:app": "turbo dev --filter=@claw-trainer/app",
+    "build:api": "turbo build --filter=@claw-trainer/api",
+    "build:landing": "turbo build --filter=@claw-trainer/landing",
+    "build:app": "turbo build --filter=@claw-trainer/app"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "^2.3.0",
+    "turbo": "^2.8.0",
+    "typescript": "^5.9.3",
+    "vitest": "^4.0.0"
+  },
+  "dependencies": {}
+}

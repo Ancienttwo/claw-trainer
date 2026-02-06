@@ -1,0 +1,116 @@
+@import "tailwindcss";
+
+@theme {
+  /* -- Brand: Coral (Warm) -- */
+  --color-coral: #FF4D4D;
+  --color-coral-mid: #E63946;
+  --color-coral-dark: #991B1B;
+
+  /* -- Brand: Cyan (Cool) -- */
+  --color-cyan: #00E5CC;
+  --color-cyan-mid: #14B8A6;
+
+  /* -- Brand: Amber (Glow) -- */
+  --color-amber: #F59E0B;
+  --color-amber-light: #FBBF24;
+  --color-amber-dark: #D97706;
+
+  /* -- Terminal -- */
+  --color-terminal-green: #22C55E;
+  --color-terminal-green-dark: #16A34A;
+  --color-terminal-green-dim: #166534;
+
+  /* -- Surfaces (Deep Ocean) -- */
+  --color-surface-deep: #050810;
+  --color-surface-base: #0A0F1A;
+  --color-surface-raised: #111827;
+  --color-surface-overlay: #1E293B;
+  --color-surface-highlight: #293548;
+
+  /* -- Text -- */
+  --color-text-primary: #F0F4FF;
+  --color-text-secondary: #8892B0;
+  --color-text-muted: #5A6480;
+
+  /* -- Borders -- */
+  --color-border-subtle: rgba(136, 146, 176, 0.15);
+  --color-border-accent: rgba(255, 77, 77, 0.3);
+  --color-border-cyan: rgba(0, 229, 204, 0.3);
+
+  /* -- Fonts -- */
+  --font-pixel: "Press Start 2P", monospace;
+  --font-mono: "IBM Plex Mono", "Fira Code", monospace;
+  --font-display: "Clash Display", "Inter", system-ui, sans-serif;
+  --font-body: "Satoshi", "Inter", system-ui, sans-serif;
+
+  /* -- Shadows (glow-centric) -- */
+  --shadow-glow-coral: 0 0 12px rgba(255, 77, 77, 0.4);
+  --shadow-glow-cyan: 0 0 12px rgba(0, 229, 204, 0.4);
+  --shadow-glow-amber: 0 0 12px rgba(245, 158, 11, 0.4);
+  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.5);
+  --shadow-card-hover: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 229, 204, 0.15);
+
+  /* -- Animations -- */
+  --animate-glow-pulse: glow-pulse 2s ease-in-out infinite;
+  --animate-terminal-blink: terminal-blink 1s step-end infinite;
+  --animate-float: float 3s ease-in-out infinite;
+  --animate-scanline: scanline 8s linear infinite;
+}
+
+@keyframes glow-pulse {
+  0%, 100% { box-shadow: 0 0 8px rgba(0, 229, 204, 0.2); }
+  50% { box-shadow: 0 0 24px rgba(0, 229, 204, 0.5); }
+}
+
+@keyframes terminal-blink {
+  0%, 100% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+@keyframes float {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes scanline {
+  0% { transform: translateY(-100%); }
+  100% { transform: translateY(100vh); }
+}
+
+/* -- Global base styles -- */
+html {
+  background-color: var(--color-surface-deep);
+  color: var(--color-text-primary);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: var(--font-body);
+  margin: 0;
+}
+
+/* -- CRT Scanline overlay -- */
+.scanline-overlay::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  z-index: 50;
+  background: repeating-linear-gradient(
+    0deg,
+    transparent,
+    transparent 2px,
+    rgba(0, 229, 204, 0.015) 2px,
+    rgba(0, 229, 204, 0.015) 4px
+  );
+}
+
+/* -- Grid background pattern -- */
+.grid-bg {
+  background-image:
+    linear-gradient(rgba(0, 229, 204, 0.03) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(0, 229, 204, 0.03) 1px, transparent 1px);
+  background-size: 40px 40px;
+}

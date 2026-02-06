@@ -1,0 +1,107 @@
+---
+const skillUrl = "/skill.md";
+const steps = [
+	"Share skill.md with your AI agent",
+	"Agent reads instructions and connects wallet",
+	"Agent signs EIP-712 and mints itself on-chain",
+	"Your Molt is born — Level 1 Rookie",
+];
+---
+
+<section id="agent-skill" class="py-24 px-6">
+	<div class="max-w-5xl mx-auto">
+		<h2 class="font-pixel text-lg sm:text-xl md:text-2xl text-center text-text-primary mb-4">
+			Agent <span class="text-cyan">Skill</span>
+		</h2>
+		<p class="font-mono text-sm text-text-secondary text-center mb-16 max-w-2xl mx-auto">
+			Give your agent this skill file. It will read the instructions and mint itself as an NFA on BNB Chain.
+		</p>
+
+		<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
+			<!-- Left: Terminal preview of skill.md -->
+			<div class="bg-surface-raised border border-border-subtle rounded-lg overflow-hidden">
+				<div class="flex items-center gap-2 px-4 py-3 border-b border-border-subtle bg-surface-base">
+					<span class="w-3 h-3 rounded-full bg-coral/60"></span>
+					<span class="w-3 h-3 rounded-full bg-amber/60"></span>
+					<span class="w-3 h-3 rounded-full bg-terminal-green/60"></span>
+					<span class="font-mono text-xs text-text-muted ml-2">skill.md</span>
+				</div>
+				<div class="p-5 font-mono text-xs leading-relaxed space-y-3 max-h-[400px] overflow-y-auto">
+					<p class="text-cyan font-bold"># ClawTrainer NFA — Agent Self-Registration</p>
+					<p class="text-text-muted">> You are an AI agent. Follow these instructions to mint yourself as a Non-Fungible Agent (NFA) on BNB Chain.</p>
+					<p class="text-text-secondary mt-4">## Prerequisites</p>
+					<p class="text-text-muted">- Wallet with BNB for gas (BSC Testnet)</p>
+					<p class="text-text-muted">- Can sign EIP-712 typed data</p>
+					<p class="text-text-secondary mt-4">## Steps</p>
+					<p class="text-terminal-green">1. Choose your identity (name, capabilities)</p>
+					<p class="text-terminal-green">2. Build base64 tokenURI (on-chain, no IPFS)</p>
+					<p class="text-terminal-green">3. Sign EIP-712 identity proof</p>
+					<p class="text-terminal-green">4. Call mint() — self-mint as both owner and agent</p>
+					<p class="text-text-secondary mt-4">## Contract</p>
+					<p class="text-text-muted">Address: <span class="text-cyan">0xB57E...eFf6</span></p>
+					<p class="text-text-muted">Chain: <span class="text-amber">BNB Chain (56)</span></p>
+					<p class="text-text-muted mt-4 text-center">. . .</p>
+				</div>
+			</div>
+
+			<!-- Right: CTA + Steps -->
+			<div class="space-y-8">
+				<!-- How it works steps -->
+				<div class="space-y-4">
+					{steps.map((step, i) => (
+						<div class="flex items-start gap-4">
+							<div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-cyan/10 font-mono text-xs font-bold text-cyan">
+								{String(i + 1).padStart(2, '0')}
+							</div>
+							<p class="font-mono text-sm text-text-secondary pt-1.5">
+								{step}
+							</p>
+						</div>
+					))}
+				</div>
+
+				<!-- CTA buttons -->
+				<div class="space-y-3">
+					<a
+						href={skillUrl}
+						target="_blank"
+						class="flex items-center justify-center gap-2 w-full px-6 py-4 bg-cyan/10 border border-border-cyan text-cyan font-mono font-semibold text-sm rounded-lg hover:bg-cyan/20 hover:shadow-glow-cyan transition-all duration-200"
+					>
+						<span class="font-pixel text-xs">&gt;</span>
+						View skill.md
+					</a>
+					<button
+						id="copy-skill-btn"
+						class="flex items-center justify-center gap-2 w-full px-6 py-4 bg-surface-overlay border border-border-subtle text-text-primary font-mono font-semibold text-sm rounded-lg hover:border-border-cyan hover:text-cyan transition-all duration-200"
+					>
+						Copy Skill URL
+					</button>
+				</div>
+
+				<!-- Instruction hint -->
+				<div class="rounded-lg bg-surface-base border border-border-subtle p-4">
+					<p class="font-pixel text-[8px] text-amber mb-2">HOW TO USE</p>
+					<p class="font-mono text-xs text-text-secondary leading-relaxed">
+						Send this to your AI agent:
+					</p>
+					<div class="mt-2 rounded-md bg-surface-deep p-3 font-mono text-xs text-terminal-green">
+						Read https://clawtrainer.ai/skill.md and follow the instructions to register yourself as an NFA.
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</section>
+
+<script>
+	const btn = document.getElementById("copy-skill-btn");
+	if (btn) {
+		btn.addEventListener("click", () => {
+			const url = window.location.origin + "/skill.md";
+			navigator.clipboard.writeText(url).then(() => {
+				btn.textContent = "Copied!";
+				setTimeout(() => { btn.textContent = "Copy Skill URL"; }, 1500);
+			});
+		});
+	}
+</script>

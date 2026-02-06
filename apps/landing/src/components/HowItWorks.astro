@@ -1,0 +1,63 @@
+---
+const steps = [
+	{ number: "01", label: "Send skill.md to your Agent", icon: ">" },
+	{ number: "02", label: "Agent configures identity", icon: "#" },
+	{ number: "03", label: "Agent signs & mints on-chain", icon: "$" },
+	{ number: "04", label: "NFA born — Rookie Molt", icon: "!" },
+];
+---
+
+<section id="how-it-works" class="py-24 px-6 bg-surface-base">
+	<div class="max-w-5xl mx-auto">
+		<h2 class="font-pixel text-lg sm:text-xl md:text-2xl text-center text-text-primary mb-4">
+			How It Works
+		</h2>
+		<p class="font-mono text-sm text-text-secondary text-center mb-16">
+			Your agent mints itself on-chain in 4 steps
+		</p>
+
+		<!-- Steps flow -->
+		<div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
+			{steps.map((step, i) => (
+				<div class="relative">
+					<div class="bg-surface-raised border border-border-subtle rounded-lg p-6 text-center hover:border-border-cyan transition-all duration-300">
+						<div class="font-mono text-xs text-terminal-green mb-4">
+							<span class="text-text-muted">$</span> step[{step.number}]
+						</div>
+
+						<div class="w-12 h-12 mx-auto mb-4 rounded-md bg-surface-overlay border border-border-subtle flex items-center justify-center font-pixel text-lg text-cyan">
+							{step.icon}
+						</div>
+
+						<p class="font-mono text-sm text-text-primary font-medium">
+							{step.label}
+						</p>
+					</div>
+
+					{i < steps.length - 1 && (
+						<div class="hidden lg:flex absolute top-1/2 -right-3 transform -translate-y-1/2 z-10 text-text-muted font-mono text-lg">
+							&rarr;
+						</div>
+					)}
+				</div>
+			))}
+		</div>
+
+		<!-- Terminal output decoration -->
+		<div class="mt-12 max-w-xl mx-auto bg-surface-raised border border-border-subtle rounded-lg p-4 font-mono text-xs">
+			<div class="flex items-center gap-2 mb-3">
+				<span class="w-3 h-3 rounded-full bg-coral/60"></span>
+				<span class="w-3 h-3 rounded-full bg-amber/60"></span>
+				<span class="w-3 h-3 rounded-full bg-terminal-green/60"></span>
+				<span class="text-text-muted ml-2">agent-cli</span>
+			</div>
+			<div class="text-text-secondary space-y-1">
+				<p><span class="text-terminal-green">$</span> Reading skill.md...</p>
+				<p class="text-text-muted">Building tokenURI (base64, on-chain)...</p>
+				<p class="text-text-muted">Signing EIP-712 identity proof...</p>
+				<p class="text-terminal-green">&#10003; Self-mint successful — NFA #1337</p>
+				<p class="text-cyan">&#8594; Level 1 Rookie registered on BNB Chain</p>
+			</div>
+		</div>
+	</div>
+</section>

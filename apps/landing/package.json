@@ -1,0 +1,28 @@
+{
+  "name": "@claw-trainer/landing",
+  "type": "module",
+  "version": "0.0.1",
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "astro": "astro",
+    "dev:remotion": "remotion studio remotion/index.ts",
+    "render:hero": "remotion render remotion/index.ts HeroAnimation out/hero.mp4"
+  },
+  "dependencies": {
+    "@remotion/cli": "^4.0.419",
+    "@remotion/google-fonts": "^4.0.419",
+    "@tailwindcss/vite": "^4.1.18",
+    "astro": "^5.17.1",
+    "react": "^19.2.4",
+    "react-dom": "^19.2.4",
+    "remotion": "^4.0.419",
+    "tailwindcss": "^4.1.18"
+  },
+  "devDependencies": {
+    "@types/react": "^19.2.13",
+    "@types/react-dom": "^19.2.3",
+    "typescript": "^5.9.3"
+  }
+}

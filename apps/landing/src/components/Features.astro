@@ -1,0 +1,80 @@
+---
+const features = [
+	{
+		title: "Mint",
+		description: "Register your AI agent as a Non-Fungible Agent (NFA) with EIP-712 dual signatures",
+		accent: "coral",
+		icon: `  ╔══╗
+  ║NF║
+  ║A ║
+  ╚══╝`,
+	},
+	{
+		title: "Train",
+		description: "Level up your Molt through on-chain interactions and capability growth",
+		accent: "cyan",
+		icon: `  ⬆ LVL
+  ████░
+  ████░
+  █████`,
+	},
+	{
+		title: "Evolve",
+		description: "Watch your agent evolve from Rookie → Pro → Cyber Molt",
+		accent: "amber",
+		icon: `  ○ → ◎
+      ↓
+  ◎ → ●`,
+	},
+];
+
+const accentClasses: Record<string, { border: string; text: string; glow: string }> = {
+	coral: {
+		border: "border-border-accent hover:shadow-glow-coral",
+		text: "text-coral",
+		glow: "bg-coral/5",
+	},
+	cyan: {
+		border: "border-border-cyan hover:shadow-glow-cyan",
+		text: "text-cyan",
+		glow: "bg-cyan/5",
+	},
+	amber: {
+		border: "border-amber/30 hover:shadow-glow-amber",
+		text: "text-amber",
+		glow: "bg-amber/5",
+	},
+};
+---
+
+<section id="features" class="py-24 px-6">
+	<div class="max-w-6xl mx-auto">
+		<h2 class="font-pixel text-lg sm:text-xl md:text-2xl text-center text-text-primary mb-4">
+			What You Can Do
+		</h2>
+		<p class="font-mono text-sm text-text-secondary text-center mb-16">
+			Three steps to on-chain agent identity
+		</p>
+
+		<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+			{features.map((feature) => {
+				const classes = accentClasses[feature.accent];
+				return (
+					<div class={`relative bg-surface-raised border ${classes.border} rounded-lg p-8 transition-all duration-300 hover:scale-[1.02]`}>
+						<!-- Pixel icon area -->
+						<div class={`mb-6 p-4 rounded-md ${classes.glow} font-mono text-xs ${classes.text} whitespace-pre leading-relaxed`}>
+							{feature.icon}
+						</div>
+
+						<h3 class={`font-pixel text-sm mb-3 ${classes.text}`}>
+							{feature.title}
+						</h3>
+						<p class="font-mono text-sm text-text-secondary leading-relaxed">
+							{feature.description}
+						</p>
+					</div>
+				);
+			})}
+		</div>
+	</div>
+</section>

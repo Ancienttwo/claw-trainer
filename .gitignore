@@ -1,0 +1,59 @@
+# ===== Operations (sensitive configs) =====
+_ops/
+ops/
+
+# ===== Build Artifacts =====
+artifacts/
+dist/
+build/
+.next/
+.nuxt/
+.output/
+.astro/
+coverage/
+cache/
+typechain-types/
+.turbo
+
+# ===== Environment Variables =====
+.env
+.env.*
+!.env.example
+*.local
+
+# ===== Dependencies =====
+node_modules/
+.pnpm-store/
+
+# ===== IDE & OS =====
+.DS_Store
+.idea/
+.vscode/settings.json
+*.swp
+*.swo
+
+# ===== Logs & Debug =====
+*.log
+npm-debug.log*
+pnpm-debug.log*
+debug.log
+
+# ===== Package Archives =====
+*.tar.gz
+*.tgz
+*.zip
+
+# ===== Database =====
+*.sqlite
+*.db
+*.sql.gz
+
+# ===== Secrets & Keys =====
+*.pem
+*.key
+*.p12
+secrets/
+
+# ===== Hardhat =====
+cache/
+artifacts/contracts/

@@ -1,0 +1,58 @@
+---
+---
+
+<section class="relative min-h-screen flex items-center justify-center grid-bg overflow-hidden">
+	<!-- Cyan glow orb top-right -->
+	<div class="absolute top-[-200px] right-[-200px] w-[600px] h-[600px] rounded-full bg-cyan/5 blur-[120px] pointer-events-none"></div>
+	<!-- Coral glow orb bottom-left -->
+	<div class="absolute bottom-[-200px] left-[-200px] w-[500px] h-[500px] rounded-full bg-coral/5 blur-[120px] pointer-events-none"></div>
+
+	<div class="relative z-10 max-w-5xl mx-auto px-6 py-24 text-center">
+		<!-- Logo -->
+		<div class="mb-8 flex justify-center">
+			<img
+				src="/logo.png"
+				alt="ClawTrainer.ai"
+				class="w-20 h-20 md:w-28 md:h-28 animate-float"
+			/>
+		</div>
+
+		<!-- Title -->
+		<h1 class="font-pixel text-2xl sm:text-3xl md:text-4xl lg:text-5xl text-text-primary mb-6 leading-relaxed tracking-wide">
+			Claw<span class="text-coral">Trainer</span><span class="text-cyan">.ai</span>
+		</h1>
+
+		<!-- Tagline -->
+		<p class="font-display text-xl sm:text-2xl md:text-3xl text-text-primary mb-4 font-bold">
+			Train your Molt. Own your Mind.
+		</p>
+
+		<!-- Subtitle -->
+		<p class="font-mono text-sm sm:text-base md:text-lg text-text-secondary mb-12 max-w-2xl mx-auto">
+			Mint, Train &amp; Evolve AI Agents as NFAs on BNB Chain
+		</p>
+
+		<!-- CTAs -->
+		<div class="flex flex-col sm:flex-row items-center justify-center gap-4">
+			<a
+				href="#agent-skill"
+				class="inline-flex items-center gap-2 px-8 py-4 bg-coral hover:bg-coral-mid text-white font-mono font-semibold text-sm rounded-md shadow-glow-coral transition-all duration-200 hover:scale-105"
+			>
+				<span class="font-pixel text-xs">&gt;</span> Get Agent Skill
+			</a>
+			<a
+				href="/skill.md"
+				target="_blank"
+				class="inline-flex items-center gap-2 px-8 py-4 border border-border-cyan text-cyan font-mono font-semibold text-sm rounded-md hover:bg-cyan/10 transition-all duration-200 hover:scale-105"
+			>
+				View skill.md
+			</a>
+		</div>
+
+		<!-- Terminal prompt decoration -->
+		<div class="mt-16 font-mono text-xs text-text-muted">
+			<span class="text-terminal-green">$</span> clawtrainer --deploy --chain bnb
+			<span class="inline-block w-2 h-4 bg-terminal-green ml-1 animate-terminal-blink"></span>
+		</div>
+	</div>
+</section>

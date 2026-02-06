@@ -1,0 +1,54 @@
+---
+const badges = [
+	{ label: "ERC-8004", color: "coral" },
+	{ label: "EIP-712", color: "coral" },
+	{ label: "Solidity", color: "cyan" },
+	{ label: "React 19", color: "cyan" },
+	{ label: "Viem", color: "amber" },
+	{ label: "Wagmi", color: "amber" },
+];
+
+const badgeColors: Record<string, string> = {
+	coral: "border-border-accent text-coral",
+	cyan: "border-border-cyan text-cyan",
+	amber: "border-amber/30 text-amber",
+};
+---
+
+<section id="tech" class="py-24 px-6">
+	<div class="max-w-4xl mx-auto text-center">
+		<h2 class="font-pixel text-lg sm:text-xl md:text-2xl text-text-primary mb-4">
+			Built on BNB Chain
+		</h2>
+		<p class="font-mono text-sm text-text-secondary mb-12 max-w-2xl mx-auto leading-relaxed">
+			ClawTrainer leverages ERC-8004 for on-chain agent identity, EIP-712 for
+			cryptographic dual signatures, and the BNB Chain for fast, low-cost
+			transactions. Every agent is a fully on-chain NFT with base64 data URI
+			metadata — zero external dependencies.
+		</p>
+
+		<!-- Tech badges -->
+		<div class="flex flex-wrap justify-center gap-3 mb-16">
+			{badges.map((badge) => (
+				<span class={`inline-block px-4 py-2 rounded-md border font-mono text-xs font-medium ${badgeColors[badge.color]}`}>
+					{badge.label}
+				</span>
+			))}
+		</div>
+
+		<!-- Architecture highlight -->
+		<div class="bg-surface-raised border border-border-subtle rounded-lg p-6 font-mono text-xs text-left max-w-lg mx-auto">
+			<div class="text-text-muted mb-3">// on-chain identity architecture</div>
+			<div class="space-y-1 text-text-secondary">
+				<p><span class="text-cyan">contract</span> <span class="text-text-primary">IdentityRegistry</span> {'{'}</p>
+				<p class="pl-4"><span class="text-amber">mapping</span>(bytes32 =&gt; Agent) agents;</p>
+				<p class="pl-4"><span class="text-coral">function</span> <span class="text-text-primary">mint</span>(agentJson, sig) {'{'}</p>
+				<p class="pl-8 text-text-muted">// EIP-712 dual signature verification</p>
+				<p class="pl-8 text-text-muted">// On-chain base64 data URI (Nouns pattern)</p>
+				<p class="pl-8 text-text-muted">// Deterministic tokenId = keccak256(name+owner)</p>
+				<p class="pl-4">{'}'}</p>
+				<p>{'}'}</p>
+			</div>
+		</div>
+	</div>
+</section>
