@@ -1,0 +1,18 @@
+name = "claw-trainer-api"
+main = "src/index.ts"
+compatibility_date = "2025-12-01"
+account_id = "ab66185011440a6f8a698d61ad58703a"
+
+[vars]
+IDENTITY_REGISTRY_ADDRESS = "0x93EdC70ADEF0aBde3906D774bEe95D90a959012a"
+BSC_RPC_URL = "https://bsc-testnet-rpc.publicnode.com/"
+CONTRACT_DEPLOY_BLOCK = "88823136"
+CORS_ORIGINS = "http://localhost:5173,http://localhost:4321,https://app.clawtrainer.ai,https://clawtrainer-app.pages.dev"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "clawtrainer-db"
+database_id = "9cddbfd7-2f5a-48d5-a091-ac780b9aac54"
+
+[triggers]
+crons = ["*/5 * * * *"]
