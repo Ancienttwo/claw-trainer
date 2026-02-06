@@ -1,7 +1,8 @@
 import { useState, type ReactNode } from "react"
 import { createRootRoute, Link, Outlet } from "@tanstack/react-router"
 import { ConnectButton } from "@rainbow-me/rainbowkit"
-import { GlobeIcon, RocketIcon, HamburgerMenuIcon, Cross1Icon } from "@radix-ui/react-icons"
+import { useAccount } from "wagmi"
+import { GlobeIcon, RocketIcon, HamburgerMenuIcon, Cross1Icon, PersonIcon } from "@radix-ui/react-icons"
 import { Web3Provider } from "../providers/web3-provider"
 import { cn } from "../lib/cn"
 
@@ -19,6 +20,34 @@ function RootLayout() {
   )
 }
 
+function DesktopNav() {
+  const { isConnected } = useAccount()
+
+  return (
+    <div className="hidden items-center gap-4 sm:flex">
+      {isConnected && <NavLink to="/" icon={<PersonIcon />} label="My Agents" />}
+      <NavLink to="/dex" icon={<GlobeIcon />} label="Browse" />
+      <NavLink to="/mint" icon={<RocketIcon />} label="Mint" />
+      <ConnectButton />
+    </div>
+  )
+}
+
+function MobileNav({ onClose }: { onClose: () => void }) {
+  const { isConnected } = useAccount()
+
+  return (
+    <div className="border-t border-border-subtle bg-surface-base px-4 py-4 sm:hidden">
+      <div className="flex flex-col gap-4">
+        {isConnected && <NavLink to="/" icon={<PersonIcon />} label="My Agents" onClick={onClose} />}
+        <NavLink to="/dex" icon={<GlobeIcon />} label="Browse" onClick={onClose} />
+        <NavLink to="/mint" icon={<RocketIcon />} label="Mint" onClick={onClose} />
+        <ConnectButton />
+      </div>
+    </div>
+  )
+}
+
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
 
@@ -29,14 +58,8 @@ function Header() {
           ClawTrainer
         </Link>
 
-        {/* Desktop nav */}
-        <div className="hidden items-center gap-4 sm:flex">
-          <NavLink to="/dex" icon={<GlobeIcon />} label="Dex" />
-          <NavLink to="/mint" icon={<RocketIcon />} label="Mint" />
-          <ConnectButton />
-        </div>
+        <DesktopNav />
 
-        {/* Mobile hamburger */}
         <button
           type="button"
           onClick={() => setMenuOpen((prev) => !prev)}
@@ -47,16 +70,7 @@ function Header() {
         </button>
       </nav>
 
-      {/* Mobile dropdown */}
-      {menuOpen && (
-        <div className="border-t border-border-subtle bg-surface-base px-4 py-4 sm:hidden">
-          <div className="flex flex-col gap-4">
-            <NavLink to="/dex" icon={<GlobeIcon />} label="Dex" onClick={() => setMenuOpen(false)} />
-            <NavLink to="/mint" icon={<RocketIcon />} label="Mint" onClick={() => setMenuOpen(false)} />
-            <ConnectButton />
-          </div>
-        </div>
-      )}
+      {menuOpen && <MobileNav onClose={() => setMenuOpen(false)} />}
     </header>
   )
 }
