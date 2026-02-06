@@ -4,7 +4,7 @@ import { useMintNfa } from "../../hooks/use-mint-nfa"
 import { cn } from "../../lib/cn"
 
 function TxStatusIndicator() {
-  const { txStatus, error } = useMintFlowStore()
+  const { txStatus, txHash, error } = useMintFlowStore()
 
   if (txStatus === "signing") {
     return (
@@ -17,7 +17,7 @@ function TxStatusIndicator() {
   if (txStatus === "pending") {
     return (
       <StatusBar color="cyan" pulse>
-        Transaction pending on BNB Chain...
+        {txHash ? "Confirming on BNB Chain..." : "Submitting transaction..."}
       </StatusBar>
     )
   }

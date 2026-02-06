@@ -7,7 +7,7 @@ import { isAddress, type Address } from "viem"
 import type {
   AgentConfig,
   ConfigValidationError,
-} from "../../../../contracts/modules/nfa-mint"
+} from "@contracts/modules/nfa-mint"
 
 const NAME_MIN_LENGTH = 1
 const NAME_MAX_LENGTH = 32

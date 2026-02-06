@@ -3,7 +3,7 @@
  * Encodes ERC-721 metadata as a data URI.
  */
 
-import type { AgentConfig } from "../../../../contracts/modules/nfa-mint"
+import type { AgentConfig } from "@contracts/modules/nfa-mint"
 
 const INITIAL_STAGE = "Rookie"
 const INITIAL_LEVEL = 1

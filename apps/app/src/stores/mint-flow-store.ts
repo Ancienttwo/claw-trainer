@@ -4,7 +4,7 @@
  */
 
 import { create } from "zustand"
-import type { AgentConfig, MintFlowError } from "../../../../contracts/modules/nfa-mint"
+import type { AgentConfig, MintFlowError } from "@contracts/modules/nfa-mint"
 
 type WizardStep = "configure" | "preview" | "mint" | "confirm"
 type TxStatus = "idle" | "signing" | "pending" | "success" | "error"
@@ -53,7 +53,7 @@ export const useMintFlowStore = create<MintFlowState & MintFlowActions>(
         txStatus: status,
         txHash: hash ?? null,
         tokenId: tokenId ?? null,
-        error: status === "error" ? undefined : null,
+        error: null,
       }),
 
     setError: (error) => set({ error, txStatus: error ? "error" : "idle" }),

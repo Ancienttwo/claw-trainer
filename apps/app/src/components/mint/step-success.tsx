@@ -2,8 +2,7 @@ import { Link } from "@tanstack/react-router"
 import { PixelButton } from "../ui/pixel-button"
 import { AsciiLobster } from "../ui/ascii-lobster"
 import { useMintFlowStore } from "../../stores/mint-flow-store"
-
-const BSCSCAN_TX_URL = "https://bscscan.com/tx/"
+import { bscscanTxUrl, truncateTxHash } from "../../lib/address"
 
 export function StepSuccess() {
   const { agentConfig, tokenId, txHash, reset } = useMintFlowStore()
@@ -67,12 +66,12 @@ export function StepSuccess() {
                   Transaction
                 </p>
                 <a
-                  href={`${BSCSCAN_TX_URL}${txHash}`}
+                  href={bscscanTxUrl(txHash)}
                   target="_blank"
                   rel="noopener noreferrer"
                   className="font-mono text-xs text-cyan underline decoration-cyan/30 hover:text-cyan-mid hover:decoration-cyan"
                 >
-                  {txHash.slice(0, 10)}...{txHash.slice(-8)}
+                  {truncateTxHash(txHash)}
                 </a>
               </div>
             )}

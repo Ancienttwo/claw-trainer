@@ -22,8 +22,8 @@ The flow: parse agent config -> upload service manifest to IPFS -> sign EIP-712 
 
 | Contract | Address | Chain |
 |----------|---------|-------|
-| IdentityRegistry | `0x8004A169FB4a3325136EB29fA0ceB6D2e539a432` | BSC Mainnet (56) |
-| ReputationRegistry | `0x8004BAa17C55a88189AE136b182e5fdA19dE9b63` | BSC Mainnet (56) |
+| IdentityRegistry | `0x93EdC70ADEF0aBde3906D774bEe95D90a959012a` | BSC Testnet (97) |
+| ReputationRegistry | TBD | BSC Testnet (97) |
 
 ---
 

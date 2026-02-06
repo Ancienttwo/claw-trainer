@@ -3,9 +3,9 @@
  * Only the functions/events used by the mint flow are included.
  */
 
-// Deployed on BSC Testnet (chainId: 97) — 2026-02-06 (v2: soul-bound)
+// Deployed on BSC Testnet (chainId: 97) — per specs/modules/nfa-mint.md
 export const IDENTITY_REGISTRY_ADDRESS =
-  "0x2538a18fc6164E0ba1296F094B3eE2f3dA77Fb15" as const
+  "0x93EdC70ADEF0aBde3906D774bEe95D90a959012a" as const
 
 export const IDENTITY_REGISTRY_ABI = [
   {

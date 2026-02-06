@@ -6,7 +6,7 @@ import { useMintFlowStore } from "../../stores/mint-flow-store"
 import { parseAgentConfig } from "../../lib/parse-agent"
 import { cn } from "../../lib/cn"
 import type { Address } from "viem"
-import type { ConfigValidationError } from "../../../../../contracts/modules/nfa-mint"
+import type { ConfigValidationError } from "@contracts/modules/nfa-mint"
 
 const PRESET_CAPS = [
   "code-review",

@@ -42,7 +42,7 @@ contract IdentityRegistry is ERC721, ERC721URIStorage, Ownable, Pausable, EIP712
         string memory name,
         address owner
     ) public pure returns (uint256) {
-        return uint256(keccak256(abi.encodePacked(name, owner)));
+        return uint256(keccak256(abi.encode(name, owner)));
     }
 
     /// @notice Mint a new NFA (Non-Fungible Agent) with agent signature verification
@@ -107,6 +107,18 @@ contract IdentityRegistry is ERC721, ERC721URIStorage, Ownable, Pausable, EIP712
 
     function unpause() external onlyOwner {
         _unpause();
+    }
+
+    function burn(uint256 tokenId) external {
+        require(ownerOf(tokenId) == msg.sender, "Not owner");
+        address wallet = agentWallets[tokenId];
+        
+        // Cleanup state
+        walletBound[wallet] = false;
+        delete walletToToken[wallet];
+        // agentExists remains true to prevent re-minting same ID (history preservation)
+        
+        _burn(tokenId);
     }
 
     /// @notice Soul-bound: NFA tokens cannot be transferred after minting
