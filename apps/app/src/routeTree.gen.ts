@@ -13,6 +13,7 @@ import { Route as MintRouteImport } from './routes/mint'
 import { Route as DexRouteImport } from './routes/dex'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as CardTokenIdRouteImport } from './routes/card.$tokenId'
+import { Route as AgentTokenIdRouteImport } from './routes/agent.$tokenId'
 
 const MintRoute = MintRouteImport.update({
   id: '/mint',
@@ -34,17 +35,24 @@ const CardTokenIdRoute = CardTokenIdRouteImport.update({
   path: '/card/$tokenId',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AgentTokenIdRoute = AgentTokenIdRouteImport.update({
+  id: '/agent/$tokenId',
+  path: '/agent/$tokenId',
+  getParentRoute: () => rootRouteImport,
+} as any)
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/dex': typeof DexRoute
   '/mint': typeof MintRoute
+  '/agent/$tokenId': typeof AgentTokenIdRoute
   '/card/$tokenId': typeof CardTokenIdRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dex': typeof DexRoute
   '/mint': typeof MintRoute
+  '/agent/$tokenId': typeof AgentTokenIdRoute
   '/card/$tokenId': typeof CardTokenIdRoute
 }
 export interface FileRoutesById {
@@ -52,20 +60,22 @@ export interface FileRoutesById {
   '/': typeof IndexRoute
   '/dex': typeof DexRoute
   '/mint': typeof MintRoute
+  '/agent/$tokenId': typeof AgentTokenIdRoute
   '/card/$tokenId': typeof CardTokenIdRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dex' | '/mint' | '/card/$tokenId'
+  fullPaths: '/' | '/dex' | '/mint' | '/agent/$tokenId' | '/card/$tokenId'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dex' | '/mint' | '/card/$tokenId'
-  id: '__root__' | '/' | '/dex' | '/mint' | '/card/$tokenId'
+  to: '/' | '/dex' | '/mint' | '/agent/$tokenId' | '/card/$tokenId'
+  id: '__root__' | '/' | '/dex' | '/mint' | '/agent/$tokenId' | '/card/$tokenId'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   DexRoute: typeof DexRoute
   MintRoute: typeof MintRoute
+  AgentTokenIdRoute: typeof AgentTokenIdRoute
   CardTokenIdRoute: typeof CardTokenIdRoute
 }
 
@@ -99,6 +109,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof CardTokenIdRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/agent/$tokenId': {
+      id: '/agent/$tokenId'
+      path: '/agent/$tokenId'
+      fullPath: '/agent/$tokenId'
+      preLoaderRoute: typeof AgentTokenIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -106,6 +123,7 @@ const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   DexRoute: DexRoute,
   MintRoute: MintRoute,
+  AgentTokenIdRoute: AgentTokenIdRoute,
   CardTokenIdRoute: CardTokenIdRoute,
 }
 export const routeTree = rootRouteImport
