@@ -57,3 +57,6 @@ secrets/
 # ===== Hardhat =====
 cache/
 artifacts/contracts/
+
+# ===== Cloudflare =====
+.wrangler/

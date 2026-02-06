@@ -13,6 +13,7 @@ import {
   IDENTITY_REGISTRY_ABI,
 } from "../lib/contract"
 import { buildTokenUri } from "../lib/build-token-uri"
+import { apiFetch } from "../lib/api"
 import { useMintFlowStore } from "../stores/mint-flow-store"
 import type { AgentConfig, MintFlowError } from "@contracts/modules/nfa-mint"
 
@@ -77,11 +78,18 @@ export function useMintNfa() {
   })
 
   useEffect(() => {
+    if (receipt.isError) {
+      store.setError(
+        createMintError("mint", "CONTRACT_REVERT", "Transaction failed on-chain"),
+      )
+      return
+    }
     if (!receipt.isSuccess || !receipt.data) return
     const tokenId = extractTokenId(receipt.data.logs)
     store.setTxStatus("success", txHash, tokenId ?? undefined)
     store.setStep("confirm")
-  }, [receipt.isSuccess, receipt.data, txHash, store])
+    apiFetch("/sync/trigger", { method: "POST" }).catch(() => {})
+  }, [receipt.isSuccess, receipt.isError, receipt.data, txHash, store])
 
   const mintAgent = useCallback(
     async (config: AgentConfig) => {

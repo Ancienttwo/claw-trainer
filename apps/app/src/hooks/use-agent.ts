@@ -1,9 +1,11 @@
 /**
- * Hook to query a single NFA agent by tokenId from on-chain reads.
+ * Hook to query a single NFA agent by tokenId.
+ * Strategy: API-first with on-chain fallback.
  */
 
+import { useQuery } from "@tanstack/react-query"
 import { useReadContracts } from "wagmi"
-import type { Address } from "viem"
+import { type Address, zeroAddress } from "viem"
 import {
   IDENTITY_REGISTRY_ADDRESS,
   IDENTITY_REGISTRY_ABI,
@@ -17,11 +19,42 @@ import {
   getStage,
   getVersion,
 } from "../lib/decode-token-uri"
+import { apiFetch } from "../lib/api"
 import type { AgentListItem } from "./use-agents"
 
 export interface AgentDetail extends AgentListItem {
   description: string
   rawMetadata: NfaMetadata
+}
+
+interface ApiAgent {
+  token_id: string
+  name: string
+  owner: string
+  agent_wallet: string
+  level: number
+  stage: string
+  capabilities: string
+  version: string
+  description: string
+  token_uri: string
+}
+
+function apiToDetail(a: ApiAgent): AgentDetail | null {
+  const metadata = decodeTokenUri(a.token_uri)
+  if (!metadata) return null
+  return {
+    tokenId: BigInt(a.token_id),
+    name: a.name,
+    owner: a.owner as Address,
+    agentWallet: a.agent_wallet as Address,
+    level: a.level,
+    stage: a.stage,
+    capabilities: a.capabilities ? a.capabilities.split(",").map((s) => s.trim()) : [],
+    version: a.version,
+    description: a.description,
+    rawMetadata: metadata,
+  }
 }
 
 const CONTRACT_CONFIG = {
@@ -46,7 +79,6 @@ const URI_INDEX = 3
 interface ContractResult {
   status: string
   result?: unknown
-  error?: unknown
 }
 
 function getSuccessResult(result: ContractResult | undefined): unknown {
@@ -60,7 +92,6 @@ function buildAgentDetail(
 ): AgentDetail | null {
   const uriValue = getSuccessResult(results[URI_INDEX])
   if (typeof uriValue !== "string") return null
-
   const metadata = decodeTokenUri(uriValue)
   if (!metadata) return null
   const levelValue = getSuccessResult(results[LEVEL_INDEX])
@@ -70,8 +101,8 @@ function buildAgentDetail(
   return {
     tokenId,
     name: getAgentName(metadata),
-    owner: (getSuccessResult(results[OWNER_INDEX]) as Address) ?? ("0x0" as Address),
-    agentWallet: (getSuccessResult(results[WALLET_INDEX]) as Address) ?? ("0x0" as Address),
+    owner: (getSuccessResult(results[OWNER_INDEX]) as Address) ?? (zeroAddress as Address),
+    agentWallet: (getSuccessResult(results[WALLET_INDEX]) as Address) ?? (zeroAddress as Address),
     level: onChainLevel,
     stage: getStage(metadata),
     capabilities: getCapabilities(metadata),
@@ -82,17 +113,30 @@ function buildAgentDetail(
 }
 
 export function useAgent(tokenId: bigint) {
-  const { data, isLoading, isError, error, refetch } = useReadContracts({
+  const contractQuery = useReadContracts({
     contracts: buildContractCalls(tokenId),
-    query: { staleTime: 15_000 },
+    query: { staleTime: 15_000, enabled: false },
   })
 
-  const agent = data
-    ? buildAgentDetail(tokenId, data as ReadonlyArray<ContractResult>)
-    : null
+  const { data, isLoading, isError, error, refetch } = useQuery({
+    queryKey: ["agent-detail", tokenId.toString()],
+    queryFn: async () => {
+      try {
+        const resp = await apiFetch<{ agent: ApiAgent }>(`/agents/${tokenId}`)
+        const detail = apiToDetail(resp.agent)
+        if (detail) return detail
+      } catch {
+        // fallback to on-chain
+      }
+      const result = await contractQuery.refetch()
+      if (!result.data) return null
+      return buildAgentDetail(tokenId, result.data as ReadonlyArray<ContractResult>)
+    },
+    staleTime: 15_000,
+  })
 
   return {
-    agent,
+    agent: data ?? null,
     isLoading,
     isError,
     error,

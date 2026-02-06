@@ -1,5 +1,6 @@
 /**
- * Hook to query all minted NFA agents from on-chain events.
+ * Hook to query all minted NFA agents.
+ * Strategy: API-first with on-chain fallback.
  */
 
 import { useQuery } from "@tanstack/react-query"
@@ -18,13 +19,13 @@ import {
   getStage,
   getVersion,
 } from "../lib/decode-token-uri"
+import { apiFetch } from "../lib/api"
 
 const MINT_EVENT = parseAbiItem(
   "event NFAMinted(uint256 indexed tokenId, address indexed owner, address indexed agentWallet, string tokenURI)",
 )
 
-/** Block when IdentityRegistry was deployed on BSC Testnet */
-const CONTRACT_DEPLOY_BLOCK = 48_000_000n
+const CONTRACT_DEPLOY_BLOCK = 88_823_136n
 const QUERY_KEY = "agents-list"
 
 export interface AgentListItem {
@@ -36,6 +37,35 @@ export interface AgentListItem {
   stage: string
   capabilities: string[]
   version: string
+}
+
+interface ApiAgent {
+  token_id: string
+  name: string
+  owner: string
+  agent_wallet: string
+  level: number
+  stage: string
+  capabilities: string
+  version: string
+}
+
+function apiToAgent(a: ApiAgent): AgentListItem {
+  return {
+    tokenId: BigInt(a.token_id),
+    name: a.name,
+    owner: a.owner as Address,
+    agentWallet: a.agent_wallet as Address,
+    level: a.level,
+    stage: a.stage,
+    capabilities: a.capabilities ? a.capabilities.split(",").map((s) => s.trim()) : [],
+    version: a.version,
+  }
+}
+
+async function fetchFromApi(): Promise<AgentListItem[]> {
+  const data = await apiFetch<{ agents: ApiAgent[] }>("/agents?limit=100")
+  return data.agents.map(apiToAgent)
 }
 
 interface MintLog {
@@ -68,16 +98,13 @@ async function fetchAgentLevels(
   agents: AgentListItem[],
 ): Promise<AgentListItem[]> {
   if (agents.length === 0) return agents
-
   const calls = agents.map((agent) => ({
     address: IDENTITY_REGISTRY_ADDRESS,
     abi: IDENTITY_REGISTRY_ABI,
     functionName: "agentLevels" as const,
     args: [agent.tokenId] as const,
   }))
-
   const results = await client.multicall({ contracts: calls })
-
   return agents.map((agent, i) => {
     const result = results[i]
     if (result?.status === "success" && typeof result.result === "number") {
@@ -87,16 +114,13 @@ async function fetchAgentLevels(
   })
 }
 
-async function fetchAllAgents(
-  client: PublicClient,
-): Promise<AgentListItem[]> {
+async function fetchFromChain(client: PublicClient): Promise<AgentListItem[]> {
   const logs = await client.getLogs({
     address: IDENTITY_REGISTRY_ADDRESS,
     event: MINT_EVENT,
     fromBlock: CONTRACT_DEPLOY_BLOCK,
     toBlock: "latest",
   })
-
   const agents = logs
     .map((log) => parseMintLog(log as unknown as MintLog))
     .filter((a): a is AgentListItem => a !== null)
@@ -108,11 +132,14 @@ export function useAgents() {
 
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: [QUERY_KEY],
-    queryFn: () => {
-      if (!publicClient) throw new Error("No public client available")
-      return fetchAllAgents(publicClient)
+    queryFn: async () => {
+      try {
+        return await fetchFromApi()
+      } catch {
+        if (!publicClient) throw new Error("No public client available")
+        return fetchFromChain(publicClient)
+      }
     },
-    enabled: !!publicClient,
     staleTime: 30_000,
   })
 

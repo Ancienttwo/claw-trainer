@@ -1,32 +1,40 @@
 import { Hono } from "hono"
 import { cors } from "hono/cors"
 import { logger } from "hono/logger"
+import { dbMiddleware } from "./middleware/db"
 import { agentRoutes } from "./routes/agent"
-import { mintRoutes } from "./routes/mint"
+import { trainerRoutes } from "./routes/trainer"
+import { activityRoutes } from "./routes/activity"
+import { syncRoutes } from "./routes/sync"
 import { healthRoutes } from "./routes/health"
+import { syncEvents } from "./services/indexer"
+import { createDb } from "./db/client"
+import type { AppEnv } from "./types"
 
-const app = new Hono().basePath("/api")
+const app = new Hono<AppEnv>().basePath("/api")
 
-// Middleware
 app.use("*", logger())
-app.use(
-	"*",
-	cors({
-		origin: ["http://localhost:5173", "http://localhost:4321"],
-		allowMethods: ["GET", "POST", "PUT", "DELETE"],
-	}),
-)
 
-// Routes
+app.use("*", (c, next) => {
+  const origins = c.env.CORS_ORIGINS?.split(",") ?? [
+    "http://localhost:5173",
+    "http://localhost:4321",
+  ]
+  return cors({ origin: origins, allowMethods: ["GET", "POST"] })(c, next)
+})
+
+app.use("*", dbMiddleware)
+
 app.route("/health", healthRoutes)
-app.route("/agent", agentRoutes)
-app.route("/mint", mintRoutes)
-
-const port = Number(process.env.PORT) || 3001
-
-console.log(`ClawTrainer API running on http://localhost:${port}`)
+app.route("/agents", agentRoutes)
+app.route("/trainers", trainerRoutes)
+app.route("/activities", activityRoutes)
+app.route("/sync", syncRoutes)
 
 export default {
-	port,
-	fetch: app.fetch,
+  fetch: app.fetch,
+  async scheduled(event: ScheduledEvent, env: AppEnv["Bindings"], ctx: ExecutionContext) {
+    const db = createDb(env.DB)
+    ctx.waitUntil(syncEvents(db, env))
+  },
 }
