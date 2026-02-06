@@ -11,10 +11,10 @@ export function EmptyTrainer() {
           <AsciiLobster stage="rookie" size="lg" />
           <h3 className="font-pixel text-sm text-text-primary">No agents yet</h3>
           <p className="font-mono text-[12px] text-text-muted">
-            Mint your first agent to start training
+            Claim your first agent to start training
           </p>
           <Link to="/mint">
-            <PixelButton variant="primary">Mint Your First Agent</PixelButton>
+            <PixelButton variant="primary">Claim Your First Agent</PixelButton>
           </Link>
         </div>
       </PixelCardContent>

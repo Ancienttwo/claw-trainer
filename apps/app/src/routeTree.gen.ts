@@ -12,6 +12,7 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as MintRouteImport } from './routes/mint'
 import { Route as DexRouteImport } from './routes/dex'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as ClaimCodeRouteImport } from './routes/claim.$code'
 import { Route as CardTokenIdRouteImport } from './routes/card.$tokenId'
 import { Route as AgentTokenIdRouteImport } from './routes/agent.$tokenId'
 
@@ -28,6 +29,11 @@ const DexRoute = DexRouteImport.update({
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ClaimCodeRoute = ClaimCodeRouteImport.update({
+  id: '/claim/$code',
+  path: '/claim/$code',
   getParentRoute: () => rootRouteImport,
 } as any)
 const CardTokenIdRoute = CardTokenIdRouteImport.update({
@@ -47,6 +53,7 @@ export interface FileRoutesByFullPath {
   '/mint': typeof MintRoute
   '/agent/$tokenId': typeof AgentTokenIdRoute
   '/card/$tokenId': typeof CardTokenIdRoute
+  '/claim/$code': typeof ClaimCodeRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
@@ -54,6 +61,7 @@ export interface FileRoutesByTo {
   '/mint': typeof MintRoute
   '/agent/$tokenId': typeof AgentTokenIdRoute
   '/card/$tokenId': typeof CardTokenIdRoute
+  '/claim/$code': typeof ClaimCodeRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -62,13 +70,33 @@ export interface FileRoutesById {
   '/mint': typeof MintRoute
   '/agent/$tokenId': typeof AgentTokenIdRoute
   '/card/$tokenId': typeof CardTokenIdRoute
+  '/claim/$code': typeof ClaimCodeRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/dex' | '/mint' | '/agent/$tokenId' | '/card/$tokenId'
+  fullPaths:
+    | '/'
+    | '/dex'
+    | '/mint'
+    | '/agent/$tokenId'
+    | '/card/$tokenId'
+    | '/claim/$code'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/dex' | '/mint' | '/agent/$tokenId' | '/card/$tokenId'
-  id: '__root__' | '/' | '/dex' | '/mint' | '/agent/$tokenId' | '/card/$tokenId'
+  to:
+    | '/'
+    | '/dex'
+    | '/mint'
+    | '/agent/$tokenId'
+    | '/card/$tokenId'
+    | '/claim/$code'
+  id:
+    | '__root__'
+    | '/'
+    | '/dex'
+    | '/mint'
+    | '/agent/$tokenId'
+    | '/card/$tokenId'
+    | '/claim/$code'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -77,6 +105,7 @@ export interface RootRouteChildren {
   MintRoute: typeof MintRoute
   AgentTokenIdRoute: typeof AgentTokenIdRoute
   CardTokenIdRoute: typeof CardTokenIdRoute
+  ClaimCodeRoute: typeof ClaimCodeRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -102,6 +131,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/claim/$code': {
+      id: '/claim/$code'
+      path: '/claim/$code'
+      fullPath: '/claim/$code'
+      preLoaderRoute: typeof ClaimCodeRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/card/$tokenId': {
       id: '/card/$tokenId'
       path: '/card/$tokenId'
@@ -125,6 +161,7 @@ const rootRouteChildren: RootRouteChildren = {
   MintRoute: MintRoute,
   AgentTokenIdRoute: AgentTokenIdRoute,
   CardTokenIdRoute: CardTokenIdRoute,
+  ClaimCodeRoute: ClaimCodeRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

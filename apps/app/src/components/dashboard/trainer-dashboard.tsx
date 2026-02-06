@@ -29,7 +29,7 @@ export function TrainerDashboard({ agents }: TrainerDashboardProps) {
       {hasAgents && (
         <div className="flex justify-center pt-4">
           <Link to="/mint">
-            <PixelButton variant="primary">Mint Another Agent</PixelButton>
+            <PixelButton variant="primary">Claim Another Agent</PixelButton>
           </Link>
         </div>
       )}

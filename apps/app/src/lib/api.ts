@@ -5,10 +5,11 @@ export function isApiConfigured(): boolean {
 }
 
 interface FetchOptions {
-  method?: "GET" | "POST"
+  method?: "GET" | "POST" | "PUT" | "DELETE"
   body?: unknown
   wallet?: string
   signMessage?: (message: string) => Promise<string>
+  sessionToken?: string
 }
 
 async function buildAuthHeaders(
@@ -28,12 +29,16 @@ async function buildAuthHeaders(
 export async function apiFetch<T>(path: string, options: FetchOptions = {}): Promise<T> {
   if (!isApiConfigured()) throw new Error("API not configured")
 
-  const { method = "GET", body, wallet, signMessage } = options
+  const { method = "GET", body, wallet, signMessage, sessionToken } = options
   const headers: Record<string, string> = { "Content-Type": "application/json" }
 
   if (wallet && signMessage) {
     const authHeaders = await buildAuthHeaders(wallet, signMessage)
     Object.assign(headers, authHeaders)
+  }
+
+  if (sessionToken) {
+    headers.Authorization = `Bearer ${sessionToken}`
   }
 
   const response = await fetch(`${API_BASE}${path}`, {

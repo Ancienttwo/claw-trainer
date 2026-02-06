@@ -9,6 +9,8 @@ import { TrainerDashboard } from "../components/dashboard/trainer-dashboard"
 import { EmptyTrainer } from "../components/dashboard/empty-trainer"
 import { useMyAgents } from "../hooks/use-my-agents"
 import { useAgents } from "../hooks/use-agents"
+import { useTwitterAuth } from "../hooks/use-twitter-auth"
+import { useClaimedAgents } from "../hooks/use-claimed-agents"
 
 const RECENT_COUNT = 3
 
@@ -61,7 +63,7 @@ function HeroLanding() {
           </Link>
           <Link to="/mint">
             <PixelButton variant="primary" size="lg">
-              Mint NFA
+              Claim Agent
             </PixelButton>
           </Link>
         </div>
@@ -92,12 +94,49 @@ function ConnectedHome() {
   )
 }
 
+function ClaimedAgentsDashboard() {
+  const { claimedAgents, isLoading } = useClaimedAgents()
+
+  if (isLoading) {
+    return (
+      <div className="mx-auto max-w-5xl px-4 py-12">
+        <TerminalLoader text="Loading claimed agents..." />
+      </div>
+    )
+  }
+
+  if (claimedAgents.length === 0) return <EmptyTrainer />
+
+  return (
+    <div className="mx-auto max-w-5xl px-4 py-6">
+      <TrainerDashboard agents={claimedAgents} />
+    </div>
+  )
+}
+
 function HomePage() {
   const { isConnected } = useMyAgents()
+  const { twitterSession } = useTwitterAuth()
+
+  if (isConnected) {
+    return (
+      <GridBackground gridOpacity="subtle">
+        <ConnectedHome />
+      </GridBackground>
+    )
+  }
+
+  if (twitterSession) {
+    return (
+      <GridBackground gridOpacity="subtle">
+        <ClaimedAgentsDashboard />
+      </GridBackground>
+    )
+  }
 
   return (
     <GridBackground gridOpacity="subtle">
-      {isConnected ? <ConnectedHome /> : <HeroLanding />}
+      <HeroLanding />
     </GridBackground>
   )
 }

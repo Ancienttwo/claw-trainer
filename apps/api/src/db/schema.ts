@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer, index } from "drizzle-orm/sqlite-core"
+import { sqliteTable, text, integer, index, uniqueIndex } from "drizzle-orm/sqlite-core"
 import { sql } from "drizzle-orm"
 
 export const agents = sqliteTable("agents", {
@@ -58,3 +58,90 @@ export const syncState = sqliteTable("sync_state", {
   key: text("key").primaryKey(),
   value: text("value").notNull(),
 })
+
+// ─── Quest System Tables ────────────────────────────────
+
+export const sessions = sqliteTable("sessions", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  twitterId: text("twitter_id").notNull().unique(),
+  twitterHandle: text("twitter_handle").notNull(),
+  twitterAvatar: text("twitter_avatar").notNull().default(""),
+  wallet: text("wallet"),
+  sessionToken: text("session_token").notNull().unique(),
+  expiresAt: text("expires_at").notNull(),
+  createdAt: text("created_at")
+    .notNull()
+    .default(sql`(datetime('now'))`),
+}, (t) => [
+  index("idx_sessions_token").on(t.sessionToken),
+  index("idx_sessions_wallet").on(t.wallet),
+])
+
+export const quests = sqliteTable("quests", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  publisherRole: text("publisher_role").notNull(),
+  publisherId: text("publisher_id").notNull(),
+  title: text("title").notNull(),
+  description: text("description").notNull(),
+  requiredCapabilities: text("required_capabilities").notNull().default(""),
+  rewardPoints: integer("reward_points").notNull().default(0),
+  acceptableBy: text("acceptable_by").notNull(),
+  status: text("status").notNull().default("open"),
+  acceptedBy: text("accepted_by"),
+  acceptedByRole: text("accepted_by_role"),
+  createdAt: text("created_at")
+    .notNull()
+    .default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at")
+    .notNull()
+    .default(sql`(datetime('now'))`),
+}, (t) => [
+  index("idx_quests_status").on(t.status),
+  index("idx_quests_publisher").on(t.publisherRole, t.publisherId),
+  index("idx_quests_acceptable_by").on(t.acceptableBy),
+])
+
+export const notifications = sqliteTable("notifications", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  recipientRole: text("recipient_role").notNull(),
+  recipientId: text("recipient_id").notNull(),
+  type: text("type").notNull(),
+  questId: integer("quest_id"),
+  message: text("message").notNull(),
+  read: integer("read", { mode: "boolean" }).notNull().default(false),
+  createdAt: text("created_at")
+    .notNull()
+    .default(sql`(datetime('now'))`),
+}, (t) => [
+  index("idx_notifications_recipient").on(t.recipientRole, t.recipientId),
+  index("idx_notifications_unread").on(t.recipientRole, t.recipientId, t.read),
+])
+
+// ─── Claim Code Tables ─────────────────────────────────
+
+export const claimCodes = sqliteTable("claim_codes", {
+  code: text("code").primaryKey(),
+  tokenId: text("token_id").notNull(),
+  agentWallet: text("agent_wallet").notNull(),
+  claimedByTwitter: text("claimed_by_twitter"),
+  expiresAt: text("expires_at").notNull(),
+  createdAt: text("created_at")
+    .notNull()
+    .default(sql`(datetime('now'))`),
+}, (t) => [
+  index("idx_claim_codes_token").on(t.tokenId),
+  index("idx_claim_codes_wallet").on(t.agentWallet),
+])
+
+export const trainerAgents = sqliteTable("trainer_agents", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  twitterId: text("twitter_id").notNull(),
+  tokenId: text("token_id").notNull(),
+  claimCode: text("claim_code").notNull(),
+  claimedAt: text("claimed_at")
+    .notNull()
+    .default(sql`(datetime('now'))`),
+}, (t) => [
+  uniqueIndex("idx_trainer_agents_unique").on(t.twitterId, t.tokenId),
+  index("idx_trainer_agents_twitter").on(t.twitterId),
+])

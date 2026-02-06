@@ -7,6 +7,10 @@ import { trainerRoutes } from "./routes/trainer"
 import { activityRoutes } from "./routes/activity"
 import { syncRoutes } from "./routes/sync"
 import { healthRoutes } from "./routes/health"
+import { authRoutes } from "./routes/auth"
+import { questRoutes } from "./routes/quest"
+import { notificationRoutes } from "./routes/notification"
+import { claimRoutes } from "./routes/claim"
 import { syncEvents } from "./services/indexer"
 import { createDb } from "./db/client"
 import type { AppEnv } from "./types"
@@ -20,7 +24,7 @@ app.use("*", (c, next) => {
     "http://localhost:5173",
     "http://localhost:4321",
   ]
-  return cors({ origin: origins, allowMethods: ["GET", "POST"] })(c, next)
+  return cors({ origin: origins, allowMethods: ["GET", "POST", "PUT", "DELETE"] })(c, next)
 })
 
 app.use("*", dbMiddleware)
@@ -30,6 +34,10 @@ app.route("/agents", agentRoutes)
 app.route("/trainers", trainerRoutes)
 app.route("/activities", activityRoutes)
 app.route("/sync", syncRoutes)
+app.route("/auth", authRoutes)
+app.route("/quests", questRoutes)
+app.route("/notifications", notificationRoutes)
+app.route("/claim", claimRoutes)
 
 export default {
   fetch: app.fetch,

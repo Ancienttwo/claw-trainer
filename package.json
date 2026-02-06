@@ -19,6 +19,8 @@
     "build:api": "turbo build --filter=@claw-trainer/api",
     "build:landing": "turbo build --filter=@claw-trainer/landing",
     "build:app": "turbo build --filter=@claw-trainer/app",
+    "dev:docs": "turbo dev --filter=@claw-trainer/docs",
+    "build:docs": "turbo build --filter=@claw-trainer/docs",
     "deploy:landing": "turbo build --filter=@claw-trainer/landing && wrangler pages deploy apps/landing/dist --project-name=clawtrainer-landing",
     "deploy:app": "turbo build --filter=@claw-trainer/app && wrangler pages deploy apps/app/dist --project-name=clawtrainer-app"
   },

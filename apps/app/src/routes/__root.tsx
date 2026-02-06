@@ -1,6 +1,6 @@
 import { useState, type ReactNode } from "react"
 import { createRootRoute, Link, Outlet } from "@tanstack/react-router"
-import { ConnectButton } from "@rainbow-me/rainbowkit"
+import { ClawConnectButton } from "../components/claw-connect-button"
 import { useAccount } from "wagmi"
 import { GlobeIcon, RocketIcon, HamburgerMenuIcon, Cross1Icon, PersonIcon } from "@radix-ui/react-icons"
 import { Web3Provider } from "../providers/web3-provider"
@@ -28,7 +28,7 @@ function DesktopNav() {
       {isConnected && <NavLink to="/" icon={<PersonIcon />} label="My Agents" />}
       <NavLink to="/dex" icon={<GlobeIcon />} label="Browse" />
       <NavLink to="/mint" icon={<RocketIcon />} label="Mint" />
-      <ConnectButton />
+      <ClawConnectButton />
     </div>
   )
 }
@@ -42,7 +42,7 @@ function MobileNav({ onClose }: { onClose: () => void }) {
         {isConnected && <NavLink to="/" icon={<PersonIcon />} label="My Agents" onClick={onClose} />}
         <NavLink to="/dex" icon={<GlobeIcon />} label="Browse" onClick={onClose} />
         <NavLink to="/mint" icon={<RocketIcon />} label="Mint" onClick={onClose} />
-        <ConnectButton />
+        <ClawConnectButton />
       </div>
     </div>
   )
