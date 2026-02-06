@@ -126,7 +126,7 @@ function MetadataSection({ agent }: { agent: AgentDetail }) {
   )
 }
 
-function ActionsSection({ isOwner }: { isOwner: boolean }) {
+function ActionsSection({ isOwner, tokenId }: { isOwner: boolean; tokenId: bigint }) {
   return (
     <div className="flex items-center gap-2">
       {isOwner && (
@@ -134,8 +134,13 @@ function ActionsSection({ isOwner }: { isOwner: boolean }) {
           Level Up
         </PixelButton>
       )}
-      <Link to="/dex">
+      <Link to="/agent/$tokenId" params={{ tokenId: tokenId.toString() }}>
         <PixelButton variant="terminal" size="md">
+          View Profile
+        </PixelButton>
+      </Link>
+      <Link to="/dex">
+        <PixelButton variant="outline" size="md">
           Back to Dex
         </PixelButton>
       </Link>
@@ -175,7 +180,7 @@ export function MoltCard({ agent }: MoltCardProps) {
           {agent.description}
         </TerminalText>
 
-        <ActionsSection isOwner={isOwner} />
+        <ActionsSection isOwner={isOwner} tokenId={agent.tokenId} />
       </PixelCardContent>
     </PixelCard>
   )

@@ -34,7 +34,7 @@ export function AgentCard({ agent }: AgentCardProps) {
 
   return (
     <Link
-      to="/card/$tokenId"
+      to="/agent/$tokenId"
       params={{ tokenId: agent.tokenId.toString() }}
       className="block"
     >
