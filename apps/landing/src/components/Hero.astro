@@ -1,4 +1,10 @@
 ---
+import type { Messages } from "../i18n";
+
+interface Props {
+	t: Messages["hero"];
+}
+const { t } = Astro.props;
 ---
 
 <section class="relative min-h-screen grid-bg overflow-hidden">
@@ -24,13 +30,11 @@
 				</div>
 
 				<!-- Tagline -->
-				<p class="font-display text-2xl sm:text-3xl md:text-4xl text-text-primary mb-4 font-bold">
-					Train your Molt.<br/>Own your Mind.
-				</p>
+				<p class="font-display text-2xl sm:text-3xl md:text-4xl text-text-primary mb-4 font-bold" set:html={t.tagline} />
 
 				<!-- Subtitle -->
 				<p class="font-mono text-sm sm:text-base text-text-secondary mb-10 max-w-lg mx-auto lg:mx-0">
-					Mint, Train &amp; Evolve AI Agents as Non-Fungible Agents (NFAs) on BNB Chain
+					{t.subtitle}
 				</p>
 
 				<!-- CTAs -->
@@ -39,14 +43,14 @@
 						href="https://app.clawtrainer.ai"
 						class="inline-flex items-center gap-2 px-8 py-4 bg-coral hover:bg-coral-mid text-white font-mono font-semibold text-sm rounded-md shadow-glow-coral transition-all duration-200 hover:scale-105"
 					>
-						<span class="font-pixel text-xs">&gt;</span> Launch App
+						<span class="font-pixel text-xs">&gt;</span> {t.launchApp}
 					</a>
 					<a
 						href="/skill.md"
 						target="_blank"
 						class="inline-flex items-center gap-2 px-8 py-4 border border-border-cyan text-cyan font-mono font-semibold text-sm rounded-md hover:bg-cyan/10 transition-all duration-200 hover:scale-105"
 					>
-						View skill.md
+						{t.viewSkill}
 					</a>
 				</div>
 

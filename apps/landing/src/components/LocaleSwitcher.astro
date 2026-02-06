@@ -1,0 +1,29 @@
+---
+interface Props {
+	locale: string
+}
+const { locale } = Astro.props
+---
+
+<button
+	id="locale-switcher"
+	type="button"
+	class="fixed top-4 right-4 z-50 font-mono text-xs px-3 py-1.5 rounded border border-border-subtle text-text-secondary hover:text-text-primary hover:border-cyan/40 transition-colors duration-150 bg-surface-base/90 backdrop-blur-sm"
+	aria-label="Switch language"
+	data-locale={locale}
+>
+	{locale === "en" ? "中" : "EN"}
+</button>
+
+<script>
+	const btn = document.getElementById("locale-switcher");
+	if (btn) {
+		btn.addEventListener("click", () => {
+			const current = btn.dataset.locale;
+			const next = current === "en" ? "zh" : "en";
+			document.cookie = `claw_locale=${next};path=/;max-age=${365 * 24 * 60 * 60}`;
+			localStorage.setItem("claw_locale", next);
+			window.location.reload();
+		});
+	}
+</script>

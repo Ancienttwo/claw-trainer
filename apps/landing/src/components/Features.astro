@@ -1,25 +1,12 @@
 ---
-const features = [
-  {
-    title: "Mint",
-    description: "Register your AI agent as a Non-Fungible Agent (NFA) with EIP-712 dual signatures",
-    accent: "coral",
-  },
-  {
-    title: "Train",
-    description: "Level up your Molt through on-chain interactions and capability growth",
-    accent: "cyan",
-  },
-  {
-    title: "Evolve",
-    description: "Watch your agent evolve from Rookie → Pro → Cyber Molt",
-    accent: "amber",
-  },
-] as const;
+import type { Messages } from "../i18n";
 
-type Accent = (typeof features)[number]["accent"];
+interface Props {
+	t: Messages["features"];
+}
+const { t } = Astro.props;
 
-const accentClasses: Record<Accent, { border: string; text: string; glow: string; shadow: string }> = {
+const accentClasses = {
   coral: {
     border: "border-border-accent hover:shadow-glow-coral",
     text: "text-coral",
@@ -38,16 +25,16 @@ const accentClasses: Record<Accent, { border: string; text: string; glow: string
     glow: "bg-amber/10",
     shadow: "shadow-amber/20",
   },
-};
+} as const;
 ---
 
 <section id="features" class="py-24 px-6">
   <div class="max-w-6xl mx-auto">
     <h2 class="font-pixel text-lg sm:text-xl md:text-2xl text-center text-text-primary mb-4">
-      What You Can Do
+      {t.title}
     </h2>
     <p class="font-mono text-sm text-text-secondary text-center mb-16">
-      Three steps to on-chain agent identity
+      {t.subtitle}
     </p>
 
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
@@ -70,10 +57,10 @@ const accentClasses: Record<Accent, { border: string; text: string; glow: string
           </div>
         </div>
         <h3 class={`font-pixel text-sm mb-3 ${accentClasses.coral.text}`}>
-          Mint
+          {t.mintTitle}
         </h3>
         <p class="font-mono text-sm text-text-secondary leading-relaxed">
-          Register your AI agent as a Non-Fungible Agent (NFA) with EIP-712 dual signatures
+          {t.mintDesc}
         </p>
       </div>
 
@@ -85,7 +72,7 @@ const accentClasses: Record<Accent, { border: string; text: string; glow: string
             {/* Level indicator */}
             <div class="flex justify-between items-center">
               <span class="font-mono text-[9px] text-cyan/70">LVL</span>
-              <span class="font-mono text-[9px] text-cyan">↑</span>
+              <span class="font-mono text-[9px] text-cyan">&uarr;</span>
             </div>
             {/* Progress bar 1 */}
             <div class="w-full h-2 bg-surface border border-cyan/30 rounded-sm overflow-hidden">
@@ -109,10 +96,10 @@ const accentClasses: Record<Accent, { border: string; text: string; glow: string
           </div>
         </div>
         <h3 class={`font-pixel text-sm mb-3 ${accentClasses.cyan.text}`}>
-          Train
+          {t.trainTitle}
         </h3>
         <p class="font-mono text-sm text-text-secondary leading-relaxed">
-          Level up your Molt through on-chain interactions and capability growth
+          {t.trainDesc}
         </p>
       </div>
 
@@ -163,10 +150,10 @@ const accentClasses: Record<Accent, { border: string; text: string; glow: string
             </div>
           </div>
         <h3 class={`font-pixel text-sm mb-3 ${accentClasses.amber.text}`}>
-          Evolve
+          {t.evolveTitle}
         </h3>
         <p class="font-mono text-sm text-text-secondary leading-relaxed">
-          Watch your agent evolve from Rookie → Pro → Cyber Molt
+          {t.evolveDesc}
         </p>
       </div>
     </div>

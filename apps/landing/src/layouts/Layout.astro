@@ -1,19 +1,23 @@
 ---
 import "../styles/global.css";
+import { getT, getLocale } from "../i18n";
 
 interface Props {
 	title?: string;
 	description?: string;
 }
 
+const locale = getLocale(Astro);
+const t = getT(locale);
+
 const {
-	title = "ClawTrainer.ai — Train your Molt. Own your Mind.",
-	description = "Mint, Train & Evolve AI Agents as Non-Fungible Agents (NFAs) on BNB Chain. ERC-8004 identity standard with EIP-712 dual signatures.",
+	title = t.meta.title,
+	description = t.meta.description,
 } = Astro.props;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang={locale}>
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -41,6 +45,16 @@ const {
 			href="https://api.fontshare.com/v2/css?f[]=clash-display@400;500;600;700&f[]=satoshi@400;500;700&display=swap"
 			rel="stylesheet"
 		/>
+
+		<script is:inline>
+			(function(){
+				var ls = localStorage.getItem("claw_locale");
+				if (ls && !document.cookie.includes("claw_locale=")) {
+					document.cookie = "claw_locale=" + ls + ";path=/;max-age=" + (365*24*60*60);
+					window.location.reload();
+				}
+			})();
+		</script>
 
 		<title>{title}</title>
 	</head>

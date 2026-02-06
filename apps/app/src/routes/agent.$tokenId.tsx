@@ -5,27 +5,32 @@ import { TerminalLoader } from "../components/ui/terminal-loader"
 import { PixelButton } from "../components/ui/pixel-button"
 import { AgentProfile } from "../components/moltbook/agent-profile"
 import { useAgent } from "../hooks/use-agent"
+import { useI18n } from "../i18n"
 
 function AgentLoading() {
+  const { t } = useI18n()
+
   return (
     <div className="mx-auto max-w-6xl space-y-4 px-4 py-6">
-      <TerminalLoader text="Loading agent data from chain..." />
+      <TerminalLoader text={t.agent.loading} />
     </div>
   )
 }
 
 function AgentNotFound({ tokenId }: { tokenId: string }) {
+  const { t } = useI18n()
+
   return (
     <div className="flex flex-col items-center gap-4 py-12 text-center">
       <TerminalText color="amber" className="font-pixel text-sm">
-        ERROR 404: Agent #{tokenId} not found on-chain
+        {t.agent.notFound.replace("{tokenId}", tokenId)}
       </TerminalText>
       <TerminalText color="green" className="text-xs">
-        &gt; The requested NFA does not exist or has not been minted.
+        &gt; {t.agent.notFoundDesc}
       </TerminalText>
       <Link to="/dex">
         <PixelButton variant="terminal" size="md">
-          Back to Dex
+          {t.common.backToDex}
         </PixelButton>
       </Link>
     </div>
@@ -33,13 +38,15 @@ function AgentNotFound({ tokenId }: { tokenId: string }) {
 }
 
 function AgentError({ onRetry }: { onRetry: () => void }) {
+  const { t } = useI18n()
+
   return (
     <div className="flex flex-col items-center gap-4 py-12 text-center">
       <TerminalText color="amber">
-        Failed to load agent data from chain.
+        {t.agent.failedLoad}
       </TerminalText>
       <PixelButton variant="terminal" size="sm" onClick={onRetry}>
-        Retry
+        {t.common.retry}
       </PixelButton>
     </div>
   )

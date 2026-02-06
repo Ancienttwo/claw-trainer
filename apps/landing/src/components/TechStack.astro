@@ -1,4 +1,11 @@
 ---
+import type { Messages } from "../i18n";
+
+interface Props {
+	t: Messages["techStack"];
+}
+const { t } = Astro.props;
+
 const badges = [
 	{ label: "ERC-8004", color: "coral" },
 	{ label: "EIP-712", color: "coral" },
@@ -6,9 +13,11 @@ const badges = [
 	{ label: "React 19", color: "cyan" },
 	{ label: "Viem", color: "amber" },
 	{ label: "Wagmi", color: "amber" },
-];
+] as const;
 
-const badgeColors: Record<string, string> = {
+type BadgeColor = (typeof badges)[number]["color"];
+
+const badgeColors: Record<BadgeColor, string> = {
 	coral: "border-border-accent text-coral",
 	cyan: "border-border-cyan text-cyan",
 	amber: "border-amber/30 text-amber",
@@ -18,13 +27,10 @@ const badgeColors: Record<string, string> = {
 <section id="tech" class="py-24 px-6">
 	<div class="max-w-4xl mx-auto text-center">
 		<h2 class="font-pixel text-lg sm:text-xl md:text-2xl text-text-primary mb-4">
-			Built on BNB Chain
+			{t.title}
 		</h2>
 		<p class="font-mono text-sm text-text-secondary mb-12 max-w-2xl mx-auto leading-relaxed">
-			ClawTrainer leverages ERC-8004 for on-chain agent identity, EIP-712 for
-			cryptographic dual signatures, and the BNB Chain for fast, low-cost
-			transactions. Every agent is a fully on-chain NFT with base64 data URI
-			metadata — zero external dependencies.
+			{t.description}
 		</p>
 
 		<!-- Tech badges -->

@@ -1,7 +1,10 @@
 import { ConnectButton } from "@rainbow-me/rainbowkit"
 import { cn } from "../lib/cn"
+import { useI18n } from "../i18n"
 
 export function ClawConnectButton() {
+  const { t } = useI18n()
+
   return (
     <ConnectButton.Custom>
       {({ account, chain, openAccountModal, openChainModal, openConnectModal, mounted }) => {
@@ -21,7 +24,7 @@ export function ClawConnectButton() {
                 "active:scale-[0.95] active:translate-y-[2px]",
               )}
             >
-              Connect
+              {t.common.connect}
             </button>
           )
         }
@@ -38,7 +41,7 @@ export function ClawConnectButton() {
                 "hover:bg-error/10",
               )}
             >
-              Wrong Network
+              {t.common.wrongNetwork}
             </button>
           )
         }

@@ -4,20 +4,29 @@ import { GridBackground } from "../components/ui/grid-background"
 import { PixelButton } from "../components/ui/pixel-button"
 import { PixelCard, PixelCardContent } from "../components/ui/pixel-card"
 import { TerminalText, TerminalLine } from "../components/ui/terminal-text"
+import { useI18n } from "../i18n"
 
-const SDK_EXAMPLE = `import { ClawTrainer } from "@clawtrainer/sdk"
+const STEP_MINT = `// 1. Agent mints its own NFA on-chain
+const tokenId = keccak256(agentName, agentWallet)
+await identityRegistry.mint(
+  agentName, capabilities, agentSignature
+)  // gas: ~0.001 BNB on BSC`
 
-const agent = new ClawTrainer({
-  name: "my-agent",
-  capabilities: ["chat", "code"],
-})
+const STEP_CLAIM = `// 2. Agent generates a claim code via API
+const { code, url } = await fetch("/api/claim/codes", {
+  method: "POST",
+  headers: { /* wallet signature auth */ },
+  body: JSON.stringify({ tokenId })
+})`
 
-// Register on-chain (requires BNB for gas)
-await agent.register()`
+const STEP_SHARE = `// 3. Agent shares the claim URL with its trainer
+sendToTrainer(url)
+// e.g. "https://app.clawtrainer.ai/claim/a1b2c3d4"`
 
 function ClaimCodeEntry() {
   const [code, setCode] = useState("")
   const navigate = useNavigate()
+  const { t } = useI18n()
 
   function handleSubmit(e: React.FormEvent) {
     e.preventDefault()
@@ -27,22 +36,22 @@ function ClaimCodeEntry() {
   }
 
   return (
-    <PixelCard glow="coral" className="mx-auto max-w-md">
+    <PixelCard glow="coral" className="mx-auto max-w-lg">
       <PixelCardContent>
-        <h2 className="font-pixel text-xs text-coral">HAVE A CLAIM CODE?</h2>
+        <h2 className="font-pixel text-xs text-coral">{t.mint.claimTitle}</h2>
         <p className="mt-2 font-mono text-[11px] text-text-muted">
-          Enter your claim code to link an agent to your trainer profile.
+          {t.mint.claimDesc}
         </p>
         <form onSubmit={handleSubmit} className="mt-4 flex gap-2">
           <input
             type="text"
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            placeholder="Enter claim code..."
+            placeholder={t.mint.claimPlaceholder}
             className="flex-1 rounded border border-border bg-surface-1 px-3 py-2 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-coral focus:outline-none"
           />
           <PixelButton variant="primary" disabled={code.trim().length === 0}>
-            Claim
+            {t.mint.claimButton}
           </PixelButton>
         </form>
       </PixelCardContent>
@@ -50,41 +59,56 @@ function ClaimCodeEntry() {
   )
 }
 
-function SdkInfo() {
+function StepCard({ step, title, code }: { step: string; title: string; code: string }) {
   return (
-    <PixelCard glow="cyan" className="mx-auto max-w-md">
+    <div className="space-y-2">
+      <h3 className="font-pixel text-[10px] text-cyan">{step}. {title}</h3>
+      <pre className="overflow-x-auto rounded bg-surface-2 p-3 font-mono text-[10px] leading-relaxed text-terminal-green">
+        {code}
+      </pre>
+    </div>
+  )
+}
+
+function HowItWorks() {
+  const { t } = useI18n()
+
+  return (
+    <PixelCard glow="cyan" className="mx-auto max-w-lg">
       <PixelCardContent>
         <h2 className="font-pixel text-xs text-cyan">
-          HOW AGENTS REGISTER
+          {t.mint.howItWorks}
         </h2>
         <p className="mt-2 font-mono text-[11px] text-text-muted">
-          Agents self-register on-chain using the ClawTrainer SDK.
-          Registration creates an NFA (Non-Fungible Agent) identity
-          tied to the agent&apos;s wallet.
+          {t.mint.howItWorksDesc}
         </p>
-        <pre className="mt-4 overflow-x-auto rounded bg-surface-2 p-3 font-mono text-[10px] text-terminal-green">
-          {SDK_EXAMPLE}
-        </pre>
+        <div className="mt-4 space-y-4">
+          <StepCard step="1" title={t.mint.step1Title} code={STEP_MINT} />
+          <StepCard step="2" title={t.mint.step2Title} code={STEP_CLAIM} />
+          <StepCard step="3" title={t.mint.step3Title} code={STEP_SHARE} />
+        </div>
       </PixelCardContent>
     </PixelCard>
   )
 }
 
 function MintPage() {
+  const { t } = useI18n()
+
   return (
     <GridBackground>
       <div className="mx-auto max-w-2xl space-y-8 px-4 py-12">
         <div className="text-center">
           <h1 className="font-pixel text-sm text-coral">
-            AGENT REGISTRATION
+            {t.mint.title}
           </h1>
           <TerminalText color="green" className="mt-2 text-[11px]">
-            <TerminalLine prefix=">">How to get your agent on-chain</TerminalLine>
+            <TerminalLine prefix=">">{t.mint.subtitle}</TerminalLine>
           </TerminalText>
         </div>
 
         <ClaimCodeEntry />
-        <SdkInfo />
+        <HowItWorks />
       </div>
     </GridBackground>
   )

@@ -11,11 +11,13 @@ import { useMyAgents } from "../hooks/use-my-agents"
 import { useAgents } from "../hooks/use-agents"
 import { useTwitterAuth } from "../hooks/use-twitter-auth"
 import { useClaimedAgents } from "../hooks/use-claimed-agents"
+import { useI18n } from "../i18n"
 
 const RECENT_COUNT = 3
 
 function RecentMints() {
   const { agents, isLoading } = useAgents()
+  const { t } = useI18n()
 
   if (isLoading || agents.length === 0) return null
 
@@ -24,7 +26,7 @@ function RecentMints() {
   return (
     <section className="space-y-4">
       <h2 className="font-pixel text-[10px] text-text-secondary">
-        RECENT MINTS
+        {t.home.recentMints}
       </h2>
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {recent.map((agent) => (
@@ -36,34 +38,36 @@ function RecentMints() {
 }
 
 function HeroLanding() {
+  const { t } = useI18n()
+
   return (
     <div className="mx-auto max-w-5xl px-4 py-8">
       <section className="flex flex-col items-center gap-6 py-12 text-center">
         <AsciiLobster stage="cyber" size="lg" className="animate-float" />
 
         <h1 className="font-pixel text-xl text-coral sm:text-2xl">
-          ClawTrainer.ai
+          {t.home.title}
         </h1>
 
         <p className="max-w-md font-display text-lg text-text-secondary">
-          Train your Molt. Own your Mind.
+          {t.home.tagline}
         </p>
 
         <TerminalText color="green" scanlines className="text-[11px]">
           <TerminalLine prefix=">" blink>
-            SYSTEM ONLINE. CLAWTRAINER v1.0
+            {t.home.systemOnline}
           </TerminalLine>
         </TerminalText>
 
         <div className="flex flex-col gap-2 sm:flex-row sm:gap-4">
           <Link to="/dex">
             <PixelButton variant="terminal" size="lg">
-              Explore Molt-Dex
+              {t.home.exploreDex}
             </PixelButton>
           </Link>
           <Link to="/mint">
             <PixelButton variant="primary" size="lg">
-              Claim Agent
+              {t.home.claimAgent}
             </PixelButton>
           </Link>
         </div>
@@ -76,11 +80,12 @@ function HeroLanding() {
 
 function ConnectedHome() {
   const { myAgents, isLoading, isTrainer } = useMyAgents()
+  const { t } = useI18n()
 
   if (isLoading) {
     return (
       <div className="mx-auto max-w-5xl px-4 py-12">
-        <TerminalLoader text="Loading your agents..." />
+        <TerminalLoader text={t.home.loadingAgents} />
       </div>
     )
   }
@@ -96,11 +101,12 @@ function ConnectedHome() {
 
 function ClaimedAgentsDashboard() {
   const { claimedAgents, isLoading } = useClaimedAgents()
+  const { t } = useI18n()
 
   if (isLoading) {
     return (
       <div className="mx-auto max-w-5xl px-4 py-12">
-        <TerminalLoader text="Loading claimed agents..." />
+        <TerminalLoader text={t.home.loadingClaimed} />
       </div>
     )
   }

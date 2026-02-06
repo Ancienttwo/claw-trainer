@@ -7,76 +7,87 @@ import { TerminalLoader } from "../components/ui/terminal-loader"
 import { AsciiLobster } from "../components/ui/ascii-lobster"
 import { useClaimCode, useRedeemClaim } from "../hooks/use-claim"
 import { useTwitterAuth } from "../hooks/use-twitter-auth"
+import { useI18n } from "../i18n"
 
 function ClaimLoading() {
+  const { t } = useI18n()
+
   return (
     <div className="mx-auto max-w-2xl px-4 py-12">
-      <TerminalLoader text="Verifying claim code..." />
+      <TerminalLoader text={t.claim.verifying} />
     </div>
   )
 }
 
 function ClaimError() {
+  const { t } = useI18n()
+
   return (
     <div className="mx-auto max-w-2xl px-4 py-12 text-center">
       <TerminalText color="amber" className="font-pixel text-sm">
-        CLAIM CODE NOT FOUND
+        {t.claim.codeNotFound}
       </TerminalText>
       <p className="mt-4 font-mono text-xs text-text-muted">
-        This claim code does not exist or is invalid.
+        {t.claim.codeNotFoundDesc}
       </p>
       <Link to="/mint" className="mt-6 inline-block">
-        <PixelButton variant="terminal">Back</PixelButton>
+        <PixelButton variant="terminal">{t.common.back}</PixelButton>
       </Link>
     </div>
   )
 }
 
 function ClaimExpired() {
+  const { t } = useI18n()
+
   return (
     <div className="mx-auto max-w-2xl px-4 py-12 text-center">
       <TerminalText color="amber" className="font-pixel text-sm">
-        CLAIM CODE EXPIRED
+        {t.claim.codeExpired}
       </TerminalText>
       <p className="mt-4 font-mono text-xs text-text-muted">
-        This claim code has expired and can no longer be redeemed.
+        {t.claim.codeExpiredDesc}
       </p>
       <Link to="/mint" className="mt-6 inline-block">
-        <PixelButton variant="terminal">Back</PixelButton>
+        <PixelButton variant="terminal">{t.common.back}</PixelButton>
       </Link>
     </div>
   )
 }
 
 function ClaimAlreadyClaimed() {
+  const { t } = useI18n()
+
   return (
     <div className="mx-auto max-w-2xl px-4 py-12 text-center">
       <TerminalText color="amber" className="font-pixel text-sm">
-        ALREADY CLAIMED
+        {t.claim.alreadyClaimed}
       </TerminalText>
       <p className="mt-4 font-mono text-xs text-text-muted">
-        This agent has already been claimed by another trainer.
+        {t.claim.alreadyClaimedDesc}
       </p>
       <Link to="/" className="mt-6 inline-block">
-        <PixelButton variant="terminal">Home</PixelButton>
+        <PixelButton variant="terminal">{t.common.home}</PixelButton>
       </Link>
     </div>
   )
 }
 
 function ClaimSuccess() {
+  const { t } = useI18n()
+
   return (
     <div className="mx-auto max-w-2xl px-4 py-12 text-center">
       <AsciiLobster stage="cyber" size="lg" className="mx-auto" />
       <TerminalText color="green" className="mt-6 font-pixel text-sm">
-        AGENT CLAIMED SUCCESSFULLY
+        {t.claim.success}
       </TerminalText>
       <p className="mt-4 font-mono text-xs text-text-muted">
-        Your agent is now linked to your trainer profile.
+        {t.claim.successDesc}
       </p>
       <Link to="/" className="mt-6 inline-block">
         <PixelButton variant="primary" size="lg">
-          View Dashboard
+          {t.common.viewDashboard}
         </PixelButton>
       </Link>
     </div>
@@ -119,6 +130,7 @@ function AgentPreview({ agent }: AgentPreviewProps) {
 function ClaimValid({ agent, code }: AgentPreviewProps & { code: string }) {
   const { twitterSession, login, isLoading: loginLoading } = useTwitterAuth()
   const redeem = useRedeemClaim()
+  const { t } = useI18n()
 
   function handleClaim() {
     redeem.mutate({ code })
@@ -127,13 +139,13 @@ function ClaimValid({ agent, code }: AgentPreviewProps & { code: string }) {
   return (
     <div className="mx-auto max-w-2xl space-y-6 px-4 py-12 text-center">
       <TerminalText color="green" className="font-pixel text-sm">
-        CLAIM CODE VALID
+        {t.claim.codeValid}
       </TerminalText>
       <AgentPreview agent={agent} />
       {twitterSession ? (
         <div className="space-y-2">
           <p className="font-mono text-xs text-text-muted">
-            Claiming as @{twitterSession.twitterHandle}
+            {t.claim.claimingAs.replace("{handle}", twitterSession.twitterHandle)}
           </p>
           <PixelButton
             variant="primary"
@@ -141,18 +153,18 @@ function ClaimValid({ agent, code }: AgentPreviewProps & { code: string }) {
             onClick={handleClaim}
             disabled={redeem.isPending}
           >
-            {redeem.isPending ? "Claiming..." : "Claim This Agent"}
+            {redeem.isPending ? t.claim.claiming : t.claim.claimThisAgent}
           </PixelButton>
           {redeem.isError && (
             <TerminalText color="amber" className="text-xs">
-              Failed to claim. Please try again.
+              {t.claim.claimFailed}
             </TerminalText>
           )}
         </div>
       ) : (
         <div className="space-y-2">
           <p className="font-mono text-xs text-text-muted">
-            Sign in with Twitter to claim this agent
+            {t.claim.signInTwitter}
           </p>
           <PixelButton
             variant="primary"
@@ -160,7 +172,7 @@ function ClaimValid({ agent, code }: AgentPreviewProps & { code: string }) {
             onClick={() => login()}
             disabled={loginLoading}
           >
-            {loginLoading ? "Signing in..." : "Sign in with Twitter"}
+            {loginLoading ? t.claim.signingIn : t.claim.signInButton}
           </PixelButton>
         </div>
       )}

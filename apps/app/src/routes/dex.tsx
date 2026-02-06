@@ -5,23 +5,25 @@ import { TerminalLoader } from "../components/ui/terminal-loader"
 import { Badge } from "../components/ui/badge"
 import { AgentGrid } from "../components/molt/agent-grid"
 import { useAgents } from "../hooks/use-agents"
+import { useI18n } from "../i18n"
 
 function DexHeader() {
   const { agents, isLoading } = useAgents()
+  const { t } = useI18n()
 
   return (
     <div className="mb-6 space-y-2">
       <div className="flex items-center gap-2">
-        <h1 className="font-pixel text-xl text-cyan">Molt-Dex</h1>
+        <h1 className="font-pixel text-xl text-cyan">{t.dex.title}</h1>
         {!isLoading && (
-          <Badge variant="cyan">{agents.length} registered</Badge>
+          <Badge variant="cyan">{agents.length} {t.dex.registered}</Badge>
         )}
       </div>
       {isLoading ? (
-        <TerminalLoader text="Fetching agents from BNB Chain..." />
+        <TerminalLoader text={t.dex.fetching} />
       ) : (
         <TerminalText color="green">
-          &gt; Browsing all registered Non-Fungible Agents on BNB Chain...
+          &gt; {t.dex.browsing}
         </TerminalText>
       )}
     </div>

@@ -1,19 +1,26 @@
 ---
+import type { Messages } from "../i18n";
+
+interface Props {
+	t: Messages["howItWorks"];
+}
+const { t } = Astro.props;
+
 const steps = [
-	{ number: "01", label: "Send skill.md to your Agent", icon: ">" },
-	{ number: "02", label: "Agent configures identity", icon: "#" },
-	{ number: "03", label: "Agent signs & mints on-chain", icon: "$" },
-	{ number: "04", label: "NFA born — Rookie Molt", icon: "!" },
+	{ number: "01", label: t.step1, icon: ">" },
+	{ number: "02", label: t.step2, icon: "#" },
+	{ number: "03", label: t.step3, icon: "$" },
+	{ number: "04", label: t.step4, icon: "!" },
 ];
 ---
 
 <section id="how-it-works" class="py-24 px-6 bg-surface-base">
 	<div class="max-w-5xl mx-auto">
 		<h2 class="font-pixel text-lg sm:text-xl md:text-2xl text-center text-text-primary mb-4">
-			How It Works
+			{t.title}
 		</h2>
 		<p class="font-mono text-sm text-text-secondary text-center mb-16">
-			Your agent mints itself on-chain in 4 steps
+			{t.subtitle}
 		</p>
 
 		<!-- Steps flow -->
@@ -52,11 +59,11 @@ const steps = [
 				<span class="text-text-muted ml-2">agent-cli</span>
 			</div>
 			<div class="text-text-secondary space-y-1">
-				<p><span class="text-terminal-green">$</span> Reading skill.md...</p>
-				<p class="text-text-muted">Building tokenURI (base64, on-chain)...</p>
-				<p class="text-text-muted">Signing EIP-712 identity proof...</p>
-				<p class="text-terminal-green">&#10003; Self-mint successful — NFA #1337</p>
-				<p class="text-cyan">&#8594; Level 1 Rookie registered on BNB Chain</p>
+				<p><span class="text-terminal-green">$</span> {t.terminalLine1}</p>
+				<p class="text-text-muted">{t.terminalLine2}</p>
+				<p class="text-text-muted">{t.terminalLine3}</p>
+				<p class="text-terminal-green">&#10003; {t.terminalLine4}</p>
+				<p class="text-cyan">&#8594; {t.terminalLine5}</p>
 			</div>
 		</div>
 
@@ -65,7 +72,7 @@ const steps = [
 				href="https://app.clawtrainer.ai"
 				class="inline-flex items-center gap-2 px-8 py-4 bg-cyan/10 hover:bg-cyan/20 border border-cyan/50 text-cyan font-mono font-semibold text-sm rounded-md shadow-glow-cyan transition-all duration-200 hover:scale-105 group"
 			>
-				<span>Connect Wallet & Mint NFA</span>
+				<span>{t.cta}</span>
 				<span class="group-hover:translate-x-1 transition-transform">&rarr;</span>
 			</a>
 		</div>

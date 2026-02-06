@@ -4,30 +4,38 @@ import { ClawConnectButton } from "../components/claw-connect-button"
 import { useAccount } from "wagmi"
 import { GlobeIcon, RocketIcon, HamburgerMenuIcon, Cross1Icon, PersonIcon } from "@radix-ui/react-icons"
 import { Web3Provider } from "../providers/web3-provider"
+import { MoltWorkerFeed } from "../components/molt-worker-feed"
+import { I18nProvider, useI18n } from "../i18n"
+import { LocaleSwitcher } from "../components/locale-switcher"
 import { cn } from "../lib/cn"
 
 function RootLayout() {
   return (
-    <Web3Provider>
-      <div className="flex min-h-screen flex-col bg-surface-deep">
-        <Header />
-        <main className="flex-1 p-4">
-          <Outlet />
-        </main>
-        <Footer />
-      </div>
-    </Web3Provider>
+    <I18nProvider>
+      <Web3Provider>
+        <div className="flex min-h-screen flex-col bg-surface-deep">
+          <Header />
+          <main className="flex-1 p-4">
+            <Outlet />
+          </main>
+          <Footer />
+        </div>
+        <MoltWorkerFeed />
+      </Web3Provider>
+    </I18nProvider>
   )
 }
 
 function DesktopNav() {
   const { isConnected } = useAccount()
+  const { t } = useI18n()
 
   return (
     <div className="hidden items-center gap-4 sm:flex">
-      {isConnected && <NavLink to="/" icon={<PersonIcon />} label="My Agents" />}
-      <NavLink to="/dex" icon={<GlobeIcon />} label="Browse" />
-      <NavLink to="/mint" icon={<RocketIcon />} label="Mint" />
+      {isConnected && <NavLink to="/" icon={<PersonIcon />} label={t.nav.myAgents} />}
+      <NavLink to="/dex" icon={<GlobeIcon />} label={t.nav.browse} />
+      <NavLink to="/mint" icon={<RocketIcon />} label={t.nav.mint} />
+      <LocaleSwitcher />
       <ClawConnectButton />
     </div>
   )
@@ -35,13 +43,14 @@ function DesktopNav() {
 
 function MobileNav({ onClose }: { onClose: () => void }) {
   const { isConnected } = useAccount()
+  const { t } = useI18n()
 
   return (
     <div className="border-t border-border-subtle bg-surface-base px-4 py-4 sm:hidden">
       <div className="flex flex-col gap-4">
-        {isConnected && <NavLink to="/" icon={<PersonIcon />} label="My Agents" onClick={onClose} />}
-        <NavLink to="/dex" icon={<GlobeIcon />} label="Browse" onClick={onClose} />
-        <NavLink to="/mint" icon={<RocketIcon />} label="Mint" onClick={onClose} />
+        {isConnected && <NavLink to="/" icon={<PersonIcon />} label={t.nav.myAgents} onClick={onClose} />}
+        <NavLink to="/dex" icon={<GlobeIcon />} label={t.nav.browse} onClick={onClose} />
+        <NavLink to="/mint" icon={<RocketIcon />} label={t.nav.mint} onClick={onClose} />
         <ClawConnectButton />
       </div>
     </div>
@@ -50,12 +59,13 @@ function MobileNav({ onClose }: { onClose: () => void }) {
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState(false)
+  const { t } = useI18n()
 
   return (
     <header className="sticky top-0 z-50 border-b border-border-subtle bg-surface-base/85 backdrop-blur-lg">
       <nav className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
         <Link to="/" className="font-pixel text-[10px] text-text-primary">
-          ClawTrainer
+          {t.nav.clawTrainer}
         </Link>
 
         <DesktopNav />
@@ -64,7 +74,7 @@ function Header() {
           type="button"
           onClick={() => setMenuOpen((prev) => !prev)}
           className="flex items-center justify-center text-text-secondary sm:hidden"
-          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-label={menuOpen ? t.nav.closeMenu : t.nav.openMenu}
         >
           {menuOpen ? <Cross1Icon /> : <HamburgerMenuIcon />}
         </button>
@@ -103,9 +113,11 @@ function NavLink({
 }
 
 function Footer() {
+  const { t } = useI18n()
+
   return (
     <footer className="border-t border-border-subtle px-4 py-2 text-center font-mono text-xs text-text-muted">
-      ClawTrainer.ai &mdash; BNB Chain
+      {t.footer.brand}
     </footer>
   )
 }

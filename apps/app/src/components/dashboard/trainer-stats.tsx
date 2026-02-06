@@ -1,6 +1,7 @@
 import { PixelCard, PixelCardContent } from "../ui/pixel-card"
 import { PixelBadge } from "../ui/pixel-badge"
 import type { AgentListItem } from "../../hooks/use-agents"
+import { useI18n } from "../../i18n"
 
 interface TrainerStatsProps {
   agents: AgentListItem[]
@@ -31,13 +32,14 @@ export function TrainerStats({ agents }: TrainerStatsProps) {
   const totalAgents = agents.length
   const highestStage = getHighestStage(agents)
   const avgLevel = getAverageLevel(agents)
+  const { t } = useI18n()
 
   return (
     <PixelCard glow="cyan" className="w-full">
       <PixelCardContent>
         <div className="flex flex-row gap-4 justify-between">
-          <StatBlock label="Agents" value={totalAgents.toString()} />
-          <StatBlock label="Highest Stage">
+          <StatBlock label={t.dashboard.agents} value={totalAgents.toString()} />
+          <StatBlock label={t.dashboard.highestStage}>
             {totalAgents > 0 ? (
               <PixelBadge
                 kind="stage"
@@ -47,7 +49,7 @@ export function TrainerStats({ agents }: TrainerStatsProps) {
               <span className="font-display text-lg text-text-primary">-</span>
             )}
           </StatBlock>
-          <StatBlock label="Avg Level" value={avgLevel} />
+          <StatBlock label={t.dashboard.avgLevel} value={avgLevel} />
         </div>
       </PixelCardContent>
     </PixelCard>

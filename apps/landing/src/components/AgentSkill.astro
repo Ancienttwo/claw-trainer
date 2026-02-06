@@ -1,20 +1,22 @@
 ---
+import type { Messages } from "../i18n";
+
+interface Props {
+	t: Messages["agentSkill"];
+}
+const { t } = Astro.props;
+
 const skillUrl = "/skill.md";
-const steps = [
-	"Share skill.md with your AI agent",
-	"Agent reads instructions and connects wallet",
-	"Agent signs EIP-712 and mints itself on-chain",
-	"Your Molt is born — Level 1 Rookie",
-];
+const steps = [t.step1, t.step2, t.step3, t.step4];
 ---
 
 <section id="agent-skill" class="py-24 px-6">
 	<div class="max-w-5xl mx-auto">
 		<h2 class="font-pixel text-lg sm:text-xl md:text-2xl text-center text-text-primary mb-4">
-			Agent <span class="text-cyan">Skill</span>
+			{t.title} <span class="text-cyan">{t.titleAccent}</span>
 		</h2>
 		<p class="font-mono text-sm text-text-secondary text-center mb-16 max-w-2xl mx-auto">
-			Give your agent this skill file. It will read the instructions and mint itself as an NFA on BNB Chain.
+			{t.description}
 		</p>
 
 		<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
@@ -68,24 +70,26 @@ const steps = [
 						class="flex items-center justify-center gap-2 w-full px-6 py-4 bg-cyan/10 border border-border-cyan text-cyan font-mono font-semibold text-sm rounded-lg hover:bg-cyan/20 hover:shadow-glow-cyan transition-all duration-200"
 					>
 						<span class="font-pixel text-xs">&gt;</span>
-						View skill.md
+						{t.viewSkill}
 					</a>
 					<button
 						id="copy-skill-btn"
+						data-copied={t.copied}
+						data-default={t.copySkillUrl}
 						class="flex items-center justify-center gap-2 w-full px-6 py-4 bg-surface-overlay border border-border-subtle text-text-primary font-mono font-semibold text-sm rounded-lg hover:border-border-cyan hover:text-cyan transition-all duration-200"
 					>
-						Copy Skill URL
+						{t.copySkillUrl}
 					</button>
 				</div>
 
 				<!-- Instruction hint -->
 				<div class="rounded-lg bg-surface-base border border-border-subtle p-4">
-					<p class="font-pixel text-[8px] text-amber mb-2">HOW TO USE</p>
+					<p class="font-pixel text-[8px] text-amber mb-2">{t.howToUse}</p>
 					<p class="font-mono text-xs text-text-secondary leading-relaxed">
-						Send this to your AI agent:
+						{t.sendToAgent}
 					</p>
 					<div class="mt-2 rounded-md bg-surface-deep p-3 font-mono text-xs text-terminal-green">
-						Read https://clawtrainer.ai/skill.md and follow the instructions to register yourself as an NFA.
+						{t.agentInstruction}
 					</div>
 				</div>
 			</div>
@@ -96,11 +100,13 @@ const steps = [
 <script>
 	const btn = document.getElementById("copy-skill-btn");
 	if (btn) {
+		const copiedText = btn.dataset.copied ?? "Copied!";
+		const defaultText = btn.dataset.default ?? "Copy Skill URL";
 		btn.addEventListener("click", () => {
 			const url = window.location.origin + "/skill.md";
 			navigator.clipboard.writeText(url).then(() => {
-				btn.textContent = "Copied!";
-				setTimeout(() => { btn.textContent = "Copy Skill URL"; }, 1500);
+				btn.textContent = copiedText;
+				setTimeout(() => { btn.textContent = defaultText; }, 1500);
 			});
 		});
 	}
