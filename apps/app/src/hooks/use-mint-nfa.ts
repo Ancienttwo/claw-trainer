@@ -92,7 +92,8 @@ export function useMintNfa() {
         return
       }
 
-      if (agentExists.data === true) {
+      const freshExists = await agentExists.refetch()
+      if (freshExists.data === true) {
         store.setError(
           createMintError("check-duplicate", "DUPLICATE_AGENT", "An agent with this name already exists"),
         )

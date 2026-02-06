@@ -49,12 +49,12 @@ export const useMintFlowStore = create<MintFlowState & MintFlowActions>(
     setTokenUri: (uri) => set({ tokenUri: uri }),
 
     setTxStatus: (status, hash, tokenId) =>
-      set({
+      set((state) => ({
         txStatus: status,
-        txHash: hash ?? null,
-        tokenId: tokenId ?? null,
+        txHash: hash ?? state.txHash,
+        tokenId: tokenId ?? state.tokenId,
         error: null,
-      }),
+      })),
 
     setError: (error) => set({ error, txStatus: error ? "error" : "idle" }),
 

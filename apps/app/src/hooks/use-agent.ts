@@ -62,6 +62,7 @@ function buildAgentDetail(
   if (typeof uriValue !== "string") return null
 
   const metadata = decodeTokenUri(uriValue)
+  if (!metadata) return null
   const levelValue = getSuccessResult(results[LEVEL_INDEX])
   const onChainLevel =
     typeof levelValue === "number" ? levelValue : getLevel(metadata)

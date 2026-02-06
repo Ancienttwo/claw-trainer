@@ -37,6 +37,12 @@
   --color-border-accent: rgba(255, 77, 77, 0.3);
   --color-border-cyan: rgba(0, 229, 204, 0.3);
 
+  /* -- Semantic -- */
+  --color-success: #22C55E;
+  --color-warning: #F59E0B;
+  --color-error: #FF4D4D;
+  --color-info: #00E5CC;
+
   /* -- Fonts -- */
   --font-pixel: "Press Start 2P", monospace;
   --font-mono: "IBM Plex Mono", "Fira Code", monospace;
@@ -47,6 +53,7 @@
   --shadow-glow-coral: 0 0 12px rgba(255, 77, 77, 0.4);
   --shadow-glow-cyan: 0 0 12px rgba(0, 229, 204, 0.4);
   --shadow-glow-amber: 0 0 12px rgba(245, 158, 11, 0.4);
+  --shadow-glow-green: 0 0 12px rgba(34, 197, 94, 0.3);
   --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.5);
   --shadow-card-hover: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 229, 204, 0.15);
 
@@ -89,6 +96,20 @@ html {
 body {
   font-family: var(--font-body);
   margin: 0;
+}
+
+/* -- Focus ring -- */
+:focus-visible {
+  outline: 2px solid var(--color-cyan);
+  outline-offset: 2px;
+}
+
+/* -- Reduced motion -- */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.01ms !important;
+  }
 }
 
 /* -- CRT Scanline overlay -- */

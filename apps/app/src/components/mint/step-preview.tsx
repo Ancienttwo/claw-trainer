@@ -1,12 +1,8 @@
 import { PixelButton } from "../ui/pixel-button"
 import { useMintFlowStore } from "../../stores/mint-flow-store"
+import { truncateAddress } from "../../lib/address"
 
 const MAX_SNIPPET = 120
-const TRUNCATE_LENGTH = 6
-
-function truncateAddress(addr: string): string {
-  return `${addr.slice(0, TRUNCATE_LENGTH)}...${addr.slice(-4)}`
-}
 
 function Field({ label, children }: { label: string; children: React.ReactNode }) {
   return (

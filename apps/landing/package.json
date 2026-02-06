@@ -8,7 +8,8 @@
     "preview": "astro preview",
     "astro": "astro",
     "dev:remotion": "remotion studio remotion/index.ts",
-    "render:hero": "remotion render remotion/index.ts HeroAnimation out/hero.mp4"
+    "render:hero": "remotion render remotion/index.ts HeroAnimation out/hero.mp4",
+    "deploy": "astro build && wrangler pages deploy dist --project-name=clawtrainer-landing"
   },
   "dependencies": {
     "@remotion/cli": "^4.0.419",

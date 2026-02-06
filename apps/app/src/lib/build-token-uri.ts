@@ -30,6 +30,8 @@ function buildMetadata(config: AgentConfig): TokenMetadata {
 export function buildTokenUri(config: AgentConfig): string {
   const metadata = buildMetadata(config)
   const json = JSON.stringify(metadata)
-  const base64 = btoa(json)
+  const bytes = new TextEncoder().encode(json)
+  const binary = String.fromCodePoint(...bytes)
+  const base64 = btoa(binary)
   return `data:application/json;base64,${base64}`
 }

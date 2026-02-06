@@ -23,7 +23,8 @@ const MINT_EVENT = parseAbiItem(
   "event NFAMinted(uint256 indexed tokenId, address indexed owner, address indexed agentWallet, string tokenURI)",
 )
 
-const GENESIS_BLOCK = 0n
+/** Block when IdentityRegistry was deployed on BSC Testnet */
+const CONTRACT_DEPLOY_BLOCK = 48_000_000n
 const QUERY_KEY = "agents-list"
 
 export interface AgentListItem {
@@ -46,9 +47,10 @@ interface MintLog {
   }
 }
 
-function parseMintLog(log: MintLog): AgentListItem {
+function parseMintLog(log: MintLog): AgentListItem | null {
   const { tokenId, owner, agentWallet, tokenURI } = log.args
   const metadata = decodeTokenUri(tokenURI)
+  if (!metadata) return null
   return {
     tokenId,
     name: getAgentName(metadata),
@@ -91,11 +93,13 @@ async function fetchAllAgents(
   const logs = await client.getLogs({
     address: IDENTITY_REGISTRY_ADDRESS,
     event: MINT_EVENT,
-    fromBlock: GENESIS_BLOCK,
+    fromBlock: CONTRACT_DEPLOY_BLOCK,
     toBlock: "latest",
   })
 
-  const agents = logs.map((log) => parseMintLog(log as unknown as MintLog))
+  const agents = logs
+    .map((log) => parseMintLog(log as unknown as MintLog))
+    .filter((a): a is AgentListItem => a !== null)
   return fetchAgentLevels(client, agents)
 }
 

@@ -16,10 +16,16 @@ export interface NfaMetadata {
   attributes: NfaAttribute[]
 }
 
-export function decodeTokenUri(dataUri: string): NfaMetadata {
-  const base64 = dataUri.replace(DATA_URI_PREFIX, "")
-  const json = atob(base64)
-  return JSON.parse(json) as NfaMetadata
+export function decodeTokenUri(dataUri: string): NfaMetadata | null {
+  try {
+    const base64 = dataUri.replace(DATA_URI_PREFIX, "")
+    const binary = atob(base64)
+    const bytes = Uint8Array.from(binary, (c) => c.codePointAt(0) ?? 0)
+    const json = new TextDecoder().decode(bytes)
+    return JSON.parse(json) as NfaMetadata
+  } catch {
+    return null
+  }
 }
 
 function findAttribute(

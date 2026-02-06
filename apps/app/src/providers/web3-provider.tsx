@@ -6,7 +6,10 @@ import { WagmiProvider } from "wagmi";
 import { bsc, bscTestnet } from "wagmi/chains";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 
-const WALLETCONNECT_PROJECT_ID = "e1cca00d545d62a2de270fba051b33e0";
+const WALLETCONNECT_PROJECT_ID = import.meta.env.VITE_WALLETCONNECT_PROJECT_ID;
+if (!WALLETCONNECT_PROJECT_ID) {
+  throw new Error("VITE_WALLETCONNECT_PROJECT_ID is required");
+}
 
 const wagmiConfig = getDefaultConfig({
   appName: "ClawTrainer.ai",
