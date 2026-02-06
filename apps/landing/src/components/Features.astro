@@ -1,80 +1,174 @@
 ---
 const features = [
-	{
-		title: "Mint",
-		description: "Register your AI agent as a Non-Fungible Agent (NFA) with EIP-712 dual signatures",
-		accent: "coral",
-		icon: `╔══╗
-║NF║
-║A ║
-╚══╝`,
-	},
-	{
-		title: "Train",
-		description: "Level up your Molt through on-chain interactions and capability growth",
-		accent: "cyan",
-		icon: `⬆ LVL
-████░
-████░
-█████`,
-	},
-	{
-		title: "Evolve",
-		description: "Watch your agent evolve from Rookie → Pro → Cyber Molt",
-		accent: "amber",
-		icon: `○ → ◎
-  ↓
-◎ → ●`,
-	},
-];
+  {
+    title: "Mint",
+    description: "Register your AI agent as a Non-Fungible Agent (NFA) with EIP-712 dual signatures",
+    accent: "coral",
+  },
+  {
+    title: "Train",
+    description: "Level up your Molt through on-chain interactions and capability growth",
+    accent: "cyan",
+  },
+  {
+    title: "Evolve",
+    description: "Watch your agent evolve from Rookie → Pro → Cyber Molt",
+    accent: "amber",
+  },
+] as const;
 
-const accentClasses: Record<string, { border: string; text: string; glow: string }> = {
-	coral: {
-		border: "border-border-accent hover:shadow-glow-coral",
-		text: "text-coral",
-		glow: "bg-coral/5",
-	},
-	cyan: {
-		border: "border-border-cyan hover:shadow-glow-cyan",
-		text: "text-cyan",
-		glow: "bg-cyan/5",
-	},
-	amber: {
-		border: "border-amber/30 hover:shadow-glow-amber",
-		text: "text-amber",
-		glow: "bg-amber/5",
-	},
+type Accent = (typeof features)[number]["accent"];
+
+const accentClasses: Record<Accent, { border: string; text: string; glow: string; shadow: string }> = {
+  coral: {
+    border: "border-border-accent hover:shadow-glow-coral",
+    text: "text-coral",
+    glow: "bg-coral/10",
+    shadow: "shadow-coral/20",
+  },
+  cyan: {
+    border: "border-border-cyan hover:shadow-glow-cyan",
+    text: "text-cyan",
+    glow: "bg-cyan/10",
+    shadow: "shadow-cyan/20",
+  },
+  amber: {
+    border: "border-amber/30 hover:shadow-glow-amber",
+    text: "text-amber",
+    glow: "bg-amber/10",
+    shadow: "shadow-amber/20",
+  },
 };
 ---
 
 <section id="features" class="py-24 px-6">
-	<div class="max-w-6xl mx-auto">
-		<h2 class="font-pixel text-lg sm:text-xl md:text-2xl text-center text-text-primary mb-4">
-			What You Can Do
-		</h2>
-		<p class="font-mono text-sm text-text-secondary text-center mb-16">
-			Three steps to on-chain agent identity
-		</p>
+  <div class="max-w-6xl mx-auto">
+    <h2 class="font-pixel text-lg sm:text-xl md:text-2xl text-center text-text-primary mb-4">
+      What You Can Do
+    </h2>
+    <p class="font-mono text-sm text-text-secondary text-center mb-16">
+      Three steps to on-chain agent identity
+    </p>
 
-		<div class="grid grid-cols-1 md:grid-cols-3 gap-8">
-			{features.map((feature) => {
-				const classes = accentClasses[feature.accent];
-				return (
-					<div class={`relative bg-surface-raised border ${classes.border} rounded-lg p-8 transition-all duration-300 hover:scale-[1.02]`}>
-						<!-- Pixel icon area -->
-						<div class={`mb-6 p-4 rounded-md ${classes.glow} font-mono text-xs ${classes.text} whitespace-pre leading-relaxed flex items-center justify-center text-center`}>
-							{feature.icon}
-						</div>
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+      {/* Mint Card - NFA Token */}
+      <div class={`relative bg-surface-raised border ${accentClasses.coral.border} rounded-lg p-6 md:p-8 transition-all duration-300 hover:scale-[1.02]`}>
+        <div class={`mb-6 h-28 rounded-md ${accentClasses.coral.glow} flex items-center justify-center relative overflow-hidden`}>
+          {/* NFA Token Card Graphic */}
+          <div class="relative w-20 h-24 border-2 border-coral/60 rounded bg-surface/50 flex flex-col items-center justify-center shadow-lg">
+            {/* Corner markers */}
+            <div class="absolute top-1 left-1 w-2 h-2 border-t-2 border-l-2 border-coral/80"></div>
+            <div class="absolute top-1 right-1 w-2 h-2 border-t-2 border-r-2 border-coral/80"></div>
+            <div class="absolute bottom-1 left-1 w-2 h-2 border-b-2 border-l-2 border-coral/80"></div>
+            <div class="absolute bottom-1 right-1 w-2 h-2 border-b-2 border-r-2 border-coral/80"></div>
+            {/* Inner content */}
+            <div class="w-12 h-14 border border-coral/40 rounded-sm flex items-center justify-center bg-coral/5">
+              <span class="font-pixel text-coral text-[10px] leading-none">NFA</span>
+            </div>
+            {/* Scan line effect */}
+            <div class="absolute inset-0 bg-gradient-to-b from-transparent via-coral/10 to-transparent h-1 w-full animate-pulse"></div>
+          </div>
+        </div>
+        <h3 class={`font-pixel text-sm mb-3 ${accentClasses.coral.text}`}>
+          Mint
+        </h3>
+        <p class="font-mono text-sm text-text-secondary leading-relaxed">
+          Register your AI agent as a Non-Fungible Agent (NFA) with EIP-712 dual signatures
+        </p>
+      </div>
 
-						<h3 class={`font-pixel text-sm mb-3 ${classes.text}`}>
-							{feature.title}
-						</h3>
-						<p class="font-mono text-sm text-text-secondary leading-relaxed">
-							{feature.description}
-						</p>
-					</div>
-				);
-			})}
-		</div>
-	</div>
+      {/* Train Card - Progress Bars */}
+      <div class={`relative bg-surface-raised border ${accentClasses.cyan.border} rounded-lg p-6 md:p-8 transition-all duration-300 hover:scale-[1.02]`}>
+        <div class={`mb-6 h-28 rounded-md ${accentClasses.cyan.glow} flex items-center justify-center relative overflow-hidden`}>
+          {/* Progress Block Graphic */}
+          <div class="flex flex-col gap-2 w-24">
+            {/* Level indicator */}
+            <div class="flex justify-between items-center">
+              <span class="font-mono text-[9px] text-cyan/70">LVL</span>
+              <span class="font-mono text-[9px] text-cyan">↑</span>
+            </div>
+            {/* Progress bar 1 */}
+            <div class="w-full h-2 bg-surface border border-cyan/30 rounded-sm overflow-hidden">
+              <div class="h-full w-3/4 bg-gradient-to-r from-cyan/60 to-cyan/80 relative">
+                <div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/20 to-transparent animate-pulse"></div>
+              </div>
+            </div>
+            {/* Progress bar 2 */}
+            <div class="w-full h-2 bg-surface border border-cyan/30 rounded-sm overflow-hidden">
+              <div class="h-full w-1/2 bg-gradient-to-r from-cyan/40 to-cyan/60 relative"></div>
+            </div>
+            {/* Progress bar 3 */}
+            <div class="w-full h-2 bg-surface border border-cyan/30 rounded-sm overflow-hidden">
+              <div class="h-full w-5/6 bg-gradient-to-r from-cyan/70 to-cyan/90 relative"></div>
+            </div>
+            {/* XP counter */}
+            <div class="flex justify-between items-center mt-1">
+              <span class="font-mono text-[8px] text-cyan/50">XP</span>
+              <span class="font-mono text-[8px] text-cyan">2,847</span>
+            </div>
+          </div>
+        </div>
+        <h3 class={`font-pixel text-sm mb-3 ${accentClasses.cyan.text}`}>
+          Train
+        </h3>
+        <p class="font-mono text-sm text-text-secondary leading-relaxed">
+          Level up your Molt through on-chain interactions and capability growth
+        </p>
+      </div>
+
+      {/* Evolve Card - Node Path */}
+      <div class={`relative bg-surface-raised border ${accentClasses.amber.border} rounded-lg p-6 md:p-8 transition-all duration-300 hover:scale-[1.02]`}>
+        <div class={`mb-6 h-28 rounded-md ${accentClasses.amber.glow} flex items-center justify-center relative overflow-hidden`}>
+            {/* Evolution Node Graphic - 3 Stage Linear Progress */}
+            <div class="flex items-center gap-2 px-4 w-full max-w-[200px]">
+              {/* Node 1 - Rookie (Small, dim) */}
+              <div class="w-4 h-4 border border-amber/50 rounded-full flex items-center justify-center bg-amber/5">
+                <div class="w-1.5 h-1.5 bg-amber/70 rounded-full"></div>
+              </div>
+
+              {/* Connector 1 with chevron */}
+              <div class="flex-1 flex items-center">
+                <div class="flex-1 h-px bg-gradient-to-r from-amber/40 to-amber/60"></div>
+                <svg class="w-3 h-3 -ml-1 text-amber/60" viewBox="0 0 12 12" fill="none">
+                  <path d="M4 2L8 6L4 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+
+              {/* Node 2 - Pro (Medium, medium) */}
+              <div class="w-6 h-6 border-2 border-amber/70 rounded-full flex items-center justify-center bg-amber/15">
+                <div class="w-3 h-3 border border-amber/80 rounded-full bg-amber/40"></div>
+              </div>
+
+              {/* Connector 2 with chevron */}
+              <div class="flex-1 flex items-center">
+                <div class="flex-1 h-px bg-gradient-to-r from-amber/60 to-amber/80"></div>
+                <svg class="w-3 h-3 -ml-1 text-amber/80" viewBox="0 0 12 12" fill="none">
+                  <path d="M4 2L8 6L4 10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+                </svg>
+              </div>
+
+              {/* Node 3 - Cyber Molt (Large, glowing) */}
+              <div class="relative w-8 h-8">
+                {/* Glow effect */}
+                <div class="absolute inset-0 rounded-full bg-amber/30 blur-sm animate-pulse"></div>
+                <div class="relative w-full h-full border-2 border-amber rounded-full flex items-center justify-center bg-amber/25 shadow-lg shadow-amber/30">
+                  {/* Glowing core */}
+                  <div class="w-4 h-4 bg-gradient-to-br from-amber-200 via-amber-400 to-amber-600 rounded-full shadow-inner ring-2 ring-amber/50"></div>
+                  {/* Center highlight */}
+                  <div class="absolute inset-0 flex items-center justify-center">
+                    <div class="w-1.5 h-1.5 bg-amber-100 rounded-full shadow-[0_0_6px_rgba(251,191,36,0.8)]"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        <h3 class={`font-pixel text-sm mb-3 ${accentClasses.amber.text}`}>
+          Evolve
+        </h3>
+        <p class="font-mono text-sm text-text-secondary leading-relaxed">
+          Watch your agent evolve from Rookie → Pro → Cyber Molt
+        </p>
+      </div>
+    </div>
+  </div>
 </section>
