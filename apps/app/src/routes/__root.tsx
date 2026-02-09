@@ -2,7 +2,7 @@ import { useState, type ReactNode } from "react"
 import { createRootRoute, Link, Outlet } from "@tanstack/react-router"
 import { ClawConnectButton } from "../components/claw-connect-button"
 import { useAccount } from "wagmi"
-import { GlobeIcon, RocketIcon, HamburgerMenuIcon, Cross1Icon, PersonIcon } from "@radix-ui/react-icons"
+import { GlobeIcon, RocketIcon, HamburgerMenuIcon, Cross1Icon, PersonIcon, TargetIcon, BackpackIcon } from "@radix-ui/react-icons"
 import { Web3Provider } from "../providers/web3-provider"
 import { MoltWorkerFeed } from "../components/molt-worker-feed"
 import { I18nProvider, useI18n } from "../i18n"
@@ -35,6 +35,8 @@ function DesktopNav() {
       {isConnected && <NavLink to="/" icon={<PersonIcon />} label={t.nav.myAgents} />}
       <NavLink to="/dex" icon={<GlobeIcon />} label={t.nav.browse} />
       <NavLink to="/mint" icon={<RocketIcon />} label={t.nav.mint} />
+      <NavLink to="/arena" icon={<TargetIcon />} label={t.nav.arena} />
+      <NavLink to="/skills" icon={<BackpackIcon />} label={t.nav.skills} />
       <LocaleSwitcher />
       <ClawConnectButton />
     </div>
@@ -51,6 +53,8 @@ function MobileNav({ onClose }: { onClose: () => void }) {
         {isConnected && <NavLink to="/" icon={<PersonIcon />} label={t.nav.myAgents} onClick={onClose} />}
         <NavLink to="/dex" icon={<GlobeIcon />} label={t.nav.browse} onClick={onClose} />
         <NavLink to="/mint" icon={<RocketIcon />} label={t.nav.mint} onClick={onClose} />
+        <NavLink to="/arena" icon={<TargetIcon />} label={t.nav.arena} onClick={onClose} />
+        <NavLink to="/skills" icon={<BackpackIcon />} label={t.nav.skills} onClick={onClose} />
         <ClawConnectButton />
       </div>
     </div>

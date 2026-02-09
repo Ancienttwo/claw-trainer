@@ -8,6 +8,12 @@ IDENTITY_REGISTRY_ADDRESS = "0x93EdC70ADEF0aBde3906D774bEe95D90a959012a"
 BSC_RPC_URL = "https://bsc-testnet-rpc.publicnode.com/"
 CONTRACT_DEPLOY_BLOCK = "88823136"
 CORS_ORIGINS = "http://localhost:5173,http://localhost:4321,https://app.clawtrainer.ai,https://clawtrainer-app.pages.dev"
+POLYMARKET_GAMMA_URL = "https://gamma-api.polymarket.com"
+POLYMARKET_CLOB_URL = "https://clob.polymarket.com"
+
+[[r2_buckets]]
+binding = "SKILLS_BUCKET"
+bucket_name = "clawtrainer-skills"
 
 [[d1_databases]]
 binding = "DB"

@@ -14,6 +14,8 @@ interface Messages {
     myAgents: string
     browse: string
     mint: string
+    arena: string
+    skills: string
     clawTrainer: string
     openMenu: string
     closeMenu: string
@@ -84,6 +86,68 @@ interface Messages {
     highestStage: string
     avgLevel: string
   }
+  arena: {
+    title: string
+    subtitle: string
+    fetching: string
+    noMarkets: string
+    volume: string
+    liquidity: string
+    endsAt: string
+    yes: string
+    no: string
+    placeBet: string
+    placing: string
+    amount: string
+    balance: string
+    claimFaucet: string
+    claiming: string
+    cooldown: string
+    myBets: string
+    noBets: string
+    direction: string
+    entryPrice: string
+    status: string
+    pnl: string
+    leaderboard: string
+    rank: string
+    agent: string
+    totalPnl: string
+    winRate: string
+    totalBets: string
+    noData: string
+    selectAgent: string
+    insufficientBalance: string
+    betSuccess: string
+    faucetSuccess: string
+    marketDetail: string
+  }
+  skills: {
+    title: string
+    subtitle: string
+    fetching: string
+    noSkills: string
+    free: string
+    pts: string
+    downloads: string
+    by: string
+    purchase: string
+    purchasing: string
+    download: string
+    uploading: string
+    uploadSkill: string
+    name: string
+    description: string
+    price: string
+    tags: string
+    file: string
+    version: string
+    mySkills: string
+    purchased: string
+    alreadyPurchased: string
+    purchaseSuccess: string
+    uploadSuccess: string
+  }
   footer: {
     brand: string
   }
@@ -107,6 +171,8 @@ export const en: Messages = {
     myAgents: "My Agents",
     browse: "Browse",
     mint: "Mint",
+    arena: "Arena",
+    skills: "Skills",
     clawTrainer: "ClawTrainer",
     openMenu: "Open menu",
     closeMenu: "Close menu",
@@ -176,6 +242,68 @@ export const en: Messages = {
     agents: "Agents",
     highestStage: "Highest Stage",
     avgLevel: "Avg Level",
+  },
+  arena: {
+    title: "Arena",
+    subtitle: "Equip your Agent with Skills. Battle on real Polymarket markets.",
+    fetching: "Loading markets from Polymarket...",
+    noMarkets: "No active markets found.",
+    volume: "24h Vol",
+    liquidity: "Liquidity",
+    endsAt: "Ends",
+    yes: "YES",
+    no: "NO",
+    placeBet: "Place Bet",
+    placing: "Placing...",
+    amount: "Amount",
+    balance: "Balance",
+    claimFaucet: "Claim 1000 pts",
+    claiming: "Claiming...",
+    cooldown: "Cooldown: claim again in {hours}h",
+    myBets: "My Bets",
+    noBets: "No bets yet. Pick a market and start trading!",
+    direction: "Direction",
+    entryPrice: "Entry",
+    status: "Status",
+    pnl: "PnL",
+    leaderboard: "Leaderboard",
+    rank: "Rank",
+    agent: "Agent",
+    totalPnl: "Total PnL",
+    winRate: "Win Rate",
+    totalBets: "Bets",
+    noData: "No leaderboard data yet.",
+    selectAgent: "Select Agent",
+    insufficientBalance: "Insufficient balance",
+    betSuccess: "Bet placed successfully!",
+    faucetSuccess: "Claimed 1000 pts!",
+    marketDetail: "Market Detail",
+  },
+  skills: {
+    title: "Skill Store",
+    subtitle: "Browse, purchase, and equip Skills for your Agents.",
+    fetching: "Loading skills...",
+    noSkills: "No skills available yet.",
+    free: "FREE",
+    pts: "pts",
+    downloads: "downloads",
+    by: "by",
+    purchase: "Purchase",
+    purchasing: "Purchasing...",
+    download: "Download",
+    uploading: "Uploading...",
+    uploadSkill: "Upload Skill",
+    name: "Name",
+    description: "Description",
+    price: "Price",
+    tags: "Tags",
+    file: "File (.zip)",
+    version: "Version",
+    mySkills: "My Skills",
+    purchased: "Purchased",
+    alreadyPurchased: "Already purchased",
+    purchaseSuccess: "Skill purchased!",
+    uploadSuccess: "Skill uploaded!",
   },
   footer: {
     brand: "ClawTrainer.ai — BNB Chain",

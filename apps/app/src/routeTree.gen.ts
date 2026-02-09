@@ -12,8 +12,13 @@ import { Route as rootRouteImport } from './routes/__root'
 import { Route as MintRouteImport } from './routes/mint'
 import { Route as DexRouteImport } from './routes/dex'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as SkillsIndexRouteImport } from './routes/skills.index'
+import { Route as ArenaIndexRouteImport } from './routes/arena.index'
+import { Route as SkillsSlugRouteImport } from './routes/skills.$slug'
 import { Route as ClaimCodeRouteImport } from './routes/claim.$code'
 import { Route as CardTokenIdRouteImport } from './routes/card.$tokenId'
+import { Route as ArenaLeaderboardRouteImport } from './routes/arena.leaderboard'
+import { Route as ArenaSlugRouteImport } from './routes/arena.$slug'
 import { Route as AgentTokenIdRouteImport } from './routes/agent.$tokenId'
 
 const MintRoute = MintRouteImport.update({
@@ -31,6 +36,21 @@ const IndexRoute = IndexRouteImport.update({
   path: '/',
   getParentRoute: () => rootRouteImport,
 } as any)
+const SkillsIndexRoute = SkillsIndexRouteImport.update({
+  id: '/skills/',
+  path: '/skills/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArenaIndexRoute = ArenaIndexRouteImport.update({
+  id: '/arena/',
+  path: '/arena/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const SkillsSlugRoute = SkillsSlugRouteImport.update({
+  id: '/skills/$slug',
+  path: '/skills/$slug',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ClaimCodeRoute = ClaimCodeRouteImport.update({
   id: '/claim/$code',
   path: '/claim/$code',
@@ -39,6 +59,16 @@ const ClaimCodeRoute = ClaimCodeRouteImport.update({
 const CardTokenIdRoute = CardTokenIdRouteImport.update({
   id: '/card/$tokenId',
   path: '/card/$tokenId',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArenaLeaderboardRoute = ArenaLeaderboardRouteImport.update({
+  id: '/arena/leaderboard',
+  path: '/arena/leaderboard',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ArenaSlugRoute = ArenaSlugRouteImport.update({
+  id: '/arena/$slug',
+  path: '/arena/$slug',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AgentTokenIdRoute = AgentTokenIdRouteImport.update({
@@ -52,16 +82,26 @@ export interface FileRoutesByFullPath {
   '/dex': typeof DexRoute
   '/mint': typeof MintRoute
   '/agent/$tokenId': typeof AgentTokenIdRoute
+  '/arena/$slug': typeof ArenaSlugRoute
+  '/arena/leaderboard': typeof ArenaLeaderboardRoute
   '/card/$tokenId': typeof CardTokenIdRoute
   '/claim/$code': typeof ClaimCodeRoute
+  '/skills/$slug': typeof SkillsSlugRoute
+  '/arena/': typeof ArenaIndexRoute
+  '/skills/': typeof SkillsIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/dex': typeof DexRoute
   '/mint': typeof MintRoute
   '/agent/$tokenId': typeof AgentTokenIdRoute
+  '/arena/$slug': typeof ArenaSlugRoute
+  '/arena/leaderboard': typeof ArenaLeaderboardRoute
   '/card/$tokenId': typeof CardTokenIdRoute
   '/claim/$code': typeof ClaimCodeRoute
+  '/skills/$slug': typeof SkillsSlugRoute
+  '/arena': typeof ArenaIndexRoute
+  '/skills': typeof SkillsIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -69,8 +109,13 @@ export interface FileRoutesById {
   '/dex': typeof DexRoute
   '/mint': typeof MintRoute
   '/agent/$tokenId': typeof AgentTokenIdRoute
+  '/arena/$slug': typeof ArenaSlugRoute
+  '/arena/leaderboard': typeof ArenaLeaderboardRoute
   '/card/$tokenId': typeof CardTokenIdRoute
   '/claim/$code': typeof ClaimCodeRoute
+  '/skills/$slug': typeof SkillsSlugRoute
+  '/arena/': typeof ArenaIndexRoute
+  '/skills/': typeof SkillsIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
@@ -79,24 +124,39 @@ export interface FileRouteTypes {
     | '/dex'
     | '/mint'
     | '/agent/$tokenId'
+    | '/arena/$slug'
+    | '/arena/leaderboard'
     | '/card/$tokenId'
     | '/claim/$code'
+    | '/skills/$slug'
+    | '/arena/'
+    | '/skills/'
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
     | '/dex'
     | '/mint'
     | '/agent/$tokenId'
+    | '/arena/$slug'
+    | '/arena/leaderboard'
     | '/card/$tokenId'
     | '/claim/$code'
+    | '/skills/$slug'
+    | '/arena'
+    | '/skills'
   id:
     | '__root__'
     | '/'
     | '/dex'
     | '/mint'
     | '/agent/$tokenId'
+    | '/arena/$slug'
+    | '/arena/leaderboard'
     | '/card/$tokenId'
     | '/claim/$code'
+    | '/skills/$slug'
+    | '/arena/'
+    | '/skills/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -104,8 +164,13 @@ export interface RootRouteChildren {
   DexRoute: typeof DexRoute
   MintRoute: typeof MintRoute
   AgentTokenIdRoute: typeof AgentTokenIdRoute
+  ArenaSlugRoute: typeof ArenaSlugRoute
+  ArenaLeaderboardRoute: typeof ArenaLeaderboardRoute
   CardTokenIdRoute: typeof CardTokenIdRoute
   ClaimCodeRoute: typeof ClaimCodeRoute
+  SkillsSlugRoute: typeof SkillsSlugRoute
+  ArenaIndexRoute: typeof ArenaIndexRoute
+  SkillsIndexRoute: typeof SkillsIndexRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -131,6 +196,27 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof IndexRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/skills/': {
+      id: '/skills/'
+      path: '/skills'
+      fullPath: '/skills/'
+      preLoaderRoute: typeof SkillsIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/arena/': {
+      id: '/arena/'
+      path: '/arena'
+      fullPath: '/arena/'
+      preLoaderRoute: typeof ArenaIndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/skills/$slug': {
+      id: '/skills/$slug'
+      path: '/skills/$slug'
+      fullPath: '/skills/$slug'
+      preLoaderRoute: typeof SkillsSlugRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/claim/$code': {
       id: '/claim/$code'
       path: '/claim/$code'
@@ -143,6 +229,20 @@ declare module '@tanstack/react-router' {
       path: '/card/$tokenId'
       fullPath: '/card/$tokenId'
       preLoaderRoute: typeof CardTokenIdRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/arena/leaderboard': {
+      id: '/arena/leaderboard'
+      path: '/arena/leaderboard'
+      fullPath: '/arena/leaderboard'
+      preLoaderRoute: typeof ArenaLeaderboardRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/arena/$slug': {
+      id: '/arena/$slug'
+      path: '/arena/$slug'
+      fullPath: '/arena/$slug'
+      preLoaderRoute: typeof ArenaSlugRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/agent/$tokenId': {
@@ -160,8 +260,13 @@ const rootRouteChildren: RootRouteChildren = {
   DexRoute: DexRoute,
   MintRoute: MintRoute,
   AgentTokenIdRoute: AgentTokenIdRoute,
+  ArenaSlugRoute: ArenaSlugRoute,
+  ArenaLeaderboardRoute: ArenaLeaderboardRoute,
   CardTokenIdRoute: CardTokenIdRoute,
   ClaimCodeRoute: ClaimCodeRoute,
+  SkillsSlugRoute: SkillsSlugRoute,
+  ArenaIndexRoute: ArenaIndexRoute,
+  SkillsIndexRoute: SkillsIndexRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)

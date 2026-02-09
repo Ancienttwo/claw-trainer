@@ -11,6 +11,8 @@ import { authRoutes } from "./routes/auth"
 import { questRoutes } from "./routes/quest"
 import { notificationRoutes } from "./routes/notification"
 import { claimRoutes } from "./routes/claim"
+import { arenaRoutes } from "./routes/arena"
+import { skillRoutes } from "./routes/skills"
 import { syncEvents } from "./services/indexer"
 import { createDb } from "./db/client"
 import type { AppEnv } from "./types"
@@ -38,6 +40,8 @@ app.route("/auth", authRoutes)
 app.route("/quests", questRoutes)
 app.route("/notifications", notificationRoutes)
 app.route("/claim", claimRoutes)
+app.route("/arena", arenaRoutes)
+app.route("/skills", skillRoutes)
 
 export default {
   fetch: app.fetch,

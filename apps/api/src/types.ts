@@ -11,12 +11,18 @@ export interface AuthContext {
   sessionId?: number
 }
 
+export type BetStatus = "open" | "won" | "lost" | "cancelled"
+export type SkillStatus = "active" | "archived"
+
 export interface Bindings {
   DB: D1Database
+  SKILLS_BUCKET: R2Bucket
   IDENTITY_REGISTRY_ADDRESS: string
   BSC_RPC_URL: string
   CONTRACT_DEPLOY_BLOCK: string
   CORS_ORIGINS: string
+  POLYMARKET_GAMMA_URL: string
+  POLYMARKET_CLOB_URL: string
 }
 
 export interface Variables {

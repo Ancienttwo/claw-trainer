@@ -1,4 +1,4 @@
-import { sqliteTable, text, integer, index, uniqueIndex } from "drizzle-orm/sqlite-core"
+import { sqliteTable, text, integer, real, index, uniqueIndex } from "drizzle-orm/sqlite-core"
 import { sql } from "drizzle-orm"
 
 export const agents = sqliteTable("agents", {
@@ -144,4 +144,91 @@ export const trainerAgents = sqliteTable("trainer_agents", {
 }, (t) => [
   uniqueIndex("idx_trainer_agents_unique").on(t.twitterId, t.tokenId),
   index("idx_trainer_agents_twitter").on(t.twitterId),
+])
+
+// ─── Arena Tables ─────────────────────────────────────
+
+export const bets = sqliteTable("bets", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  agentTokenId: text("agent_token_id").notNull(),
+  walletAddress: text("wallet_address").notNull(),
+  marketSlug: text("market_slug").notNull(),
+  marketQuestion: text("market_question").notNull(),
+  clobTokenId: text("clob_token_id").notNull(),
+  direction: text("direction").notNull(),
+  amount: real("amount").notNull(),
+  entryPrice: real("entry_price").notNull(),
+  status: text("status").notNull().default("open"),
+  payout: real("payout"),
+  createdAt: text("created_at")
+    .notNull()
+    .default(sql`(datetime('now'))`),
+  settledAt: text("settled_at"),
+}, (t) => [
+  index("idx_bets_agent").on(t.agentTokenId),
+  index("idx_bets_status").on(t.status),
+  index("idx_bets_wallet").on(t.walletAddress),
+])
+
+export const faucetBalances = sqliteTable("faucet_balances", {
+  agentTokenId: text("agent_token_id").primaryKey(),
+  walletAddress: text("wallet_address").notNull(),
+  balance: real("balance").notNull().default(0),
+  lastClaimAt: text("last_claim_at"),
+})
+
+export const leaderboardSnapshots = sqliteTable("leaderboard_snapshots", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  agentTokenId: text("agent_token_id").notNull(),
+  date: text("date").notNull(),
+  totalPnl: real("total_pnl").notNull().default(0),
+  winRate: real("win_rate").notNull().default(0),
+  totalBets: integer("total_bets").notNull().default(0),
+  rank: integer("rank"),
+}, (t) => [
+  uniqueIndex("idx_leaderboard_agent_date").on(t.agentTokenId, t.date),
+])
+
+// ─── Skill Store Tables ───────────────────────────────
+
+export const skills = sqliteTable("skills", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  slug: text("slug").notNull().unique(),
+  name: text("name").notNull(),
+  description: text("description").notNull().default(""),
+  authorAddress: text("author_address").notNull(),
+  price: real("price").notNull().default(0),
+  r2Key: text("r2_key").notNull(),
+  fileSize: integer("file_size").notNull().default(0),
+  downloadCount: integer("download_count").notNull().default(0),
+  rating: real("rating").notNull().default(0),
+  version: text("version").notNull().default("1.0.0"),
+  tags: text("tags").notNull().default(""),
+  status: text("status").notNull().default("active"),
+  createdAt: text("created_at")
+    .notNull()
+    .default(sql`(datetime('now'))`),
+  updatedAt: text("updated_at")
+    .notNull()
+    .default(sql`(datetime('now'))`),
+}, (t) => [
+  index("idx_skills_author").on(t.authorAddress),
+  index("idx_skills_status").on(t.status),
+  index("idx_skills_tags").on(t.tags),
+])
+
+export const skillPurchases = sqliteTable("skill_purchases", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  skillId: integer("skill_id").notNull(),
+  buyerAddress: text("buyer_address").notNull(),
+  agentTokenId: text("agent_token_id"),
+  pricePaid: real("price_paid").notNull().default(0),
+  downloadExpiresAt: text("download_expires_at"),
+  createdAt: text("created_at")
+    .notNull()
+    .default(sql`(datetime('now'))`),
+}, (t) => [
+  index("idx_purchases_skill").on(t.skillId),
+  index("idx_purchases_buyer").on(t.buyerAddress),
+  uniqueIndex("idx_purchases_unique").on(t.skillId, t.buyerAddress),
 ])
