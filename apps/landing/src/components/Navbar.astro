@@ -1,0 +1,126 @@
+---
+import type { Messages } from "../i18n";
+
+interface Props {
+	t: Messages["nav"];
+	locale: string;
+}
+const { t, locale } = Astro.props;
+
+const links = [
+	{ href: "/getting-started", label: t.docs },
+	{ href: "/faq/general", label: t.faq },
+	{ href: "/api/overview", label: t.api },
+];
+---
+
+<header class="sticky top-0 z-40 border-b border-border-subtle bg-surface-base/85 backdrop-blur-lg">
+	<nav class="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
+		<a href="/" class="font-pixel text-[10px] text-text-primary">
+			Claw<span class="text-coral">Trainer</span><span class="text-cyan">.ai</span>
+		</a>
+
+		<!-- Desktop -->
+		<div class="hidden items-center gap-4 sm:flex">
+			{links.map((link) => (
+				<a
+					href={link.href}
+					class="flex items-center gap-1 font-body text-sm text-text-secondary transition-colors duration-150 hover:text-text-primary"
+				>
+					{link.label}
+				</a>
+			))}
+			<button
+				id="locale-switcher"
+				type="button"
+				class="font-mono text-xs px-3 py-1.5 rounded border border-border-subtle text-text-secondary hover:text-text-primary hover:border-cyan/40 transition-colors duration-150"
+				aria-label={t.docs}
+				data-locale={locale}
+			>
+				{locale === "en" ? "中" : "EN"}
+			</button>
+			<a
+				href="https://app.clawtrainer.ai"
+				class="font-body text-sm px-4 py-1.5 rounded bg-coral text-white hover:bg-coral-mid transition-colors duration-150"
+			>
+				{t.launchApp}
+			</a>
+		</div>
+
+		<!-- Mobile hamburger -->
+		<button
+			id="mobile-menu-toggle"
+			type="button"
+			class="flex items-center justify-center text-text-secondary sm:hidden"
+			aria-label={t.openMenu}
+		>
+			<svg id="menu-icon-open" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+				<path stroke-linecap="round" stroke-linejoin="round" d="M4 6h16M4 12h16M4 18h16" />
+			</svg>
+			<svg id="menu-icon-close" class="hidden h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+				<path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+			</svg>
+		</button>
+	</nav>
+
+	<!-- Mobile menu -->
+	<div id="mobile-menu" class="hidden border-t border-border-subtle bg-surface-base px-4 py-4 sm:hidden">
+		<div class="flex flex-col gap-4">
+			{links.map((link) => (
+				<a
+					href={link.href}
+					class="flex items-center gap-1 font-body text-sm text-text-secondary transition-colors duration-150 hover:text-text-primary"
+				>
+					{link.label}
+				</a>
+			))}
+			<button
+				id="locale-switcher-mobile"
+				type="button"
+				class="font-mono text-xs px-3 py-1.5 rounded border border-border-subtle text-text-secondary hover:text-text-primary hover:border-cyan/40 transition-colors duration-150 w-fit"
+				aria-label={t.docs}
+				data-locale={locale}
+			>
+				{locale === "en" ? "中" : "EN"}
+			</button>
+			<a
+				href="https://app.clawtrainer.ai"
+				class="font-body text-sm px-4 py-1.5 rounded bg-coral text-white hover:bg-coral-mid transition-colors duration-150 text-center"
+			>
+				{t.launchApp}
+			</a>
+		</div>
+	</div>
+</header>
+
+<script>
+	const toggle = document.getElementById("mobile-menu-toggle");
+	const menu = document.getElementById("mobile-menu");
+	const iconOpen = document.getElementById("menu-icon-open");
+	const iconClose = document.getElementById("menu-icon-close");
+
+	if (toggle && menu && iconOpen && iconClose) {
+		toggle.addEventListener("click", () => {
+			const isOpen = !menu.classList.contains("hidden");
+			menu.classList.toggle("hidden");
+			iconOpen.classList.toggle("hidden");
+			iconClose.classList.toggle("hidden");
+			toggle.setAttribute("aria-label", isOpen ? toggle.dataset.labelOpen ?? "" : toggle.dataset.labelClose ?? "");
+		});
+	}
+
+	function bindLocaleSwitcher(id: string) {
+		const btn = document.getElementById(id);
+		if (btn) {
+			btn.addEventListener("click", () => {
+				const current = btn.dataset.locale;
+				const next = current === "en" ? "zh" : "en";
+				document.cookie = `claw_locale=${next};path=/;max-age=${365 * 24 * 60 * 60}`;
+				localStorage.setItem("claw_locale", next);
+				window.location.reload();
+			});
+		}
+	}
+	bindLocaleSwitcher("locale-switcher");
+	bindLocaleSwitcher("locale-switcher-mobile");
+</script>

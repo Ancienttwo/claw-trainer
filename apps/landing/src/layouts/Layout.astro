@@ -46,16 +46,6 @@ const {
 			rel="stylesheet"
 		/>
 
-		<script is:inline>
-			(function(){
-				var ls = localStorage.getItem("claw_locale");
-				if (ls && !document.cookie.includes("claw_locale=")) {
-					document.cookie = "claw_locale=" + ls + ";path=/;max-age=" + (365*24*60*60);
-					window.location.reload();
-				}
-			})();
-		</script>
-
 		<title>{title}</title>
 	</head>
 	<body class="scanline-overlay bg-surface-deep text-text-primary min-h-screen">
