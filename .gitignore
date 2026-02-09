@@ -1,3 +1,6 @@
+# ===== Reference repos (external clones) =====
+_ref/
+
 # ===== Operations (sensitive configs) =====
 _ops/
 ops/

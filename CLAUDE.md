@@ -246,7 +246,7 @@ TEST_STANDARDS:
 claw-trainer/
 ├── apps/
 │   ├── api/              # Hono 4.x + Bun (Backend API)
-│   ├── landing/          # Astro 5.x + Starwind UI (Landing Page) + Remotion 4.x (Hero Animation)
+│   ├── landing/          # Astro 5.x + Starwind UI (Landing Page) + Starlight (Docs) + Remotion 4.x (Hero Animation)
 │   └── app/              # Vite 7.x + React 19 (DApp Frontend)
 ├── packages/
 │   └── contracts/        # Solidity smart contracts (Hardhat)
@@ -282,7 +282,7 @@ claw-trainer/
 | Layer | Technology |
 |-------|------------|
 | Backend API | Hono 4.x + Bun + Zod |
-| Landing Page | Astro 5.x + Starwind UI + Tailwind CSS v4 |
+| Landing + Docs | Astro 5.x + Starwind UI + Starlight + Tailwind CSS v4 |
 | DApp Frontend | Vite 6.x + React 19 + TypeScript 5.x |
 | Routing | TanStack Router 1.x |
 | Data | TanStack Query 5.x + Zustand 5.x |
