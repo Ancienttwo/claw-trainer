@@ -20,6 +20,7 @@ export const agents = sqliteTable("agents", {
     .default(sql`(datetime('now'))`),
 }, (t) => [
   index("idx_agents_owner").on(t.owner),
+  uniqueIndex("idx_agents_agent_wallet").on(t.agentWallet),
   index("idx_agents_name").on(t.name),
   index("idx_agents_level").on(t.level),
   index("idx_agents_minted_at").on(t.mintedAt),
@@ -158,6 +159,7 @@ export const bets = sqliteTable("bets", {
   direction: text("direction").notNull(),
   amount: real("amount").notNull(),
   entryPrice: real("entry_price").notNull(),
+  source: text("source").notNull().default("human"),
   status: text("status").notNull().default("open"),
   payout: real("payout"),
   createdAt: text("created_at")
@@ -167,6 +169,7 @@ export const bets = sqliteTable("bets", {
 }, (t) => [
   index("idx_bets_agent").on(t.agentTokenId),
   index("idx_bets_status").on(t.status),
+  index("idx_bets_source").on(t.source),
   index("idx_bets_wallet").on(t.walletAddress),
 ])
 

@@ -38,7 +38,8 @@ export function LeaderboardTable() {
                   <th className="pb-2 pr-2 font-pixel text-[8px]">{t.arena.agent}</th>
                   <th className="pb-2 pr-2 text-right font-pixel text-[8px]">{t.arena.totalPnl}</th>
                   <th className="pb-2 pr-2 text-right font-pixel text-[8px]">{t.arena.winRate}</th>
-                  <th className="pb-2 text-right font-pixel text-[8px]">{t.arena.totalBets}</th>
+                  <th className="pb-2 pr-2 text-right font-pixel text-[8px]">{t.arena.totalBets}</th>
+                  <th className="pb-2 text-right font-pixel text-[8px]">{t.arena.autonomy}</th>
                 </tr>
               </thead>
               <tbody>
@@ -64,8 +65,13 @@ export function LeaderboardTable() {
                       <td className="py-2 pr-2 text-right text-text-secondary">
                         {(entry.winRate * 100).toFixed(0)}%
                       </td>
-                      <td className="py-2 text-right text-text-secondary">
+                      <td className="py-2 pr-2 text-right text-text-secondary">
                         {entry.totalBets}
+                      </td>
+                      <td className="py-2 text-right">
+                        <span className={cn("font-mono", entry.autonomyRate > 0.5 ? "text-cyan" : "text-text-muted")}>
+                          {(entry.autonomyRate * 100).toFixed(0)}%
+                        </span>
                       </td>
                     </tr>
                   )

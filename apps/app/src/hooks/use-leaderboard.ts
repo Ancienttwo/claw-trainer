@@ -7,23 +7,26 @@ export interface LeaderboardEntry {
   totalPnl: number
   winRate: number
   totalBets: number
+  autonomyRate: number
 }
 
 interface ApiLeaderboardEntry {
-  agent_token_id: string
-  agent_name: string
-  total_pnl: number
-  win_rate: number
-  total_bets: number
+  agentTokenId: string
+  agentName: string
+  totalPnl: number
+  winRate: number
+  totalBets: number
+  autonomyRate: number | null
 }
 
 function apiToEntry(a: ApiLeaderboardEntry): LeaderboardEntry {
   return {
-    agentTokenId: a.agent_token_id,
-    agentName: a.agent_name,
-    totalPnl: a.total_pnl,
-    winRate: a.win_rate,
-    totalBets: a.total_bets,
+    agentTokenId: a.agentTokenId,
+    agentName: a.agentName,
+    totalPnl: Number(a.totalPnl ?? 0),
+    winRate: Number(a.winRate ?? 0),
+    totalBets: Number(a.totalBets ?? 0),
+    autonomyRate: Number(a.autonomyRate ?? 0),
   }
 }
 

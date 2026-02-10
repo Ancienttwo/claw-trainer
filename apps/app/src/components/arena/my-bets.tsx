@@ -25,6 +25,9 @@ function BetRow({ bet }: { bet: Bet }) {
           <Badge variant={bet.direction === "yes" ? "terminal" : "coral"}>
             {bet.direction.toUpperCase()}
           </Badge>
+          <Badge variant={bet.source === "agent" ? "cyan" : "amber"}>
+            {bet.source === "agent" ? "BOT" : "YOU"}
+          </Badge>
           <span className="font-mono text-[10px] text-text-muted">
             {bet.amount.toFixed(0)} @ {bet.entryPrice.toFixed(3)}
           </span>

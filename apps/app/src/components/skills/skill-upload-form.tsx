@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from "react"
+import { useState, useRef, useCallback, type FormEvent, type DragEvent } from "react"
 import { useSkillUpload } from "../../hooks/use-skills"
 import { PixelCard, PixelCardHeader, PixelCardContent } from "../ui/pixel-card"
 import { PixelButton } from "../ui/pixel-button"
@@ -7,9 +7,17 @@ import { useI18n } from "../../i18n"
 
 const MAX_FILE_SIZE = 10 * 1024 * 1024
 
+function formatBytes(bytes: number): string {
+  if (bytes < 1024) return `${bytes} B`
+  const kb = bytes / 1024
+  if (kb < 1024) return `${kb.toFixed(1)} KB`
+  return `${(kb / 1024).toFixed(1)} MB`
+}
+
 export function SkillUploadForm() {
   const { t } = useI18n()
   const upload = useSkillUpload()
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const [name, setName] = useState("")
   const [description, setDescription] = useState("")
   const [price, setPrice] = useState(0)
@@ -17,13 +25,33 @@ export function SkillUploadForm() {
   const [version, setVersion] = useState("1.0.0")
   const [file, setFile] = useState<File | null>(null)
   const [error, setError] = useState("")
+  const [dragging, setDragging] = useState(false)
+
+  const validateAndSetFile = useCallback((f: File | undefined) => {
+    if (!f) return
+    if (!f.name.endsWith(".zip")) {
+      setError(t.skills.zipOnly)
+      return
+    }
+    if (f.size > MAX_FILE_SIZE) {
+      setError(t.skills.fileTooLarge)
+      return
+    }
+    setError("")
+    setFile(f)
+  }, [t])
+
+  function handleDrop(e: DragEvent) {
+    e.preventDefault()
+    setDragging(false)
+    validateAndSetFile(e.dataTransfer.files[0])
+  }
 
   function handleSubmit(e: FormEvent) {
     e.preventDefault()
     setError("")
-    if (!file) return setError("File required")
-    if (file.size > MAX_FILE_SIZE) return setError("File too large (max 10MB)")
-    if (!name.trim()) return setError("Name required")
+    if (!file) return setError(t.skills.fileRequired)
+    if (!name.trim()) return setError(t.skills.nameRequired)
 
     const formData = new FormData()
     formData.append("file", file)
@@ -44,7 +72,7 @@ export function SkillUploadForm() {
       <PixelCardContent>
         <form onSubmit={handleSubmit} className="space-y-3">
           <div>
-            <label className={labelClass}>{t.skills.name}</label>
+            <label className={labelClass}>{t.skills.name} *</label>
             <input type="text" value={name} onChange={(e) => setName(e.target.value)} className={inputClass} />
           </div>
           <div>
@@ -65,9 +93,44 @@ export function SkillUploadForm() {
             <label className={labelClass}>{t.skills.tags} (comma-separated)</label>
             <input type="text" value={tags} onChange={(e) => setTags(e.target.value)} className={inputClass} />
           </div>
+
+          {/* Drop zone */}
           <div>
-            <label className={labelClass}>{t.skills.file}</label>
-            <input type="file" accept=".zip" onChange={(e) => setFile(e.target.files?.[0] ?? null)} className="font-mono text-xs text-text-secondary" />
+            <label className={labelClass}>{t.skills.file} *</label>
+            <button
+              type="button"
+              onClick={() => fileInputRef.current?.click()}
+              onDragOver={(e) => { e.preventDefault(); setDragging(true) }}
+              onDragLeave={() => setDragging(false)}
+              onDrop={handleDrop}
+              className={`w-full cursor-pointer rounded-sm border-2 border-dashed px-4 py-6 text-center transition-colors ${
+                dragging
+                  ? "border-accent-cyan bg-accent-cyan/10"
+                  : file
+                    ? "border-accent-terminal bg-accent-terminal/5"
+                    : "border-border-subtle hover:border-accent-cyan/50"
+              }`}
+            >
+              {file ? (
+                <div className="space-y-1">
+                  <p className="font-mono text-xs text-accent-terminal">{file.name}</p>
+                  <p className="font-mono text-[10px] text-text-muted">{formatBytes(file.size)}</p>
+                  <p className="font-pixel text-[8px] text-text-secondary">{t.skills.clickToReplace}</p>
+                </div>
+              ) : (
+                <div className="space-y-1">
+                  <p className="font-pixel text-[8px] text-text-secondary">{t.skills.dropZoneHint}</p>
+                  <p className="font-mono text-[10px] text-text-muted">.zip &middot; max 10MB</p>
+                </div>
+              )}
+            </button>
+            <input
+              ref={fileInputRef}
+              type="file"
+              accept=".zip"
+              onChange={(e) => validateAndSetFile(e.target.files?.[0])}
+              className="hidden"
+            />
           </div>
 
           {error && <Badge variant="coral" className="w-full justify-center">{error}</Badge>}

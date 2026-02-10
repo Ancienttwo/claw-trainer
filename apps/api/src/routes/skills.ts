@@ -3,6 +3,7 @@ import { eq, desc, and, like, sql } from "drizzle-orm"
 import { skills, skillPurchases } from "../db/schema"
 import { sessionAuth } from "../middleware/session-auth"
 import { unifiedAuth } from "../middleware/unified-auth"
+import { dualAuth } from "../middleware/dual-auth"
 import type { AppEnv } from "../types"
 
 const DEFAULT_PAGE_SIZE = 20
@@ -34,16 +35,14 @@ skillRoutes.get("/", async (c) => {
   const tag = c.req.query("tag")
   const author = c.req.query("author")
 
-  let query = db
+  const conditions = [eq(skills.status, "active")]
+  if (tag) conditions.push(like(skills.tags, `%${tag}%`))
+  if (author) conditions.push(eq(skills.authorAddress, author.toLowerCase()))
+
+  const rows = await db
     .select()
     .from(skills)
-    .where(eq(skills.status, "active"))
-    .$dynamic()
-
-  if (tag) query = query.where(like(skills.tags, `%${tag}%`))
-  if (author) query = query.where(eq(skills.authorAddress, author.toLowerCase()))
-
-  const rows = await query
+    .where(and(...conditions))
     .orderBy(desc(skills.createdAt))
     .limit(limit)
     .offset(offset)
@@ -71,8 +70,8 @@ skillRoutes.get("/my", sessionAuth, unifiedAuth, async (c) => {
   return c.json({ skills: rows, page, limit })
 })
 
-// GET /purchased — Skills I purchased
-skillRoutes.get("/purchased", sessionAuth, unifiedAuth, async (c) => {
+// GET /purchased — Skills I purchased (Human or Agent)
+skillRoutes.get("/purchased", dualAuth, async (c) => {
   const auth = c.get("auth")!
   const db = c.get("db")
   const { page, limit, offset } = parsePagination({
@@ -150,8 +149,8 @@ skillRoutes.post("/upload", sessionAuth, unifiedAuth, async (c) => {
   return c.json({ skill }, 201)
 })
 
-// POST /:id/purchase — Purchase a skill
-skillRoutes.post("/:id/purchase", sessionAuth, unifiedAuth, async (c) => {
+// POST /:id/purchase — Purchase a skill (Human or Agent)
+skillRoutes.post("/:id/purchase", dualAuth, async (c) => {
   const auth = c.get("auth")!
   const db = c.get("db")
   const id = Number(c.req.param("id"))
@@ -184,8 +183,8 @@ skillRoutes.post("/:id/purchase", sessionAuth, unifiedAuth, async (c) => {
   return c.json({ purchase }, 201)
 })
 
-// GET /:id/download — Download skill zip from R2
-skillRoutes.get("/:id/download", sessionAuth, unifiedAuth, async (c) => {
+// GET /:id/download — Download skill zip from R2 (Human or Agent)
+skillRoutes.get("/:id/download", dualAuth, async (c) => {
   const auth = c.get("auth")!
   const db = c.get("db")
   const id = Number(c.req.param("id"))

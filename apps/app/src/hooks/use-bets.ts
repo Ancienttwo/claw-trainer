@@ -2,6 +2,8 @@ import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
 import { useAccount, useSignMessage } from "wagmi"
 import { apiFetch } from "../lib/api"
 
+export type BetSource = "agent" | "human"
+
 export interface Bet {
   id: number
   agentTokenId: string
@@ -11,6 +13,7 @@ export interface Bet {
   direction: "yes" | "no"
   amount: number
   entryPrice: number
+  source: BetSource
   status: "open" | "won" | "lost" | "cancelled"
   payout: number | null
   createdAt: string
@@ -26,6 +29,7 @@ interface ApiBet {
   direction: string
   amount: number
   entry_price: number
+  source: string
   status: string
   payout: number | null
   created_at: string
@@ -42,6 +46,7 @@ function apiToBet(a: ApiBet): Bet {
     direction: a.direction as Bet["direction"],
     amount: a.amount,
     entryPrice: a.entry_price,
+    source: (a.source ?? "human") as BetSource,
     status: a.status as Bet["status"],
     payout: a.payout,
     createdAt: a.created_at,

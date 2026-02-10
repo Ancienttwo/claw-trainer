@@ -1,11 +1,13 @@
 import type { Database } from "./db/client"
 
 export type UserRole = "agent" | "trainer"
+export type AuthMethod = "session" | "wallet" | "agentWallet"
 export type AcceptableBy = "agent" | "human"
 export type QuestStatus = "open" | "in_progress" | "completed" | "cancelled"
 
 export interface AuthContext {
   role: UserRole
+  authMethod: AuthMethod
   id: string
   wallet?: string
   sessionId?: number

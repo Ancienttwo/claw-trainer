@@ -5,9 +5,11 @@ import { TerminalText } from "../components/ui/terminal-text"
 import { PixelButton } from "../components/ui/pixel-button"
 import { PolymarketEmbed } from "../components/arena/polymarket-embed"
 import { BetPanel } from "../components/arena/bet-panel"
+import { AgentObserver } from "../components/arena/agent-observer"
 import { MyBets } from "../components/arena/my-bets"
 import { useMarketDetail } from "../hooks/use-market-detail"
 import { useAgents } from "../hooks/use-agents"
+import { useViewMode } from "../hooks/use-view-mode"
 import { useI18n } from "../i18n"
 import { useState } from "react"
 
@@ -16,6 +18,7 @@ function MarketDetailPage() {
   const { t } = useI18n()
   const { market, isLoading, isError, refetch } = useMarketDetail(slug)
   const { agents } = useAgents()
+  const { viewMode } = useViewMode()
   const [selectedAgent, setSelectedAgent] = useState("")
 
   return (
@@ -48,12 +51,16 @@ function MarketDetailPage() {
               <div className="lg:col-span-2">
                 <PolymarketEmbed slug={slug} />
               </div>
-              {/* Right: Bet Panel + My Bets */}
+              {/* Right: Bet Panel (Train) or Observer (Watch) + My Bets */}
               <div className="space-y-4">
-                <BetPanel market={market} />
+                {viewMode === "agent" ? (
+                  <AgentObserver />
+                ) : (
+                  <BetPanel market={market} />
+                )}
                 {selectedAgent ? (
                   <MyBets agentTokenId={selectedAgent} />
-                ) : agents.length > 0 ? (
+                ) : agents.length > 0 && viewMode === "trainer" ? (
                   <div className="space-y-2">
                     <label className="block font-pixel text-[8px] text-text-secondary">
                       {t.arena.selectAgent} to view bets:

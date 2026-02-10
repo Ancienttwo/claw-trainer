@@ -6,11 +6,13 @@ import { TerminalLoader } from "../components/ui/terminal-loader"
 import { AsciiLobster } from "../components/ui/ascii-lobster"
 import { AgentCard } from "../components/claw/agent-card"
 import { TrainerDashboard } from "../components/dashboard/trainer-dashboard"
+import { AgentDashboard } from "../components/dashboard/agent-dashboard"
 import { EmptyTrainer } from "../components/dashboard/empty-trainer"
 import { useMyAgents } from "../hooks/use-my-agents"
 import { useAgents } from "../hooks/use-agents"
 import { useTwitterAuth } from "../hooks/use-twitter-auth"
 import { useClaimedAgents } from "../hooks/use-claimed-agents"
+import { useViewMode } from "../hooks/use-view-mode"
 import { useI18n } from "../i18n"
 
 const RECENT_COUNT = 3
@@ -80,6 +82,7 @@ function HeroLanding() {
 
 function ConnectedHome() {
   const { myAgents, isLoading, isTrainer } = useMyAgents()
+  const { viewMode } = useViewMode()
   const { t } = useI18n()
 
   if (isLoading) {
@@ -94,7 +97,11 @@ function ConnectedHome() {
 
   return (
     <div className="mx-auto max-w-5xl px-4 py-6">
-      <TrainerDashboard agents={myAgents} />
+      {viewMode === "agent" ? (
+        <AgentDashboard agents={myAgents} />
+      ) : (
+        <TrainerDashboard agents={myAgents} />
+      )}
     </div>
   )
 }

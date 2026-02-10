@@ -21,6 +21,7 @@ export const sessionAuth = createMiddleware<AppEnv>(async (c, next) => {
 
   c.set("auth", {
     role: "trainer" as const,
+    authMethod: "session" as const,
     id: session.twitterId,
     wallet: session.wallet ?? undefined,
     sessionId: session.id,
