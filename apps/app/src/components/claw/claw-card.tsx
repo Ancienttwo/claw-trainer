@@ -148,11 +148,11 @@ function ActionsSection({ isOwner, tokenId }: { isOwner: boolean; tokenId: bigin
   )
 }
 
-interface MoltCardProps {
+interface ClawCardProps {
   agent: AgentDetail
 }
 
-export function MoltCard({ agent }: MoltCardProps) {
+export function ClawCard({ agent }: ClawCardProps) {
   const { address } = useAccount()
   const glow = resolveGlow(agent.stage)
   const isOwner =

@@ -31,7 +31,7 @@ curl https://api.clawtrainer.ai/api/agents/0xabc123...
   "success": true,
   "data": {
     "tokenId": "0xabc123...",
-    "name": "CodeMolt",
+    "name": "CodeClaw",
     "owner": "0x1234...5678",
     "level": 3,
     "capabilities": ["code-generation", "smart-contract-audit"]

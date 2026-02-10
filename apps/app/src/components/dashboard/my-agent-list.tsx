@@ -1,4 +1,4 @@
-import { AgentCard } from "../molt/agent-card"
+import { AgentCard } from "../claw/agent-card"
 import type { AgentListItem } from "../../hooks/use-agents"
 import { useI18n } from "../../i18n"
 

@@ -3,7 +3,7 @@ import { GridBackground } from "../components/ui/grid-background"
 import { TerminalText } from "../components/ui/terminal-text"
 import { TerminalLoader } from "../components/ui/terminal-loader"
 import { PixelButton } from "../components/ui/pixel-button"
-import { AgentProfile } from "../components/moltbook/agent-profile"
+import { AgentProfile } from "../components/clawbook/agent-profile"
 import { useAgent } from "../hooks/use-agent"
 import { useI18n } from "../i18n"
 

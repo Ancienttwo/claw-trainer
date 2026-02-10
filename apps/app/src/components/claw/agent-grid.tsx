@@ -25,7 +25,7 @@ function EmptyState() {
   return (
     <div className="flex flex-col items-center gap-4 py-12 text-center">
       <TerminalText color="amber">
-        No Molts registered yet.
+        No Claws registered yet.
       </TerminalText>
       <Link to="/mint">
         <PixelButton variant="primary" size="md">

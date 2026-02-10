@@ -14,23 +14,23 @@ interface AsciiLobsterProps {
   className?: string
 }
 
-const ROOKIE_ART = `    /\\
-   (o )>
-    ||
-   /  \\`
+const ROOKIE_ART = `  \\ | /
+  (o.o)
+ </   \\>
+   \\_/`
 
-const PRO_ART = `    /\\/\\
-   {o  o}>
-   |####|
-   /|  |\\
-  / |  | \\`
+const PRO_ART = ` \\\\ || //
+  (o  o)
+<=|    |=>
+  |====|
+  /|  |\\`
 
-const CYBER_ART = `   ╔══╗
-  ║@  @║>
-  ╠════╣
-  ║~~~~║
-  ╚╦══╦╝
-   ╩  ╩`
+const CYBER_ART = ` \\\\ || //
+ (@  @)>
+<╣    ╠>
+ ║~~~~║
+ ╚╦══╦╝
+  ╩  ╩`
 
 const artMap: Record<Stage, string> = {
   rookie: ROOKIE_ART,

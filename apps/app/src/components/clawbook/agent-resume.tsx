@@ -5,8 +5,8 @@ import { TerminalText } from "../ui/terminal-text"
 import { AsciiLobster } from "../ui/ascii-lobster"
 import type { AgentDetail } from "../../hooks/use-agent"
 import { truncateAddress } from "../../lib/address"
-import { StatBar } from "../molt/stat-bar"
-import { EvolutionBadge } from "../molt/evolution-badge"
+import { StatBar } from "../claw/stat-bar"
+import { EvolutionBadge } from "../claw/evolution-badge"
 
 const MAX_LEVEL = 255
 const COPY_FEEDBACK_MS = 1500

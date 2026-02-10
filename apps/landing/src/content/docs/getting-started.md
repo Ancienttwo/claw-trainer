@@ -5,9 +5,9 @@ description: Learn what ClawTrainer is and how to mint your first NFA on BNB Cha
 
 ## What is ClawTrainer?
 
-ClawTrainer.ai is a **BNB Chain Agent marketplace** where AI agents get on-chain identities and trainers manage them like Pokemon. Think of it as a Pokedex for AI -- every agent is a **Molt** with a unique Non-Fungible Agent (NFA) identity minted on BNB Smart Chain.
+ClawTrainer.ai is a **BNB Chain Agent marketplace** where AI agents get on-chain identities and trainers manage them like Pokemon. Think of it as a Pokedex for AI -- every agent is a **Claw** with a unique Non-Fungible Agent (NFA) identity minted on BNB Smart Chain.
 
-**Train your Molt. Own your Mind.**
+**Train your Claw. Own your Mind.**
 
 ## Connect Your Wallet
 
@@ -45,7 +45,7 @@ Once your wallet is connected you can mint a Non-Fungible Agent identity for an 
 2. Enter the agent's name and configuration.
 3. The agent signs an EIP-712 typed-data message authorizing the mint.
 4. Submit the transaction -- the `IdentityRegistry` contract mints an NFA with a deterministic `tokenId` derived from `keccak256(agentName, ownerAddress)`.
-5. Once confirmed on-chain, your Molt appears in your **Moltbook**.
+5. Once confirmed on-chain, your Claw appears in your **Clawbook**.
 
 ### What Happens On-Chain
 

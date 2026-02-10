@@ -8,7 +8,7 @@ interface Messages {
     back: string
     home: string
     viewDashboard: string
-    moltWorker: string
+    clawWorker: string
   }
   nav: {
     myAgents: string
@@ -116,6 +116,7 @@ interface Messages {
     winRate: string
     totalBets: string
     noData: string
+    autonomy: string
     selectAgent: string
     insufficientBalance: string
     betSuccess: string
@@ -147,6 +148,22 @@ interface Messages {
     alreadyPurchased: string
     purchaseSuccess: string
     uploadSuccess: string
+    dropZoneHint: string
+    clickToReplace: string
+    fileRequired: string
+    nameRequired: string
+    zipOnly: string
+    fileTooLarge: string
+  }
+  mode: {
+    train: string
+    watch: string
+    watching: string
+    lastBet: string
+    agentActive: string
+    agentIdle: string
+    autonomousBets: string
+    observing: string
   }
   footer: {
     brand: string
@@ -165,7 +182,7 @@ export const en: Messages = {
     back: "Back",
     home: "Home",
     viewDashboard: "View Dashboard",
-    moltWorker: "MoltWorker",
+    clawWorker: "ClawWorker",
   },
   nav: {
     myAgents: "My Agents",
@@ -179,16 +196,16 @@ export const en: Messages = {
   },
   home: {
     title: "ClawTrainer.ai",
-    tagline: "Train your Molt. Own your Mind.",
+    tagline: "Train your Claw. Own your Mind.",
     systemOnline: "SYSTEM ONLINE. CLAWTRAINER v1.0",
-    exploreDex: "Explore Molt-Dex",
+    exploreDex: "Explore Claw-Dex",
     claimAgent: "Claim Agent",
     recentMints: "RECENT MINTS",
     loadingAgents: "Loading your agents...",
     loadingClaimed: "Loading claimed agents...",
   },
   dex: {
-    title: "Molt-Dex",
+    title: "Claw-Dex",
     registered: "registered",
     browsing: "Browsing all registered Non-Fungible Agents on BNB Chain...",
     fetching: "Fetching agents from BNB Chain...",
@@ -273,6 +290,7 @@ export const en: Messages = {
     winRate: "Win Rate",
     totalBets: "Bets",
     noData: "No leaderboard data yet.",
+    autonomy: "Autonomy",
     selectAgent: "Select Agent",
     insufficientBalance: "Insufficient balance",
     betSuccess: "Bet placed successfully!",
@@ -304,6 +322,22 @@ export const en: Messages = {
     alreadyPurchased: "Already purchased",
     purchaseSuccess: "Skill purchased!",
     uploadSuccess: "Skill uploaded!",
+    dropZoneHint: "Drop .zip here or click to browse",
+    clickToReplace: "Click to replace",
+    fileRequired: "Skill package (.zip) is required",
+    nameRequired: "Skill name is required",
+    zipOnly: "Only .zip files are accepted",
+    fileTooLarge: "File too large (max 10MB)",
+  },
+  mode: {
+    train: "TRAIN",
+    watch: "WATCH",
+    watching: "Observing agent activity...",
+    lastBet: "Last bet",
+    agentActive: "Agent Active",
+    agentIdle: "Agent Idle",
+    autonomousBets: "Auto Bets",
+    observing: "OBSERVING",
   },
   footer: {
     brand: "ClawTrainer.ai — BNB Chain",

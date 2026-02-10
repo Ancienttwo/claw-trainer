@@ -3,7 +3,7 @@ import { GridBackground } from "../components/ui/grid-background"
 import { TerminalText } from "../components/ui/terminal-text"
 import { TerminalLoader } from "../components/ui/terminal-loader"
 import { Badge } from "../components/ui/badge"
-import { AgentGrid } from "../components/molt/agent-grid"
+import { AgentGrid } from "../components/claw/agent-grid"
 import { useAgents } from "../hooks/use-agents"
 import { useI18n } from "../i18n"
 

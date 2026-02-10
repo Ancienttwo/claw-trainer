@@ -12,7 +12,7 @@ import { COLORS } from "../constants"
 const { fontFamily: pixelFont } = loadPressStart()
 const { fontFamily: monoFont } = loadIBMPlex()
 
-const TAGLINE = 'Train your Molt. Own your Mind.'
+const TAGLINE = 'Train your Claw. Own your Mind.'
 const CHARS_PER_FRAME = 0.8
 
 export const TitleSlam: React.FC = () => {

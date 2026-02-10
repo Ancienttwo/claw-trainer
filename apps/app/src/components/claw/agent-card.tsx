@@ -1,5 +1,5 @@
 /**
- * Individual agent card for the Molt-Dex grid (Pokemon card style).
+ * Individual agent card for the Claw-Dex grid (Pokemon card style).
  */
 
 import { Link } from "@tanstack/react-router"

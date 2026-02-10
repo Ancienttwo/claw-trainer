@@ -31,7 +31,7 @@ export const LobsterEvolution: React.FC = () => {
     [0.3, 0.8],
   )
 
-  // Glitch effect during "molt" transition
+  // Glitch effect during "claw" transition
   const glitchActive = frame >= 30 && frame <= 45
   const glitchOffset = glitchActive
     ? interpolate(Math.sin(frame * 8), [-1, 1], [-12, 12])
@@ -45,7 +45,7 @@ export const LobsterEvolution: React.FC = () => {
     ? interpolate(Math.sin(frame * 6), [-1, 1], [-4, 4])
     : 0
 
-  // Rookie scale pulse before molt
+  // Rookie scale pulse before evolution
   const rookieScale = glitchActive
     ? interpolate(Math.sin(frame * 10), [-1, 1], [0.95, 1.1])
     : 1

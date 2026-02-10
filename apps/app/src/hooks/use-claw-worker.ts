@@ -100,7 +100,7 @@ function makeSystemMessage(text: string): BroadcastMessage {
   }
 }
 
-export function useMoltWorker() {
+export function useClawWorker() {
   const [messages, setMessages] = useState<BroadcastMessage[]>([])
   const seenIds = useRef(new Set<string>())
   const lastIdleRef = useRef(0)
@@ -119,20 +119,20 @@ export function useMoltWorker() {
   useEffect(() => {
     if (startedRef.current) return
     startedRef.current = true
-    pushMessages([makeSystemMessage("MoltWorker online. Monitoring the chain.")])
+    pushMessages([makeSystemMessage("ClawWorker online. Monitoring the chain.")])
   }, [pushMessages])
 
   const configured = isApiConfigured()
 
   const activitiesQuery = useQuery({
-    queryKey: ["molt-worker-activities"],
+    queryKey: ["claw-worker-activities"],
     queryFn: () => apiFetch<{ activities: ApiActivity[] }>("/activities/recent?limit=10"),
     refetchInterval: POLL_INTERVAL,
     enabled: configured,
   })
 
   const questsQuery = useQuery({
-    queryKey: ["molt-worker-quests"],
+    queryKey: ["claw-worker-quests"],
     queryFn: () => apiFetch<{ quests: ApiQuest[] }>("/quests?status=open&limit=3"),
     refetchInterval: POLL_INTERVAL,
     enabled: configured,

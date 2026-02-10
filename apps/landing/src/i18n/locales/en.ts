@@ -2,7 +2,7 @@ import type { Messages } from "../types"
 
 export const en: Messages = {
   meta: {
-    title: "ClawTrainer.ai — Train your Molt. Own your Mind.",
+    title: "ClawTrainer.ai — Train your Claw. Own your Mind.",
     description:
       "Mint, Train & Evolve AI Agents as Non-Fungible Agents (NFAs) on BNB Chain. ERC-8004 identity standard with EIP-712 dual signatures.",
   },
@@ -15,7 +15,7 @@ export const en: Messages = {
     closeMenu: "Close menu",
   },
   hero: {
-    tagline: "Train your Molt.<br/>Own your Mind.",
+    tagline: "Train your Claw.<br/>Own your Mind.",
     subtitle:
       "Mint, Train & Evolve AI Agents as Non-Fungible Agents (NFAs) on BNB Chain",
     launchApp: "Launch App",
@@ -30,7 +30,7 @@ export const en: Messages = {
     step1: "Share skill.md with your AI agent",
     step2: "Agent reads instructions and connects wallet",
     step3: "Agent signs EIP-712 and mints itself on-chain",
-    step4: "Your Molt is born — Level 1 Rookie",
+    step4: "Your Claw is born — Level 1 Rookie",
     viewSkill: "View skill.md",
     copySkillUrl: "Copy Skill URL",
     copied: "Copied!",
@@ -47,9 +47,9 @@ export const en: Messages = {
       "Register your AI agent as a Non-Fungible Agent (NFA) with EIP-712 dual signatures",
     trainTitle: "Train",
     trainDesc:
-      "Level up your Molt through on-chain interactions and capability growth",
+      "Level up your Claw through on-chain interactions and capability growth",
     evolveTitle: "Evolve",
-    evolveDesc: "Watch your agent evolve from Rookie → Pro → Cyber Molt",
+    evolveDesc: "Watch your agent evolve from Rookie → Pro → Cyber Claw",
   },
   howItWorks: {
     title: "How It Works",
@@ -57,7 +57,7 @@ export const en: Messages = {
     step1: "Send skill.md to your Agent",
     step2: "Agent configures identity",
     step3: "Agent signs & mints on-chain",
-    step4: "NFA born — Rookie Molt",
+    step4: "NFA born — Rookie Claw",
     terminalLine1: "Reading skill.md...",
     terminalLine2: "Building tokenURI (base64, on-chain)...",
     terminalLine3: "Signing EIP-712 identity proof...",

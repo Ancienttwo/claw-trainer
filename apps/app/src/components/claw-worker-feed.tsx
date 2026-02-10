@@ -1,10 +1,10 @@
 import { useEffect, useRef, useState } from "react"
 import { cn } from "../lib/cn"
-import { useMoltWorker, type BroadcastMessage } from "../hooks/use-molt-worker"
+import { useClawWorker, type BroadcastMessage } from "../hooks/use-claw-worker"
 import { AsciiLobster } from "./ui/ascii-lobster"
 import { useI18n } from "../i18n"
 
-const STORAGE_KEY = "molt_worker_open"
+const STORAGE_KEY = "claw_worker_open"
 
 const typeColorMap: Record<BroadcastMessage["type"], string> = {
   mint: "text-coral",
@@ -23,10 +23,10 @@ function getDefaultOpen(): boolean {
   return window.matchMedia("(min-width: 768px)").matches
 }
 
-export function MoltWorkerFeed() {
+export function ClawWorkerFeed() {
   const [open, setOpen] = useState(getDefaultOpen)
   const [hasUnread, setHasUnread] = useState(false)
-  const { messages, totalCount } = useMoltWorker()
+  const { messages, totalCount } = useClawWorker()
   const prevCountRef = useRef(totalCount)
   const feedEndRef = useRef<HTMLDivElement>(null)
   const { t } = useI18n()
@@ -89,7 +89,7 @@ export function MoltWorkerFeed() {
         className="group relative flex items-center gap-2 rounded border border-border-subtle bg-surface-base/90 px-2 py-1.5 backdrop-blur-sm transition-colors hover:border-cyan/30"
       >
         <AsciiLobster stage="cyber" size="sm" className="transition-transform group-hover:scale-110" />
-        <span className="font-pixel text-[8px] text-terminal-green">{t.common.moltWorker}</span>
+        <span className="font-pixel text-[8px] text-terminal-green">{t.common.clawWorker}</span>
 
         {hasUnread && (
           <span className="absolute -top-1 -right-1 h-2.5 w-2.5 rounded-full bg-coral animate-glow-pulse-amber" />

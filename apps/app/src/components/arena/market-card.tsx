@@ -2,12 +2,13 @@ import { Link } from "@tanstack/react-router"
 import type { Market } from "../../hooks/use-markets"
 import { PixelCard, PixelCardContent, PixelCardHeader } from "../ui/pixel-card"
 import { Badge } from "../ui/badge"
-import { StatBar } from "../molt/stat-bar"
+import { StatBar } from "../claw/stat-bar"
 import { useI18n } from "../../i18n"
 
 const PERCENTAGE_SCALE = 100
 
-function formatVolume(v: number): string {
+function formatVolume(raw: number | string): string {
+  const v = Number(raw) || 0
   if (v >= 1_000_000) return `$${(v / 1_000_000).toFixed(1)}M`
   if (v >= 1_000) return `$${(v / 1_000).toFixed(1)}K`
   return `$${v.toFixed(0)}`
