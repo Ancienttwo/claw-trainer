@@ -63,7 +63,7 @@ describe("AgentResume", () => {
     render(<AgentResume agent={agent} />)
 
     // Then: ASCII art container is present (pre element with whitespace preserved)
-    expect(screen.getByText(/\(o\.o\)/)).toBeInTheDocument()
+    expect(screen.getByText(/\(oo\)/)).toBeInTheDocument()
   })
 
   it("should_show_stat_bars_for_level_and_capabilities", () => {
