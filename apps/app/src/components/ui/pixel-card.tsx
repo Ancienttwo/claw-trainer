@@ -19,7 +19,7 @@ export const PixelCard = forwardRef<HTMLDivElement, PixelCardProps>(
         ref={ref}
         className={cn(
           "rounded-pixel border-2 border-border-subtle bg-surface-raised",
-          "shadow-card transition-all duration-300",
+          "shadow-card transition-all duration-300 hover:scale-[1.02]",
           "[image-rendering:pixelated]",
           glowStyles[glow],
           className,

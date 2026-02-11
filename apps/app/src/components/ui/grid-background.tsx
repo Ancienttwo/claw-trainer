@@ -7,9 +7,9 @@ interface GridBackgroundProps extends HTMLAttributes<HTMLDivElement> {
 }
 
 const opacityMap = {
-  subtle: "0.03",
-  medium: "0.06",
-  strong: "0.1",
+  subtle: "0.05",
+  medium: "0.08",
+  strong: "0.12",
 } as const
 
 export const GridBackground = forwardRef<HTMLDivElement, GridBackgroundProps>(
@@ -25,8 +25,8 @@ export const GridBackground = forwardRef<HTMLDivElement, GridBackgroundProps>(
         )}
         style={{
           backgroundImage: [
-            `linear-gradient(rgba(0, 229, 204, ${opacity}) 1px, transparent 1px)`,
-            `linear-gradient(90deg, rgba(0, 229, 204, ${opacity}) 1px, transparent 1px)`,
+            `linear-gradient(rgba(13, 148, 136, ${opacity}) 1px, transparent 1px)`,
+            `linear-gradient(90deg, rgba(13, 148, 136, ${opacity}) 1px, transparent 1px)`,
           ].join(", "),
           backgroundSize: `${gridSize}px ${gridSize}px`,
         }}

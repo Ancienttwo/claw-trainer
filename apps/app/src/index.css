@@ -6,42 +6,51 @@
   --color-coral-mid: #E63946;
   --color-coral-dark: #991B1B;
 
-  /* -- Brand: Cyan (Cool) -- */
-  --color-cyan: #00E5CC;
-  --color-cyan-mid: #14B8A6;
+  /* -- Brand: Cyan (Cool) — darkened for light-mode readability -- */
+  --color-cyan: #0D9488;
+  --color-cyan-mid: #0F766E;
 
-  /* -- Brand: Amber (Glow) -- */
-  --color-amber: #F59E0B;
-  --color-amber-light: #FBBF24;
-  --color-amber-dark: #D97706;
+  /* -- Brand: Amber (Glow) — darkened for light-mode readability -- */
+  --color-amber: #D97706;
+  --color-amber-light: #F59E0B;
+  --color-amber-dark: #B45309;
 
-  /* -- Terminal -- */
-  --color-terminal-green: #22C55E;
-  --color-terminal-green-dark: #16A34A;
-  --color-terminal-green-dim: #166534;
+  /* -- Terminal — darkened for light-mode readability -- */
+  --color-terminal-green: #15803D;
+  --color-terminal-green-dark: #166534;
+  --color-terminal-green-dim: #14532D;
 
-  /* -- Surfaces (Deep Ocean) -- */
-  --color-surface-deep: #050810;
-  --color-surface-base: #0A0F1A;
-  --color-surface-raised: #111827;
-  --color-surface-overlay: #1E293B;
-  --color-surface-highlight: #293548;
+  /* -- Code blocks (bright on dark bg) -- */
+  --color-code-green: #4ADE80;
 
-  /* -- Text -- */
-  --color-text-primary: #F0F4FF;
-  --color-text-secondary: #8892B0;
-  --color-text-muted: #5A6480;
+  /* -- Surfaces (Bright Mode) -- */
+  --color-surface-deep: #F8F6F0;
+  --color-surface-base: #FFFFFF;
+  --color-surface-raised: #F0EDE6;
+  --color-surface-overlay: #E8E4DC;
+  --color-surface-highlight: #DDD8CE;
 
-  /* -- Borders (opacity-based, from OpenClaw) -- */
-  --color-border-subtle: rgba(136, 146, 176, 0.15);
+  /* -- Text (Dark on Light) -- */
+  --color-text-primary: #1A1A2E;
+  --color-text-secondary: #4A4A6A;
+  --color-text-muted: #6B6B85;
+
+  /* -- Borders (opacity-based, bright mode) -- */
+  --color-border-subtle: rgba(26, 26, 46, 0.12);
   --color-border-accent: rgba(255, 77, 77, 0.3);
-  --color-border-cyan: rgba(0, 229, 204, 0.3);
+  --color-border-cyan: rgba(13, 148, 136, 0.3);
+
+  /* -- Panel / Code (overlay + terminal blocks) -- */
+  --color-panel-bg: rgba(255, 255, 255, 0.92);
+  --color-panel-border: rgba(26, 26, 46, 0.15);
+  --color-code-bg: #1A1A2E;
+  --color-code-surface: #0F1420;
 
   /* -- Semantic -- */
-  --color-success: #22C55E;
-  --color-warning: #F59E0B;
+  --color-success: #15803D;
+  --color-warning: #D97706;
   --color-error: #FF4D4D;
-  --color-info: #00E5CC;
+  --color-info: #0D9488;
 
   /* -- Fonts -- */
   --font-pixel: "Press Start 2P", monospace;
@@ -64,11 +73,11 @@
 
   /* -- Shadows (glow-centric) -- */
   --shadow-glow-coral: 0 0 12px rgba(255, 77, 77, 0.4);
-  --shadow-glow-cyan: 0 0 12px rgba(0, 229, 204, 0.4);
-  --shadow-glow-amber: 0 0 12px rgba(245, 158, 11, 0.4);
-  --shadow-glow-green: 0 0 12px rgba(34, 197, 94, 0.3);
-  --shadow-card: 0 4px 24px rgba(0, 0, 0, 0.5);
-  --shadow-card-hover: 0 8px 32px rgba(0, 0, 0, 0.6), 0 0 20px rgba(0, 229, 204, 0.15);
+  --shadow-glow-cyan: 0 0 12px rgba(13, 148, 136, 0.4);
+  --shadow-glow-amber: 0 0 12px rgba(217, 119, 6, 0.4);
+  --shadow-glow-green: 0 0 12px rgba(21, 128, 61, 0.3);
+  --shadow-card: 0 4px 16px rgba(26, 26, 46, 0.08);
+  --shadow-card-hover: 0 8px 24px rgba(26, 26, 46, 0.12);
 
   /* -- Animations -- */
   --animate-claw-snap: claw-snap 0.8s ease-in-out infinite;
@@ -87,14 +96,14 @@
 
   --animate-glow-pulse: glow-pulse 2s ease-in-out infinite;
   @keyframes glow-pulse {
-    0%, 100% { box-shadow: 0 0 8px rgba(0, 229, 204, 0.2); }
-    50% { box-shadow: 0 0 24px rgba(0, 229, 204, 0.5); }
+    0%, 100% { box-shadow: 0 0 8px rgba(13, 148, 136, 0.2); }
+    50% { box-shadow: 0 0 24px rgba(13, 148, 136, 0.5); }
   }
 
   --animate-glow-pulse-amber: glow-pulse-amber 2s ease-in-out infinite;
   @keyframes glow-pulse-amber {
-    0%, 100% { box-shadow: 0 0 8px rgba(245, 158, 11, 0.3); }
-    50% { box-shadow: 0 0 20px rgba(245, 158, 11, 0.6); }
+    0%, 100% { box-shadow: 0 0 8px rgba(217, 119, 6, 0.3); }
+    50% { box-shadow: 0 0 20px rgba(217, 119, 6, 0.6); }
   }
 
   --animate-pixel-fade-in: pixel-fade-in 0.3s steps(4) forwards;
@@ -185,8 +194,8 @@ body {
     0deg,
     transparent,
     transparent 2px,
-    rgba(0, 0, 0, 0.08) 2px,
-    rgba(0, 0, 0, 0.08) 4px
+    rgba(0, 0, 0, 0.04) 2px,
+    rgba(0, 0, 0, 0.04) 4px
   );
   pointer-events: none;
   z-index: 1;
@@ -195,7 +204,7 @@ body {
 /* -- Terminal grid background -- */
 .grid-bg {
   background-image:
-    linear-gradient(rgba(0, 229, 204, 0.03) 1px, transparent 1px),
-    linear-gradient(90deg, rgba(0, 229, 204, 0.03) 1px, transparent 1px);
+    linear-gradient(rgba(13, 148, 136, 0.06) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(13, 148, 136, 0.06) 1px, transparent 1px);
   background-size: 32px 32px;
 }

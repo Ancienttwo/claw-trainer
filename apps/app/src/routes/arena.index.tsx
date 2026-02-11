@@ -14,7 +14,7 @@ function ArenaHeader() {
   const { t } = useI18n()
 
   return (
-    <div className="mb-6 space-y-2">
+    <div className="mb-10 space-y-2">
       <div className="flex items-center justify-between">
         <div className="flex items-center gap-2">
           <h1 className="font-pixel text-xl text-coral">{t.arena.title}</h1>
@@ -42,7 +42,7 @@ function ArenaHeader() {
 function ArenaPage() {
   return (
     <GridBackground>
-      <div className="mx-auto max-w-6xl px-4 py-6">
+      <div className="mx-auto max-w-6xl px-4 py-12">
         <ArenaHeader />
         <MarketGrid />
       </div>

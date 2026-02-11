@@ -7,20 +7,20 @@ interface Props {
 const { t } = Astro.props;
 ---
 
-<section class="relative min-h-screen grid-bg overflow-hidden">
+<section class="relative min-h-[80vh] lg:min-h-screen grid-bg overflow-hidden">
 	<!-- Subtle glow orbs -->
 	<div class="absolute top-[-150px] left-[-150px] w-[400px] h-[400px] rounded-full bg-coral/5 blur-[100px] pointer-events-none"></div>
 	<div class="absolute bottom-[-150px] right-[-150px] w-[400px] h-[400px] rounded-full bg-cyan/5 blur-[100px] pointer-events-none"></div>
 
-	<div class="relative z-10 max-w-7xl mx-auto px-6 min-h-screen flex items-center">
-		<div class="grid grid-cols-1 lg:grid-cols-2 gap-12 lg:gap-16 items-center w-full py-20">
+	<div class="relative z-10 max-w-7xl mx-auto px-6 min-h-[80vh] lg:min-h-screen flex items-center">
+		<div class="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-16 items-center w-full py-12 lg:py-20">
 
 			<!-- Left: Text content -->
 			<div class="text-center lg:text-left order-2 lg:order-1">
 				<!-- Logo + Title row -->
 				<div class="flex items-center justify-center lg:justify-start gap-4 mb-8">
 					<img
-						src="/logo-new.png"
+						src="/logo.png"
 						alt="ClawTrainer.ai"
 						class="w-14 h-14 md:w-20 md:h-20 animate-float drop-shadow-[0_0_20px_rgba(0,229,204,0.3)] rounded-xl"
 					/>

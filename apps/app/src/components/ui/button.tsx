@@ -3,13 +3,13 @@ import { cn } from "../../lib/cn"
 
 const variants = {
   default:
-    "bg-coral-mid text-text-primary hover:bg-coral hover:shadow-glow-coral",
+    "bg-coral-mid text-white hover:bg-coral hover:shadow-glow-coral",
   outline:
     "border border-border-subtle bg-transparent text-text-primary hover:bg-surface-highlight hover:border-border-accent",
   ghost:
     "bg-transparent text-text-secondary hover:bg-surface-highlight hover:text-text-primary",
   terminal:
-    "bg-surface-base border border-terminal-green-dim text-terminal-green font-mono hover:bg-terminal-green-dim hover:text-terminal-green",
+    "bg-surface-base border border-terminal-green-dim text-terminal-green font-mono hover:bg-terminal-green/10 hover:border-terminal-green",
 } as const
 
 const sizes = {

@@ -43,11 +43,13 @@ function HeroLanding() {
   const { t } = useI18n()
 
   return (
-    <div className="mx-auto max-w-5xl px-4 py-8">
-      <section className="flex flex-col items-center gap-6 py-12 text-center">
+    <div className="relative mx-auto max-w-5xl px-4 py-16">
+      <div className="pointer-events-none absolute left-1/4 top-12 h-64 w-64 rounded-full bg-coral/5 blur-[100px]" />
+      <div className="pointer-events-none absolute right-1/4 top-32 h-64 w-64 rounded-full bg-cyan/5 blur-[100px]" />
+      <section className="relative flex flex-col items-center gap-6 py-20 text-center">
         <AsciiLobster stage="cyber" size="lg" className="animate-float" />
 
-        <h1 className="font-pixel text-xl text-coral sm:text-2xl">
+        <h1 className="font-pixel text-xl text-coral sm:text-2xl md:text-3xl">
           {t.home.title}
         </h1>
 
@@ -63,12 +65,12 @@ function HeroLanding() {
 
         <div className="flex flex-col gap-2 sm:flex-row sm:gap-4">
           <Link to="/dex">
-            <PixelButton variant="terminal" size="lg">
+            <PixelButton variant="terminal" size="lg" className="transition-transform hover:scale-105">
               {t.home.exploreDex}
             </PixelButton>
           </Link>
           <Link to="/mint">
-            <PixelButton variant="primary" size="lg">
+            <PixelButton variant="primary" size="lg" className="transition-transform hover:scale-105">
               {t.home.claimAgent}
             </PixelButton>
           </Link>

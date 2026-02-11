@@ -50,7 +50,7 @@ function MobileNav({ onClose }: { onClose: () => void }) {
   const { t } = useI18n()
 
   return (
-    <div className="border-t border-border-subtle bg-surface-base px-4 py-4 sm:hidden">
+    <div className="border-t border-border-subtle bg-white px-4 py-4 sm:hidden">
       <div className="flex flex-col gap-4">
         {isConnected && <NavLink to="/" icon={<PersonIcon />} label={t.nav.myAgents} onClick={onClose} />}
         <NavLink to="/dex" icon={<GlobeIcon />} label={t.nav.browse} onClick={onClose} />
@@ -72,10 +72,11 @@ function Header() {
   const { t } = useI18n()
 
   return (
-    <header className="sticky top-0 z-50 border-b border-border-subtle bg-surface-base/85 backdrop-blur-lg">
+    <header className="sticky top-0 z-50 border-b border-border-subtle bg-white/90 backdrop-blur-lg">
       <nav className="mx-auto flex h-14 max-w-5xl items-center justify-between px-4">
-        <Link to="/" className="font-pixel text-[10px] text-text-primary">
-          {t.nav.clawTrainer}
+        <Link to="/" className="flex items-center gap-2 font-pixel text-[10px] text-text-primary">
+          <img src="/logo.png" alt="ClawTrainer" className="h-8 w-8 rounded-sm" />
+          <>Claw<span className="text-coral">Trainer</span><span className="text-cyan">.ai</span></>
         </Link>
 
         <DesktopNav />
@@ -126,8 +127,24 @@ function Footer() {
   const { t } = useI18n()
 
   return (
-    <footer className="border-t border-border-subtle px-4 py-2 text-center font-mono text-xs text-text-muted">
-      {t.footer.brand}
+    <footer className="border-t border-border-subtle px-6 py-8">
+      <div className="mx-auto flex max-w-5xl flex-col items-center gap-4">
+        <div className="flex items-center gap-2">
+          <img src="/logo.png" alt="ClawTrainer" className="h-8 w-8 rounded-sm" />
+          <span className="font-pixel text-[10px] text-text-primary">
+            Claw<span className="text-coral">Trainer</span><span className="text-cyan">.ai</span>
+          </span>
+        </div>
+        <nav className="flex flex-wrap justify-center gap-4 font-mono text-xs text-text-muted">
+          <Link to="/dex" className="transition-colors hover:text-cyan">Browse</Link>
+          <Link to="/mint" className="transition-colors hover:text-cyan">Mint</Link>
+          <Link to="/arena" className="transition-colors hover:text-cyan">Arena</Link>
+          <Link to="/skills" className="transition-colors hover:text-cyan">Skills</Link>
+        </nav>
+        <p className="font-mono text-[10px] text-text-muted">
+          {t.footer.brand}
+        </p>
+      </div>
     </footer>
   )
 }

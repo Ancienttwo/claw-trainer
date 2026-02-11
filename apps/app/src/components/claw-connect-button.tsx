@@ -19,7 +19,7 @@ export function ClawConnectButton() {
               className={cn(
                 "inline-flex items-center gap-1.5 font-pixel text-[9px]",
                 "rounded-pixel border-2 border-coral-mid bg-coral-mid px-3 py-1.5",
-                "text-text-primary transition-all duration-150",
+                "text-white transition-all duration-150",
                 "hover:bg-coral hover:shadow-glow-coral",
                 "active:scale-[0.95] active:translate-y-[2px]",
               )}

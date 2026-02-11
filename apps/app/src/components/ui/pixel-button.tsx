@@ -3,11 +3,11 @@ import { cn } from "../../lib/cn"
 
 const variants = {
   primary:
-    "bg-coral-mid text-text-primary hover:bg-coral hover:shadow-glow-coral",
+    "bg-coral-mid text-white hover:bg-coral hover:shadow-glow-coral",
   terminal:
     "bg-surface-base border-2 border-terminal-green-dim text-terminal-green hover:bg-terminal-green-dim/20 hover:border-terminal-green",
   outline:
-    "bg-transparent border-2 border-border-accent text-coral hover:bg-coral hover:text-text-primary",
+    "bg-transparent border-2 border-border-accent text-coral hover:bg-coral hover:text-white",
 } as const
 
 const sizes = {

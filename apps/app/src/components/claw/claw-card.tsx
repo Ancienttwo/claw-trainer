@@ -60,7 +60,7 @@ function CopyableAddress({ label, address }: { label: string; address: string })
 function ArtArea({ name, stage }: { name: string; stage: string }) {
   const lobsterStage = stage.toLowerCase() as "rookie" | "pro" | "cyber"
   return (
-    <div className="crt-overlay flex h-48 flex-col items-center justify-center gap-2 rounded-sm bg-surface-deep">
+    <div className="crt-overlay flex h-48 flex-col items-center justify-center gap-2 rounded-sm bg-code-bg">
       <AsciiLobster stage={lobsterStage} size="lg" className="animate-float" />
       <span className="font-pixel text-[8px] text-text-muted">
         {name}

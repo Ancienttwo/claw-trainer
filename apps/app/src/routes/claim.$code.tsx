@@ -115,7 +115,7 @@ function AgentPreview({ agent }: AgentPreviewProps) {
           {capabilities.length > 0 && (
             <div className="flex flex-wrap justify-center gap-1">
               {capabilities.map((c) => (
-                <span key={c} className="rounded bg-surface-2 px-2 py-0.5 font-mono text-[10px] text-cyan">
+                <span key={c} className="rounded bg-surface-overlay px-2 py-0.5 font-mono text-[10px] text-cyan">
                   {c}
                 </span>
               ))}

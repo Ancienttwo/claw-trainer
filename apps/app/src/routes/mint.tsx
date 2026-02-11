@@ -48,7 +48,7 @@ function ClaimCodeEntry() {
             value={code}
             onChange={(e) => setCode(e.target.value)}
             placeholder={t.mint.claimPlaceholder}
-            className="flex-1 rounded border border-border bg-surface-1 px-3 py-2 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-coral focus:outline-none"
+            className="flex-1 rounded border border-border-subtle bg-surface-base px-3 py-2 font-mono text-xs text-text-primary placeholder:text-text-muted focus:border-coral focus:outline-none"
           />
           <PixelButton variant="primary" disabled={code.trim().length === 0}>
             {t.mint.claimButton}
@@ -63,7 +63,7 @@ function StepCard({ step, title, code }: { step: string; title: string; code: st
   return (
     <div className="space-y-2">
       <h3 className="font-pixel text-[10px] text-cyan">{step}. {title}</h3>
-      <pre className="overflow-x-auto rounded bg-surface-2 p-3 font-mono text-[10px] leading-relaxed text-terminal-green">
+      <pre className="overflow-x-auto rounded bg-code-bg p-3 font-mono text-[10px] leading-relaxed text-code-green">
         {code}
       </pre>
     </div>

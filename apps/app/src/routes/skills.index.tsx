@@ -13,7 +13,7 @@ function SkillsHeader() {
   const { t } = useI18n()
 
   return (
-    <div className="mb-6 space-y-2">
+    <div className="mb-10 space-y-2">
       <h1 className="font-pixel text-xl text-amber">{t.skills.title}</h1>
       {isLoading ? (
         <TerminalLoader text={t.skills.fetching} />
@@ -31,7 +31,7 @@ function SkillsPage() {
 
   return (
     <GridBackground>
-      <div className="mx-auto max-w-6xl px-4 py-6">
+      <div className="mx-auto max-w-6xl px-4 py-12">
         <SkillsHeader />
         <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
           <div className="lg:col-span-2">
