@@ -13,8 +13,8 @@ export const CrtOverlay: React.FC = () => {
           0deg,
           transparent,
           transparent 2px,
-          rgba(0, 0, 0, 0.15) 2px,
-          rgba(0, 0, 0, 0.15) 4px
+          rgba(0, 0, 0, 0.06) 2px,
+          rgba(0, 0, 0, 0.06) 4px
         )`,
         backgroundPositionY: scanlineOffset,
       }}

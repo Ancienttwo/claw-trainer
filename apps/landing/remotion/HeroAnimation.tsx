@@ -1,58 +1,51 @@
 import { AbsoluteFill, Sequence } from "remotion"
-import { BootSequence } from "./scenes/BootSequence"
-import { GridReveal } from "./scenes/GridReveal"
-import { LobsterEvolution } from "./scenes/LobsterEvolution"
-import { TitleSlam } from "./scenes/TitleSlam"
-import { CallToAction } from "./scenes/CallToAction"
+import { DeploySequence } from "./scenes/DeploySequence"
+import { AgentBirth } from "./scenes/AgentBirth"
+import { VillageReveal } from "./scenes/VillageReveal"
+import { BrandReveal } from "./scenes/BrandReveal"
 import { CrtOverlay } from "./effects/CrtOverlay"
 import { Vignette } from "./effects/Vignette"
-import { ScreenFlicker } from "./effects/ScreenFlicker"
 import { COLORS, SCENES } from "./constants"
 
 export const HeroAnimation: React.FC = () => (
   <AbsoluteFill style={{ backgroundColor: COLORS.surfaceDeep }}>
+    {/* Act 1: Deploy — terminal contract deployment */}
     <Sequence
-      from={SCENES.grid.start}
-      durationInFrames={SCENES.grid.end - SCENES.grid.start + 150}
-      premountFor={15}
+      from={SCENES.deploy.start}
+      durationInFrames={SCENES.deploy.end - SCENES.deploy.start}
     >
-      <GridReveal />
+      <DeploySequence />
     </Sequence>
 
+    {/* Act 2: Birth — egg hatches into Clawbot + stat card */}
     <Sequence
-      from={SCENES.boot.start}
-      durationInFrames={SCENES.boot.end - SCENES.boot.start}
-      premountFor={0}
+      from={SCENES.birth.start}
+      durationInFrames={SCENES.birth.end - SCENES.birth.start}
+      premountFor={5}
     >
-      <BootSequence />
+      <AgentBirth />
     </Sequence>
 
+    {/* Act 3: Village — world reveal with building labels */}
     <Sequence
-      from={SCENES.lobster.start}
-      durationInFrames={SCENES.lobster.end - SCENES.lobster.start}
-      premountFor={10}
+      from={SCENES.village.start}
+      durationInFrames={SCENES.village.end - SCENES.village.start}
+      premountFor={5}
     >
-      <LobsterEvolution />
+      <VillageReveal />
     </Sequence>
 
+    {/* Act 4: Brand — title slam + tagline + CTA */}
     <Sequence
-      from={SCENES.title.start}
-      durationInFrames={SCENES.title.end - SCENES.title.start}
-      premountFor={10}
+      from={SCENES.brand.start}
+      durationInFrames={SCENES.brand.end - SCENES.brand.start}
+      premountFor={5}
     >
-      <TitleSlam />
+      <BrandReveal />
     </Sequence>
 
-    <Sequence
-      from={SCENES.cta.start}
-      durationInFrames={SCENES.cta.end - SCENES.cta.start}
-      premountFor={10}
-    >
-      <CallToAction />
-    </Sequence>
-
+    {/* Global effects — lighter for bright mode */}
     <CrtOverlay />
     <Vignette />
-    <ScreenFlicker />
   </AbsoluteFill>
 )

@@ -6,7 +6,7 @@ export const Vignette: React.FC = () => (
       pointerEvents: "none",
       zIndex: 99,
       background:
-        "radial-gradient(ellipse at center, transparent 50%, rgba(0,0,0,0.7) 100%)",
+        "radial-gradient(ellipse at center, transparent 60%, rgba(26,26,46,0.15) 100%)",
     }}
   />
 )
