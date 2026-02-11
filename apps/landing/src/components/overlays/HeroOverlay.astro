@@ -1,0 +1,58 @@
+---
+import type { Messages } from "../../i18n";
+
+interface Props {
+	t: Messages["hero"];
+}
+const { t } = Astro.props;
+---
+
+<div class="w-full max-w-4xl rounded-2xl border border-panel-border bg-panel-bg px-8 py-10 shadow-card backdrop-blur-sm">
+	<div class="text-center">
+		<!-- Logo + Title -->
+		<div class="mb-8 flex items-center justify-center gap-4">
+			<img
+				src="/logo-new.png"
+				alt="ClawTrainer.ai"
+				class="h-14 w-14 animate-float rounded-xl drop-shadow-lg md:h-20 md:w-20"
+			/>
+			<h1 class="font-pixel text-xl leading-relaxed tracking-wide text-text-primary sm:text-2xl md:text-3xl lg:text-4xl">
+				Claw<span class="text-coral">Trainer</span><span class="text-cyan">.ai</span>
+			</h1>
+		</div>
+
+		<!-- Tagline -->
+		<p
+			class="mb-4 font-display text-2xl font-bold text-text-primary sm:text-3xl md:text-4xl"
+			set:html={t.tagline}
+		/>
+
+		<!-- Subtitle -->
+		<p class="mx-auto mb-10 max-w-lg font-mono text-sm text-text-secondary sm:text-base">
+			{t.subtitle}
+		</p>
+
+		<!-- CTAs -->
+		<div class="mb-10 flex flex-col items-center justify-center gap-4 sm:flex-row">
+			<a
+				href="https://app.clawtrainer.ai"
+				class="inline-flex items-center gap-2 rounded-md bg-coral px-8 py-4 font-mono text-sm font-semibold text-white shadow-card transition-all duration-200 hover:scale-105 hover:bg-coral-mid"
+			>
+				<span class="font-pixel text-xs">&gt;</span> {t.launchApp}
+			</a>
+			<a
+				href="/skill.md"
+				target="_blank"
+				class="inline-flex items-center gap-2 rounded-md border border-cyan px-8 py-4 font-mono text-sm font-semibold text-cyan transition-all duration-200 hover:scale-105 hover:bg-cyan/10"
+			>
+				{t.viewSkill}
+			</a>
+		</div>
+
+		<!-- Terminal prompt -->
+		<div class="font-mono text-xs text-text-muted">
+			<span class="text-terminal-green">$</span> clawtrainer --deploy --chain bnb
+			<span class="ml-1 inline-block h-4 w-2 animate-terminal-blink bg-terminal-green"></span>
+		</div>
+	</div>
+</div>

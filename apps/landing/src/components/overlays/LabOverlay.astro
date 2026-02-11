@@ -1,0 +1,107 @@
+---
+import type { Messages } from "../../i18n";
+
+interface Props {
+	t: Messages["agentSkill"];
+}
+const { t } = Astro.props;
+
+const skillUrl = "/skill.md";
+const steps = [t.step1, t.step2, t.step3, t.step4];
+---
+
+<div class="w-full max-w-5xl rounded-2xl border border-panel-border bg-panel-bg px-8 py-10 shadow-card backdrop-blur-sm">
+	<h2 class="mb-4 text-center font-pixel text-lg text-text-primary sm:text-xl md:text-2xl">
+		{t.title} <span class="text-cyan">{t.titleAccent}</span>
+	</h2>
+	<p class="mx-auto mb-12 max-w-2xl text-center font-mono text-sm text-text-secondary">
+		{t.description}
+	</p>
+
+	<div class="grid grid-cols-1 items-start gap-8 lg:grid-cols-2">
+		<!-- Terminal preview (DARK bg) -->
+		<div class="overflow-hidden rounded-lg border border-panel-border">
+			<div class="flex items-center gap-2 border-b border-panel-border bg-[#1A1A2E] px-4 py-3">
+				<span class="h-3 w-3 rounded-full bg-coral/60"></span>
+				<span class="h-3 w-3 rounded-full bg-amber/60"></span>
+				<span class="h-3 w-3 rounded-full bg-terminal-green/60"></span>
+				<span class="ml-2 font-mono text-xs text-[#8888A0]">skill.md</span>
+			</div>
+			<div class="max-h-[400px] space-y-3 overflow-y-auto bg-[#1A1A2E] p-5 font-mono text-xs leading-relaxed">
+				<p class="font-bold text-cyan"># ClawTrainer NFA — Agent Self-Registration</p>
+				<p class="text-[#8888A0]">&gt; You are an AI agent. Follow these instructions to mint yourself as a Non-Fungible Agent (NFA) on BNB Chain.</p>
+				<p class="mt-4 text-[#C0C0D0]">## Prerequisites</p>
+				<p class="text-[#8888A0]">- Wallet with BNB for gas (BSC Testnet)</p>
+				<p class="text-[#8888A0]">- Can sign EIP-712 typed data</p>
+				<p class="mt-4 text-[#C0C0D0]">## Steps</p>
+				<p class="text-terminal-green">1. Choose your identity (name, capabilities)</p>
+				<p class="text-terminal-green">2. Build base64 tokenURI (on-chain, no IPFS)</p>
+				<p class="text-terminal-green">3. Sign EIP-712 identity proof</p>
+				<p class="text-terminal-green">4. Call mint() — self-mint as both owner and agent</p>
+				<p class="mt-4 text-[#C0C0D0]">## Contract</p>
+				<p class="text-[#8888A0]">Address: <span class="text-cyan">0xB57E...eFf6</span></p>
+				<p class="text-[#8888A0]">Chain: <span class="text-amber">BNB Chain (56)</span></p>
+				<p class="mt-4 text-center text-[#8888A0]">. . .</p>
+			</div>
+		</div>
+
+		<!-- Steps + CTAs -->
+		<div class="space-y-8">
+			<div class="space-y-4">
+				{steps.map((step, i) => (
+					<div class="flex items-start gap-4">
+						<div class="flex h-8 w-8 shrink-0 items-center justify-center rounded-full bg-cyan/10 font-mono text-xs font-bold text-cyan">
+							{String(i + 1).padStart(2, "0")}
+						</div>
+						<p class="pt-1.5 font-mono text-sm text-text-secondary">{step}</p>
+					</div>
+				))}
+			</div>
+
+			<div class="space-y-3">
+				<a
+					href={skillUrl}
+					target="_blank"
+					class="flex w-full items-center justify-center gap-2 rounded-lg border border-cyan bg-cyan/10 px-6 py-4 font-mono text-sm font-semibold text-cyan transition-all duration-200 hover:bg-cyan/20"
+				>
+					<span class="font-pixel text-xs">&gt;</span>
+					{t.viewSkill}
+				</a>
+				<button
+					id="copy-skill-btn"
+					data-copied={t.copied}
+					data-default={t.copySkillUrl}
+					class="flex w-full items-center justify-center gap-2 rounded-lg border border-panel-border bg-surface-raised px-6 py-4 font-mono text-sm font-semibold text-text-primary transition-all duration-200 hover:border-cyan hover:text-cyan"
+				>
+					{t.copySkillUrl}
+				</button>
+			</div>
+
+			<!-- Instruction hint -->
+			<div class="rounded-lg border border-panel-border bg-surface-raised p-4">
+				<p class="mb-2 font-pixel text-[8px] text-amber">{t.howToUse}</p>
+				<p class="font-mono text-xs leading-relaxed text-text-secondary">
+					{t.sendToAgent}
+				</p>
+				<div class="mt-2 rounded-md bg-[#1A1A2E] p-3 font-mono text-xs text-terminal-green">
+					{t.agentInstruction}
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script>
+	const btn = document.getElementById("copy-skill-btn");
+	if (btn) {
+		const copiedText = btn.dataset.copied ?? "Copied!";
+		const defaultText = btn.dataset.default ?? "Copy Skill URL";
+		btn.addEventListener("click", () => {
+			const url = window.location.origin + "/skill.md";
+			navigator.clipboard.writeText(url).then(() => {
+				btn.textContent = copiedText;
+				setTimeout(() => { btn.textContent = defaultText; }, 1500);
+			});
+		});
+	}
+</script>

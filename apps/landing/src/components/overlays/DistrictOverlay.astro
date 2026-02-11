@@ -1,0 +1,59 @@
+---
+import type { Messages } from "../../i18n";
+
+interface Props {
+	t: Messages["features"];
+}
+const { t } = Astro.props;
+
+const cards = [
+	{
+		title: t.mintTitle,
+		desc: t.mintDesc,
+		accent: "coral" as const,
+		icon: "NFA",
+	},
+	{
+		title: t.trainTitle,
+		desc: t.trainDesc,
+		accent: "cyan" as const,
+		icon: "LVL",
+	},
+	{
+		title: t.evolveTitle,
+		desc: t.evolveDesc,
+		accent: "amber" as const,
+		icon: "EVO",
+	},
+] as const;
+
+const accentMap = {
+	coral: { border: "border-coral/30", text: "text-coral", bg: "bg-coral/10" },
+	cyan: { border: "border-cyan/30", text: "text-cyan", bg: "bg-cyan/10" },
+	amber: { border: "border-amber/30", text: "text-amber", bg: "bg-amber/10" },
+} as const;
+---
+
+<div class="w-full max-w-5xl rounded-2xl border border-panel-border bg-panel-bg px-8 py-10 shadow-card backdrop-blur-sm">
+	<h2 class="mb-4 text-center font-pixel text-lg text-text-primary sm:text-xl md:text-2xl">
+		{t.title}
+	</h2>
+	<p class="mb-12 text-center font-mono text-sm text-text-secondary">
+		{t.subtitle}
+	</p>
+
+	<div class="grid grid-cols-1 gap-6 md:grid-cols-3">
+		{cards.map((card) => {
+			const a = accentMap[card.accent];
+			return (
+				<div class={`rounded-xl border ${a.border} bg-surface-raised p-6 shadow-card transition-all duration-300 hover:shadow-card-hover md:p-8`}>
+					<div class={`mb-6 flex h-20 items-center justify-center rounded-lg ${a.bg}`} aria-hidden="true">
+						<span class={`font-pixel text-base ${a.text}`}>{card.icon}</span>
+					</div>
+					<h3 class={`mb-3 font-pixel text-sm ${a.text}`}>{card.title}</h3>
+					<p class="font-mono text-sm leading-relaxed text-text-secondary">{card.desc}</p>
+				</div>
+			);
+		})}
+	</div>
+</div>

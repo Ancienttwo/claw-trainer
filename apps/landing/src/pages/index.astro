@@ -1,12 +1,21 @@
 ---
 import Layout from "../layouts/Layout.astro";
 import Navbar from "../components/Navbar.astro";
+import Footer from "../components/Footer.astro";
+
+import HeroOverlay from "../components/overlays/HeroOverlay.astro";
+import LabOverlay from "../components/overlays/LabOverlay.astro";
+import DistrictOverlay from "../components/overlays/DistrictOverlay.astro";
+import TrainingOverlay from "../components/overlays/TrainingOverlay.astro";
+import TavernOverlay from "../components/overlays/TavernOverlay.astro";
+
 import Hero from "../components/Hero.astro";
 import AgentSkill from "../components/AgentSkill.astro";
 import Features from "../components/Features.astro";
 import HowItWorks from "../components/HowItWorks.astro";
 import TechStack from "../components/TechStack.astro";
-import Footer from "../components/Footer.astro";
+
+import { VillageGame } from "../components/village/VillageGame";
 import { getT, getLocale } from "../i18n";
 
 const locale = getLocale(Astro);
@@ -15,12 +24,99 @@ const t = getT(locale);
 
 <Layout title={t.meta.title} description={t.meta.description}>
 	<Navbar t={t.nav} locale={locale} />
-	<main>
+
+	<!-- Desktop: Full-page Phaser Village (100vh, no scroll) -->
+	<div class="hidden lg:block" style="height: 100vh; overflow: hidden;">
+		<VillageGame client:only="react" />
+
+		<!-- Modal overlays (hidden by default, shown on building click) -->
+		<div
+			id="village-modal-backdrop"
+			class="pointer-events-none fixed inset-0 z-30 flex items-center justify-center bg-black/0 px-4 py-16 opacity-0 transition-all duration-200"
+		>
+			<div
+				id="village-modal-panel"
+				class="max-h-[85vh] translate-y-4 overflow-y-auto opacity-0 transition-all duration-300"
+			>
+				<div id="modal-plaza" class="hidden"><HeroOverlay t={t.hero} /></div>
+				<div id="modal-lab" class="hidden"><LabOverlay t={t.agentSkill} /></div>
+				<div id="modal-districts" class="hidden"><DistrictOverlay t={t.features} /></div>
+				<div id="modal-training" class="hidden"><TrainingOverlay t={t.howItWorks} /></div>
+				<div id="modal-tavern" class="hidden"><TavernOverlay t={t.techStack} /></div>
+			</div>
+		</div>
+
+		<!-- Hint text (bottom center) -->
+		<div class="pointer-events-none fixed bottom-6 left-1/2 z-10 -translate-x-1/2 font-pixel text-[10px] tracking-wide text-white/60" style="text-shadow: 0 1px 3px rgba(0,0,0,0.5);">
+			Click a building to explore
+		</div>
+	</div>
+
+	<!-- Mobile: Original sections (no Phaser) -->
+	<main class="lg:hidden">
 		<Hero t={t.hero} />
 		<AgentSkill t={t.agentSkill} />
 		<Features t={t.features} />
 		<HowItWorks t={t.howItWorks} />
 		<TechStack t={t.techStack} />
-		<Footer t={t.footer} />
 	</main>
+
+	<Footer t={t.footer} />
 </Layout>
+
+<script>
+	const backdrop = document.getElementById('village-modal-backdrop');
+	const panel = document.getElementById('village-modal-panel');
+	let activeId: string | null = null;
+
+	function showOverlay(id: string): void {
+		if (!backdrop || !panel) return;
+		if (activeId) hideOverlay();
+
+		const content = document.getElementById(`modal-${id}`);
+		if (!content) return;
+
+		content.classList.remove('hidden');
+		activeId = id;
+
+		// Show backdrop + panel with animation
+		requestAnimationFrame(() => {
+			backdrop.classList.remove('pointer-events-none', 'opacity-0');
+			backdrop.classList.add('pointer-events-auto');
+			backdrop.style.backgroundColor = 'rgba(0, 0, 0, 0.4)';
+			panel.classList.remove('opacity-0', 'translate-y-4');
+		});
+	}
+
+	function hideOverlay(): void {
+		if (!backdrop || !panel || !activeId) return;
+
+		backdrop.classList.add('opacity-0', 'pointer-events-none');
+		backdrop.classList.remove('pointer-events-auto');
+		backdrop.style.backgroundColor = 'rgba(0, 0, 0, 0)';
+		panel.classList.add('opacity-0', 'translate-y-4');
+
+		const id = activeId;
+		activeId = null;
+
+		setTimeout(() => {
+			const content = document.getElementById(`modal-${id}`);
+			content?.classList.add('hidden');
+		}, 300);
+	}
+
+	// Listen for Phaser zone clicks
+	window.addEventListener('village-zone-click', ((e: CustomEvent) => {
+		showOverlay(e.detail.id);
+	}) as EventListener);
+
+	// Close on Escape
+	document.addEventListener('keydown', (e) => {
+		if (e.key === 'Escape') hideOverlay();
+	});
+
+	// Close on backdrop click (not panel click)
+	backdrop?.addEventListener('click', (e) => {
+		if (e.target === backdrop) hideOverlay();
+	});
+</script>

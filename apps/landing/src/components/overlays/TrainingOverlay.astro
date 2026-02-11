@@ -1,0 +1,73 @@
+---
+import type { Messages } from "../../i18n";
+
+interface Props {
+	t: Messages["howItWorks"];
+}
+const { t } = Astro.props;
+
+const steps = [
+	{ number: "01", label: t.step1, icon: ">" },
+	{ number: "02", label: t.step2, icon: "#" },
+	{ number: "03", label: t.step3, icon: "$" },
+	{ number: "04", label: t.step4, icon: "!" },
+];
+---
+
+<div class="w-full max-w-5xl rounded-2xl border border-panel-border bg-panel-bg px-8 py-10 shadow-card backdrop-blur-sm">
+	<h2 class="mb-4 text-center font-pixel text-lg text-text-primary sm:text-xl md:text-2xl">
+		{t.title}
+	</h2>
+	<p class="mb-12 text-center font-mono text-sm text-text-secondary">
+		{t.subtitle}
+	</p>
+
+	<!-- Steps grid -->
+	<div class="mb-10 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
+		{steps.map((step, i) => (
+			<div class="relative">
+				<div class="rounded-xl border border-panel-border bg-surface-raised p-6 text-center shadow-card transition-all duration-300 hover:shadow-card-hover">
+					<div class="mb-4 font-mono text-xs text-terminal-green">
+						<span class="text-text-muted">$</span> step[{step.number}]
+					</div>
+					<div class="mx-auto mb-4 flex h-12 w-12 items-center justify-center rounded-md border border-panel-border bg-white font-pixel text-lg text-cyan">
+						{step.icon}
+					</div>
+					<p class="font-mono text-sm font-medium text-text-primary">{step.label}</p>
+				</div>
+				{i < steps.length - 1 && (
+					<div class="absolute -right-3 top-1/2 z-10 hidden -translate-y-1/2 font-mono text-lg text-text-muted lg:flex">
+						&rarr;
+					</div>
+				)}
+			</div>
+		))}
+	</div>
+
+	<!-- Terminal output (DARK bg) -->
+	<div class="mx-auto max-w-xl overflow-hidden rounded-lg border border-panel-border">
+		<div class="flex items-center gap-2 border-b border-[#2A2A3E] bg-[#1A1A2E] px-4 py-3">
+			<span class="h-3 w-3 rounded-full bg-coral/60"></span>
+			<span class="h-3 w-3 rounded-full bg-amber/60"></span>
+			<span class="h-3 w-3 rounded-full bg-terminal-green/60"></span>
+			<span class="ml-2 font-mono text-xs text-[#8888A0]">agent-cli</span>
+		</div>
+		<div class="space-y-1 bg-[#1A1A2E] p-4 font-mono text-xs text-[#C0C0D0]">
+			<p><span class="text-terminal-green">$</span> {t.terminalLine1}</p>
+			<p class="text-[#8888A0]">{t.terminalLine2}</p>
+			<p class="text-[#8888A0]">{t.terminalLine3}</p>
+			<p class="text-terminal-green">&#10003; {t.terminalLine4}</p>
+			<p class="text-cyan">&#8594; {t.terminalLine5}</p>
+		</div>
+	</div>
+
+	<div class="mt-8 text-center">
+		<a
+			href="https://app.clawtrainer.ai"
+			class="group inline-flex items-center gap-2 rounded-md border border-cyan bg-cyan/10 px-8 py-4 font-mono text-sm font-semibold text-cyan shadow-card transition-all duration-200 hover:scale-105 hover:bg-cyan/20"
+		>
+			<span>{t.cta}</span>
+			<span class="transition-transform group-hover:translate-x-1">&rarr;</span>
+		</a>
+	</div>
+</div>
