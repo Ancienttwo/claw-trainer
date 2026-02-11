@@ -63,3 +63,19 @@ artifacts/contracts/
 
 # ===== Cloudflare =====
 .wrangler/
+
+# ===== Tileset Asset Libraries (raw downloads) =====
+apps/landing/public/village/Farmer Generator Linux Build/
+apps/landing/public/village/Modern tiles_Free/
+apps/landing/public/village/Modern_Exteriors_RPG_Maker_MV/
+apps/landing/public/village/Modern_Farm_v1.2/
+apps/landing/public/village/SERENE_VILLAGE_REVAMPED/
+apps/landing/public/village/SERENE_VILLAGE_REVAMPED.textClipping
+
+# ===== Remotion output =====
+apps/landing/out/
+
+# ===== Planning artifacts (temp) =====
+**/task_plan.md
+**/findings.md
+**/progress.md
