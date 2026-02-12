@@ -25,12 +25,42 @@ function makeAgentDetail(overrides: Partial<AgentDetail> = {}): AgentDetail {
       description: "An agent for testing",
       attributes: [],
     },
+    erc8004AgentId: undefined,
+    persona: undefined,
+    status: undefined,
     ...overrides,
   }
 }
 
 vi.mock("wagmi", () => ({
   useAccount: () => ({ address: undefined, isConnected: false }),
+  usePublicClient: () => undefined,
+  useWriteContract: () => ({ writeContractAsync: vi.fn() }),
+}))
+
+vi.mock("@tanstack/react-query", () => ({
+  useQuery: () => ({ data: undefined, isLoading: false }),
+}))
+
+vi.mock("../../hooks/use-agent-state", () => ({
+  useAgentState: () => ({
+    state: null,
+    isLoading: false,
+    isOwner: false,
+    pauseAgent: vi.fn(),
+    unpauseAgent: vi.fn(),
+    terminateAgent: vi.fn(),
+    fundAgent: vi.fn(),
+    refetch: vi.fn(),
+  }),
+}))
+
+vi.mock("../../hooks/use-reputation", () => ({
+  useReputation: () => ({ data: undefined }),
+}))
+
+vi.mock("../../hooks/use-learning", () => ({
+  useLearning: () => ({ data: undefined }),
 }))
 
 vi.mock("@tanstack/react-router", () => ({
@@ -96,17 +126,15 @@ describe("AgentResume", () => {
 })
 
 describe("ActivityFeed", () => {
-  it("should_show_activity_heading_and_placeholder_events_when_rendered", () => {
+  it("should_show_activity_heading_when_rendered", () => {
     // Given: ActivityFeed is rendered
     render(<ActivityFeed />)
 
     // When: the user views the feed
     // Then: they see "Activity" heading
     expect(screen.getByRole("heading", { name: /Activity/i })).toBeInTheDocument()
-    // And: placeholder events are visible
-    expect(screen.getByText(/minted on bnb chain/i)).toBeInTheDocument()
-    expect(screen.getByText(/identity registered/i)).toBeInTheDocument()
-    expect(screen.getByText(/level 1 achieved/i)).toBeInTheDocument()
+    // And: "No activity yet" placeholder when API is not configured
+    expect(screen.getByText(/no activity yet/i)).toBeInTheDocument()
   })
 })
 

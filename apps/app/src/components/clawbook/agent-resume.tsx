@@ -3,7 +3,14 @@ import { PixelCard, PixelCardContent } from "../ui/pixel-card"
 import { PixelBadge } from "../ui/pixel-badge"
 import { TerminalText } from "../ui/terminal-text"
 import { AsciiLobster } from "../ui/ascii-lobster"
+import { AgentStateBadge } from "../claw/agent-state-badge"
+import { ReputationTags } from "../claw/reputation-tags"
+import { LearningPanel } from "../claw/learning-panel"
+import { PixelButton } from "../ui/pixel-button"
 import type { AgentDetail } from "../../hooks/use-agent"
+import type { AgentStatus } from "../../hooks/use-agent-state"
+import type { ReputationSummary } from "../../hooks/use-reputation"
+import type { LearningData } from "../../hooks/use-learning"
 import { truncateAddress } from "../../lib/address"
 import { StatBar } from "../claw/stat-bar"
 import { EvolutionBadge } from "../claw/evolution-badge"
@@ -130,18 +137,39 @@ function MetadataSection({ agent }: { agent: AgentDetail }) {
 
 interface AgentResumeProps {
   agent: AgentDetail
+  status?: AgentStatus
+  reputation?: ReputationSummary[]
+  learning?: LearningData | null
+  persona?: string
+  isOwner?: boolean
+  onPause?: () => void
+  onResume?: () => void
+  onFund?: () => void
 }
 
-export function AgentResume({ agent }: AgentResumeProps) {
+export function AgentResume({
+  agent,
+  status,
+  reputation,
+  learning,
+  persona,
+  isOwner,
+  onPause,
+  onResume,
+  onFund,
+}: AgentResumeProps) {
   const glow = resolveGlow(agent.stage)
 
   return (
     <PixelCard glow={glow} className="w-full">
       <div className="border-b-2 border-border-subtle px-4 py-2">
         <div className="flex items-center justify-between">
-          <h2 className="font-display text-xl text-text-primary">
-            {agent.name}
-          </h2>
+          <div className="flex items-center gap-2">
+            <h2 className="font-display text-xl text-text-primary">
+              {agent.name}
+            </h2>
+            {status && <AgentStateBadge status={status} />}
+          </div>
           <PixelBadge kind="level" value={agent.level} />
         </div>
         <EvolutionBadge currentStage={agent.stage} />
@@ -150,12 +178,52 @@ export function AgentResume({ agent }: AgentResumeProps) {
       <PixelCardContent className="space-y-4">
         <ArtArea name={agent.name} stage={agent.stage} />
         <StatsSection agent={agent} />
+
+        {persona && (
+          <div className="space-y-1">
+            <span className="font-pixel text-[8px] text-text-muted">PERSONA</span>
+            <TerminalText color="cyan" className="text-[10px]">
+              {persona}
+            </TerminalText>
+          </div>
+        )}
+
         <CapabilitiesSection capabilities={agent.capabilities} />
+
+        {reputation && reputation.length > 0 && (
+          <div className="space-y-1">
+            <span className="font-pixel text-[8px] text-text-muted">REPUTATION</span>
+            <ReputationTags summaries={reputation} />
+          </div>
+        )}
+
+        {learning && <LearningPanel learning={learning} />}
+
         <MetadataSection agent={agent} />
 
         <TerminalText color="green" className="text-[10px]">
           {agent.description}
         </TerminalText>
+
+        {isOwner && status && status !== "Terminated" && (
+          <div className="flex gap-2 border-t border-border-subtle pt-3">
+            {status === "Active" && onPause && (
+              <PixelButton variant="outline" size="sm" onClick={onPause}>
+                Pause
+              </PixelButton>
+            )}
+            {status === "Paused" && onResume && (
+              <PixelButton variant="terminal" size="sm" onClick={onResume}>
+                Resume
+              </PixelButton>
+            )}
+            {onFund && (
+              <PixelButton variant="primary" size="sm" onClick={onFund}>
+                Fund Agent
+              </PixelButton>
+            )}
+          </div>
+        )}
       </PixelCardContent>
     </PixelCard>
   )

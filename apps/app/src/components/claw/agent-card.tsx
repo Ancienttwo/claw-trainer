@@ -6,7 +6,9 @@ import { Link } from "@tanstack/react-router"
 import { PixelCard, PixelCardHeader, PixelCardContent } from "../ui/pixel-card"
 import { PixelBadge } from "../ui/pixel-badge"
 import { AsciiLobster } from "../ui/ascii-lobster"
+import { AgentStateBadge } from "./agent-state-badge"
 import type { AgentListItem } from "../../hooks/use-agents"
+import type { AgentStatus } from "../../hooks/use-agent-state"
 import { truncateAddress } from "../../lib/address"
 import { cn } from "../../lib/cn"
 
@@ -27,9 +29,10 @@ function resolveGlow(stage: string): "coral" | "amber" | "cyan" {
 
 interface AgentCardProps {
   agent: AgentListItem
+  status?: AgentStatus
 }
 
-export function AgentCard({ agent }: AgentCardProps) {
+export function AgentCard({ agent, status }: AgentCardProps) {
   const glow = resolveGlow(agent.stage)
 
   return (
@@ -46,9 +49,12 @@ export function AgentCard({ agent }: AgentCardProps) {
         )}
       >
         <PixelCardHeader className="flex items-center justify-between">
-          <span className="truncate font-pixel text-[10px] text-text-primary">
-            {agent.name}
-          </span>
+          <div className="flex items-center gap-2 truncate">
+            <span className="truncate font-pixel text-[10px] text-text-primary">
+              {agent.name}
+            </span>
+            {status && <AgentStateBadge status={status} size="sm" />}
+          </div>
           <PixelBadge kind="level" value={agent.level} />
         </PixelCardHeader>
 
