@@ -1,8 +1,9 @@
 import { useState } from "react"
-import { useFaucetBalance } from "../../hooks/use-faucet"
+import { useFaucetBalance, useClaimFaucet } from "../../hooks/use-faucet"
 import { useBets } from "../../hooks/use-bets"
 import { useAgents } from "../../hooks/use-agents"
 import { PixelCard, PixelCardHeader, PixelCardContent } from "../ui/pixel-card"
+import { PixelButton } from "../ui/pixel-button"
 import { Badge } from "../ui/badge"
 import { TerminalText } from "../ui/terminal-text"
 import { Skeleton } from "../ui/skeleton"
@@ -17,23 +18,23 @@ export function AgentObserver() {
   const [selectedAgent, setSelectedAgent] = useState("")
 
   const { data: faucetData } = useFaucetBalance(selectedAgent)
+  const claimFaucet = useClaimFaucet()
   const { bets, isLoading: betsLoading } = useBets(selectedAgent)
 
   const balance = faucetData?.balance ?? 0
-  const agentBets = bets.filter((b) => b.source === "agent")
-  const totalBets = agentBets.length
-  const wonBets = agentBets.filter((b) => b.status === "won").length
+  const totalBets = bets.length
+  const wonBets = bets.filter((b) => b.status === "won").length
   const winRate = totalBets > 0 ? wonBets / totalBets : 0
-  const totalPnl = agentBets.reduce((sum, b) => sum + (b.payout != null ? b.payout - b.amount : 0), 0)
+  const totalPnl = bets.reduce((sum, b) => sum + (b.payout != null ? b.payout - b.amount : 0), 0)
 
-  const lastBetTime = agentBets.length > 0 ? new Date(agentBets[0].createdAt) : null
+  const lastBetTime = bets.length > 0 ? new Date(bets[0].createdAt) : null
   const isActive = lastBetTime ? Date.now() - lastBetTime.getTime() < IDLE_THRESHOLD_MS : false
 
   return (
     <PixelCard glow="cyan">
       <PixelCardHeader>
         <div className="flex items-center justify-between">
-          <span>{t.mode.observing}</span>
+          <span>MY AGENT</span>
           <Badge variant={isActive ? "terminal" : "amber"}>
             {isActive ? t.mode.agentActive : t.mode.agentIdle}
           </Badge>
@@ -59,19 +60,27 @@ export function AgentObserver() {
           </select>
         </div>
 
-        {/* Balance (read-only) */}
+        {/* Balance + Fund */}
         {selectedAgent && (
           <div className="flex items-center justify-between">
             <span className="font-mono text-xs text-text-secondary">
               {t.arena.balance}: <span className="text-terminal-green">{balance.toFixed(0)}</span>
             </span>
+            <PixelButton
+              variant="terminal"
+              size="sm"
+              onClick={() => claimFaucet.mutate(selectedAgent)}
+              disabled={claimFaucet.isPending}
+            >
+              {claimFaucet.isPending ? t.arena.claiming : "FUND"}
+            </PixelButton>
           </div>
         )}
 
         {/* Stats */}
         {selectedAgent && (
           <div className="grid grid-cols-2 gap-2">
-            <StatBox label={t.mode.autonomousBets} value={String(totalBets)} />
+            <StatBox label={t.arena.totalBets} value={String(totalBets)} />
             <StatBox label={t.arena.winRate} value={`${(winRate * 100).toFixed(0)}%`} />
             <StatBox
               label={t.arena.totalPnl}
@@ -87,7 +96,7 @@ export function AgentObserver() {
 
         {/* Loading / empty */}
         {selectedAgent && betsLoading && <Skeleton className="h-16" />}
-        {selectedAgent && !betsLoading && agentBets.length === 0 && (
+        {selectedAgent && !betsLoading && bets.length === 0 && (
           <TerminalText color="amber" className="py-4 text-center text-xs">
             {t.mode.watching}
           </TerminalText>
