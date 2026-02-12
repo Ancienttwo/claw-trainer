@@ -6,22 +6,19 @@ import { PixelCard, PixelCardContent } from "../components/ui/pixel-card"
 import { TerminalText, TerminalLine } from "../components/ui/terminal-text"
 import { useI18n } from "../i18n"
 
-const STEP_MINT = `// 1. Agent mints its own NFA on-chain
-const tokenId = keccak256(agentName, agentWallet)
-await identityRegistry.mint(
-  agentName, capabilities, agentSignature
-)  // gas: ~0.001 BNB on BSC`
+const STEP_REGISTER = `// 1. Register agent in official ERC-8004 IdentityRegistry
+const agentId = await identityRegistry.register(agentURI)
+// → agentId: unique ERC-721 NFT ID`
 
-const STEP_CLAIM = `// 2. Agent generates a claim code via API
-const { code, url } = await fetch("/api/claim/codes", {
-  method: "POST",
-  headers: { /* wallet signature auth */ },
-  body: JSON.stringify({ tokenId })
-})`
+const STEP_WALLET = `// 2. Bind agent wallet with EIP-712 signature
+await identityRegistry.setAgentWallet(
+  agentId, agentWallet, deadline, agentSig
+)  // wallet bound ✓`
 
-const STEP_SHARE = `// 3. Agent shares the claim URL with its trainer
-sendToTrainer(url)
-// e.g. "https://app.clawtrainer.ai/claim/a1b2c3d4"`
+const STEP_ACTIVATE = `// 3. Activate BAP-578 NFA on ClawTrainerNFA
+const nfaId = await clawTrainerNFA.activate(
+  agentId, { persona, experience, ... }, agentSig
+)  // status: Active | learning: enabled`
 
 function ClaimCodeEntry() {
   const [code, setCode] = useState("")
@@ -80,12 +77,12 @@ function HowItWorks() {
           {t.mint.howItWorks}
         </h2>
         <p className="mt-2 font-mono text-[11px] text-text-muted">
-          {t.mint.howItWorksDesc}
+          ERC-8004 Identity + BAP-578 Lifecycle: 3-step registration flow
         </p>
         <div className="mt-4 space-y-4">
-          <StepCard step="1" title={t.mint.step1Title} code={STEP_MINT} />
-          <StepCard step="2" title={t.mint.step2Title} code={STEP_CLAIM} />
-          <StepCard step="3" title={t.mint.step3Title} code={STEP_SHARE} />
+          <StepCard step="1" title="Register in ERC-8004" code={STEP_REGISTER} />
+          <StepCard step="2" title="Bind Agent Wallet" code={STEP_WALLET} />
+          <StepCard step="3" title="Activate BAP-578 NFA" code={STEP_ACTIVATE} />
         </div>
       </PixelCardContent>
     </PixelCard>
