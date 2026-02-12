@@ -1,5 +1,4 @@
-import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query"
-import { useAccount, useSignMessage } from "wagmi"
+import { useQuery } from "@tanstack/react-query"
 import { apiFetch } from "../lib/api"
 
 export type BetSource = "agent" | "human"
@@ -66,35 +65,4 @@ export function useBets(agentTokenId: string) {
   })
 
   return { bets: data ?? [], isLoading, isError, error, refetch }
-}
-
-interface PlaceBetInput {
-  agentTokenId: string
-  marketSlug: string
-  marketQuestion: string
-  clobTokenId: string
-  direction: "yes" | "no"
-  amount: number
-}
-
-export function usePlaceBet() {
-  const queryClient = useQueryClient()
-  const { address } = useAccount()
-  const { signMessageAsync } = useSignMessage()
-
-  return useMutation({
-    mutationFn: async (input: PlaceBetInput) => {
-      if (!address) throw new Error("Wallet not connected")
-      return apiFetch<{ bet: ApiBet }>("/arena/bet", {
-        method: "POST",
-        body: input,
-        wallet: address,
-        signMessage: (msg: string) => signMessageAsync({ message: msg }),
-      })
-    },
-    onSuccess: (_, input) => {
-      queryClient.invalidateQueries({ queryKey: ["arena-bets", input.agentTokenId] })
-      queryClient.invalidateQueries({ queryKey: ["faucet-balance", input.agentTokenId] })
-    },
-  })
 }
