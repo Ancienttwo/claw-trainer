@@ -3,23 +3,20 @@ import { GridBackground } from "../components/ui/grid-background"
 import { TerminalLoader } from "../components/ui/terminal-loader"
 import { TerminalText } from "../components/ui/terminal-text"
 import { PixelButton } from "../components/ui/pixel-button"
-import { PolymarketEmbed } from "../components/arena/polymarket-embed"
-import { BetPanel } from "../components/arena/bet-panel"
+import { MarketStats } from "../components/arena/market-stats"
+import { PriceChart } from "../components/arena/price-chart"
+import { Orderbook } from "../components/arena/orderbook"
+import { MarketParticipants } from "../components/arena/market-participants"
 import { AgentObserver } from "../components/arena/agent-observer"
-import { MyBets } from "../components/arena/my-bets"
 import { useMarketDetail } from "../hooks/use-market-detail"
-import { useAgents } from "../hooks/use-agents"
-import { useViewMode } from "../hooks/use-view-mode"
 import { useI18n } from "../i18n"
-import { useState } from "react"
 
 function MarketDetailPage() {
   const { slug } = Route.useParams()
   const { t } = useI18n()
   const { market, isLoading, isError, refetch } = useMarketDetail(slug)
-  const { agents } = useAgents()
-  const { viewMode } = useViewMode()
-  const [selectedAgent, setSelectedAgent] = useState("")
+
+  const yesTokenId = market?.clobTokenIds[0] ?? ""
 
   return (
     <GridBackground>
@@ -46,39 +43,22 @@ function MarketDetailPage() {
         {market && (
           <>
             <h1 className="mb-4 font-body text-lg text-text-primary">{market.question}</h1>
+
+            {/* Stats row */}
+            <div className="mb-4">
+              <MarketStats market={market} />
+            </div>
+
             <div className="grid grid-cols-1 gap-6 lg:grid-cols-3">
-              {/* Left: Embed */}
-              <div className="lg:col-span-2">
-                <PolymarketEmbed slug={slug} />
+              {/* Left: Chart + Orderbook */}
+              <div className="space-y-4 lg:col-span-2">
+                <PriceChart tokenId={yesTokenId} />
+                <Orderbook tokenId={yesTokenId} />
               </div>
-              {/* Right: Bet Panel (Train) or Observer (Watch) + My Bets */}
+              {/* Right: Participants + My Agent */}
               <div className="space-y-4">
-                {viewMode === "agent" ? (
-                  <AgentObserver />
-                ) : (
-                  <BetPanel market={market} />
-                )}
-                {selectedAgent ? (
-                  <MyBets agentTokenId={selectedAgent} />
-                ) : agents.length > 0 && viewMode === "trainer" ? (
-                  <div className="space-y-2">
-                    <label className="block font-pixel text-[8px] text-text-secondary">
-                      {t.arena.selectAgent} to view bets:
-                    </label>
-                    <select
-                      value={selectedAgent}
-                      onChange={(e) => setSelectedAgent(e.target.value)}
-                      className="w-full rounded-sm border border-border-subtle bg-surface-base px-2 py-1 font-mono text-xs text-text-primary"
-                    >
-                      <option value="">-- {t.arena.selectAgent} --</option>
-                      {agents.map((a) => (
-                        <option key={a.tokenId.toString()} value={a.tokenId.toString()}>
-                          {a.name}
-                        </option>
-                      ))}
-                    </select>
-                  </div>
-                ) : null}
+                <MarketParticipants marketSlug={slug} />
+                <AgentObserver />
               </div>
             </div>
           </>
