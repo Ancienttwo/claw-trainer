@@ -18,12 +18,29 @@ export const agents = sqliteTable("agents", {
   updatedAt: text("updated_at")
     .notNull()
     .default(sql`(datetime('now'))`),
+  // BAP-578 fields
+  erc8004AgentId: text("erc8004_agent_id"),
+  status: text("status").notNull().default("Active"),
+  persona: text("persona"),
+  experience: text("experience"),
+  voiceHash: text("voice_hash"),
+  animationUri: text("animation_uri"),
+  vaultUri: text("vault_uri"),
+  vaultHash: text("vault_hash"),
+  logicAddress: text("logic_address"),
+  agentBalance: text("agent_balance"),
+  learningRoot: text("learning_root"),
+  totalInteractions: integer("total_interactions").notNull().default(0),
+  learningEvents: integer("learning_events").notNull().default(0),
+  confidenceScore: integer("confidence_score").notNull().default(0),
+  learningVelocity: integer("learning_velocity").notNull().default(0),
 }, (t) => [
   index("idx_agents_owner").on(t.owner),
   uniqueIndex("idx_agents_agent_wallet").on(t.agentWallet),
   index("idx_agents_name").on(t.name),
   index("idx_agents_level").on(t.level),
   index("idx_agents_minted_at").on(t.mintedAt),
+  index("idx_agents_status").on(t.status),
 ])
 
 export const trainers = sqliteTable("trainers", {
@@ -237,4 +254,22 @@ export const skillPurchases = sqliteTable("skill_purchases", {
   index("idx_purchases_skill").on(t.skillId),
   index("idx_purchases_buyer").on(t.buyerAddress),
   uniqueIndex("idx_purchases_unique").on(t.skillId, t.buyerAddress),
+])
+
+// ─── BAP-578 Reputation Tables ──────────────────────────
+
+export const reputationFeedback = sqliteTable("reputation_feedback", {
+  id: integer("id").primaryKey({ autoIncrement: true }),
+  agentId: text("agent_id").notNull(),
+  clientAddress: text("client_address").notNull(),
+  feedbackIndex: integer("feedback_index").notNull(),
+  value: integer("value").notNull(),
+  valueDecimals: integer("value_decimals").notNull(),
+  tag1: text("tag1"),
+  tag2: text("tag2"),
+  isRevoked: integer("is_revoked").notNull().default(0),
+  createdAt: text("created_at").notNull(),
+}, (t) => [
+  index("idx_reputation_agent").on(t.agentId),
+  index("idx_reputation_client").on(t.clientAddress),
 ])

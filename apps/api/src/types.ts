@@ -25,6 +25,8 @@ export interface Bindings {
   CORS_ORIGINS: string
   POLYMARKET_GAMMA_URL: string
   POLYMARKET_CLOB_URL: string
+  CLAWTRAINER_NFA_ADDRESS: string
+  ERC8004_REPUTATION_ADDRESS: string
 }
 
 export interface Variables {

@@ -1,16 +1,47 @@
 import { createPublicClient, http, parseAbiItem, type Address, type Log, type PublicClient } from "viem"
 import { bscTestnet } from "viem/chains"
-import { eq, sql } from "drizzle-orm"
-import { agents, trainers, activities, syncState } from "../db/schema"
+import { eq, and, sql } from "drizzle-orm"
+import { agents, trainers, activities, syncState, reputationFeedback } from "../db/schema"
 import type { Database } from "../db/client"
 import type { Bindings } from "../types"
 
+// ─── Legacy IdentityRegistry Events ─────────────────────
 const MINT_EVENT = parseAbiItem(
   "event NFAMinted(uint256 indexed tokenId, address indexed owner, address indexed agentWallet, string tokenURI)",
 )
 const LEVEL_UP_EVENT = parseAbiItem(
   "event AgentLevelUp(uint256 indexed tokenId, uint8 newLevel)",
 )
+
+// ─── ClawTrainerNFA (BAP-578) Events ────────────────────
+const NFA_ACTIVATED_EVENT = parseAbiItem(
+  "event NFAActivated(uint256 indexed tokenId, uint256 indexed erc8004AgentId, address indexed owner)",
+)
+const STATUS_CHANGED_EVENT = parseAbiItem(
+  "event StatusChanged(uint256 indexed tokenId, uint8 newStatus)",
+)
+const METADATA_UPDATED_EVENT = parseAbiItem(
+  "event MetadataUpdated(uint256 indexed tokenId)",
+)
+const LEARNING_UPDATED_EVENT = parseAbiItem(
+  "event LearningUpdated(uint256 indexed tokenId, bytes32 newRoot)",
+)
+const INTERACTION_RECORDED_EVENT = parseAbiItem(
+  "event InteractionRecorded(uint256 indexed tokenId, string interactionType, bool success)",
+)
+const AGENT_FUNDED_EVENT = parseAbiItem(
+  "event AgentFunded(uint256 indexed tokenId, uint256 amount)",
+)
+
+// ─── ERC-8004 ReputationRegistry Events ─────────────────
+const NEW_FEEDBACK_EVENT = parseAbiItem(
+  "event NewFeedback(uint256 indexed agentId, address indexed client, uint256 feedbackIndex, int128 value, uint8 valueDecimals, bytes32 tag1, bytes32 tag2)",
+)
+const FEEDBACK_REVOKED_EVENT = parseAbiItem(
+  "event FeedbackRevoked(uint256 indexed agentId, uint256 indexed feedbackIndex)",
+)
+
+const STATUS_MAP: Record<number, string> = { 0: "Active", 1: "Paused", 2: "Terminated" }
 
 const INITIAL_BLOCK_RANGE = 1000n
 const MIN_BLOCK_RANGE = 50n
@@ -150,6 +181,194 @@ async function processLevelUpLogs(db: Database, logs: ReadonlyArray<Log<bigint, 
   return count
 }
 
+// ─── BAP-578 Event Processors ───────────────────────────
+
+async function processNfaActivatedLogs(
+  db: Database,
+  logs: ReadonlyArray<Log<bigint, number, false, typeof NFA_ACTIVATED_EVENT>>,
+) {
+  let count = 0
+  for (const log of logs) {
+    const { tokenId, erc8004AgentId, owner } = log.args
+    if (tokenId === undefined || erc8004AgentId === undefined || !owner) continue
+
+    await db
+      .update(agents)
+      .set({
+        erc8004AgentId: erc8004AgentId.toString(),
+        updatedAt: new Date().toISOString(),
+      })
+      .where(eq(agents.tokenId, tokenId.toString()))
+
+    await db.insert(activities).values({
+      type: "nfa_activated",
+      wallet: owner.toLowerCase(),
+      tokenId: tokenId.toString(),
+      metadata: JSON.stringify({ erc8004AgentId: erc8004AgentId.toString() }),
+      blockNumber: (log.blockNumber ?? 0n).toString(),
+      txHash: log.transactionHash ?? "",
+    })
+    count++
+  }
+  return count
+}
+
+async function processStatusChangedLogs(
+  db: Database,
+  logs: ReadonlyArray<Log<bigint, number, false, typeof STATUS_CHANGED_EVENT>>,
+) {
+  let count = 0
+  for (const log of logs) {
+    const { tokenId, newStatus } = log.args
+    if (tokenId === undefined || newStatus === undefined) continue
+
+    const statusStr = STATUS_MAP[newStatus] ?? "Active"
+    await db
+      .update(agents)
+      .set({ status: statusStr, updatedAt: new Date().toISOString() })
+      .where(eq(agents.tokenId, tokenId.toString()))
+
+    await db.insert(activities).values({
+      type: "status_changed",
+      tokenId: tokenId.toString(),
+      metadata: JSON.stringify({ status: statusStr }),
+      blockNumber: (log.blockNumber ?? 0n).toString(),
+      txHash: log.transactionHash ?? "",
+    })
+    count++
+  }
+  return count
+}
+
+async function processLearningUpdatedLogs(
+  db: Database,
+  logs: ReadonlyArray<Log<bigint, number, false, typeof LEARNING_UPDATED_EVENT>>,
+) {
+  let count = 0
+  for (const log of logs) {
+    const { tokenId, newRoot } = log.args
+    if (tokenId === undefined || !newRoot) continue
+
+    await db
+      .update(agents)
+      .set({
+        learningRoot: newRoot,
+        learningEvents: sql`${agents.learningEvents} + 1`,
+        updatedAt: new Date().toISOString(),
+      })
+      .where(eq(agents.tokenId, tokenId.toString()))
+    count++
+  }
+  return count
+}
+
+async function processInteractionRecordedLogs(
+  db: Database,
+  logs: ReadonlyArray<Log<bigint, number, false, typeof INTERACTION_RECORDED_EVENT>>,
+) {
+  let count = 0
+  for (const log of logs) {
+    const { tokenId, interactionType, success } = log.args
+    if (tokenId === undefined) continue
+
+    await db
+      .update(agents)
+      .set({
+        totalInteractions: sql`${agents.totalInteractions} + 1`,
+        updatedAt: new Date().toISOString(),
+      })
+      .where(eq(agents.tokenId, tokenId.toString()))
+
+    await db.insert(activities).values({
+      type: "interaction",
+      tokenId: tokenId.toString(),
+      metadata: JSON.stringify({ interactionType, success }),
+      blockNumber: (log.blockNumber ?? 0n).toString(),
+      txHash: log.transactionHash ?? "",
+    })
+    count++
+  }
+  return count
+}
+
+async function processAgentFundedLogs(
+  db: Database,
+  logs: ReadonlyArray<Log<bigint, number, false, typeof AGENT_FUNDED_EVENT>>,
+) {
+  let count = 0
+  for (const log of logs) {
+    const { tokenId, amount } = log.args
+    if (tokenId === undefined || amount === undefined) continue
+
+    await db
+      .update(agents)
+      .set({
+        agentBalance: sql`CAST(COALESCE(CAST(${agents.agentBalance} AS INTEGER), 0) + ${amount.toString()} AS TEXT)`,
+        updatedAt: new Date().toISOString(),
+      })
+      .where(eq(agents.tokenId, tokenId.toString()))
+
+    await db.insert(activities).values({
+      type: "agent_funded",
+      tokenId: tokenId.toString(),
+      metadata: JSON.stringify({ amount: amount.toString() }),
+      blockNumber: (log.blockNumber ?? 0n).toString(),
+      txHash: log.transactionHash ?? "",
+    })
+    count++
+  }
+  return count
+}
+
+// ─── Reputation Event Processors ────────────────────────
+
+async function processNewFeedbackLogs(
+  db: Database,
+  logs: ReadonlyArray<Log<bigint, number, false, typeof NEW_FEEDBACK_EVENT>>,
+) {
+  let count = 0
+  for (const log of logs) {
+    const { agentId, client, feedbackIndex, value, valueDecimals, tag1, tag2 } = log.args
+    if (agentId === undefined || !client || feedbackIndex === undefined) continue
+
+    await db.insert(reputationFeedback).values({
+      agentId: agentId.toString(),
+      clientAddress: client.toLowerCase(),
+      feedbackIndex: Number(feedbackIndex),
+      value: Number(value ?? 0),
+      valueDecimals: Number(valueDecimals ?? 0),
+      tag1: tag1 ?? null,
+      tag2: tag2 ?? null,
+      createdAt: new Date().toISOString(),
+    }).onConflictDoNothing()
+    count++
+  }
+  return count
+}
+
+async function processFeedbackRevokedLogs(
+  db: Database,
+  logs: ReadonlyArray<Log<bigint, number, false, typeof FEEDBACK_REVOKED_EVENT>>,
+) {
+  let count = 0
+  for (const log of logs) {
+    const { agentId, feedbackIndex } = log.args
+    if (agentId === undefined || feedbackIndex === undefined) continue
+
+    await db
+      .update(reputationFeedback)
+      .set({ isRevoked: 1 })
+      .where(
+        and(
+          eq(reputationFeedback.agentId, agentId.toString()),
+          eq(reputationFeedback.feedbackIndex, Number(feedbackIndex)),
+        ),
+      )
+    count++
+  }
+  return count
+}
+
 async function findMaxRange(
   client: PublicClient,
   address: Address,
@@ -179,7 +398,9 @@ export async function syncEvents(
     transport: http(env.BSC_RPC_URL),
   })
 
-  const contractAddress = env.IDENTITY_REGISTRY_ADDRESS as Address
+  const identityRegistry = env.IDENTITY_REGISTRY_ADDRESS as Address
+  const nfaAddress = env.CLAWTRAINER_NFA_ADDRESS as Address
+  const reputationAddress = env.ERC8004_REPUTATION_ADDRESS as Address
   const deployBlock = BigInt(env.CONTRACT_DEPLOY_BLOCK)
   const lastSynced = await getLastSyncedBlock(db)
   const fromBlock = lastSynced ? lastSynced + 1n : deployBlock
@@ -193,23 +414,55 @@ export async function syncEvents(
     ? fromBlock + INITIAL_BLOCK_RANGE
     : latestBlock
 
-  const toBlock = await findMaxRange(client, contractAddress, fromBlock, maxToBlock)
+  const toBlock = await findMaxRange(client, identityRegistry, fromBlock, maxToBlock)
 
   if (toBlock <= fromBlock) {
     return { synced: 0, fromBlock: fromBlock.toString(), toBlock: fromBlock.toString() }
   }
 
+  // Legacy IdentityRegistry events
   const [mintLogs, levelUpLogs] = await Promise.all([
-    client.getLogs({ address: contractAddress, event: MINT_EVENT, fromBlock, toBlock }),
-    client.getLogs({ address: contractAddress, event: LEVEL_UP_EVENT, fromBlock, toBlock }),
+    client.getLogs({ address: identityRegistry, event: MINT_EVENT, fromBlock, toBlock }),
+    client.getLogs({ address: identityRegistry, event: LEVEL_UP_EVENT, fromBlock, toBlock }),
   ])
 
   const mintCount = await processMintLogs(db, mintLogs)
   const levelUpCount = await processLevelUpLogs(db, levelUpLogs)
+
+  // BAP-578 ClawTrainerNFA events (skip if placeholder)
+  let nfaCount = 0
+  if (nfaAddress && !nfaAddress.startsWith("PLACEHOLDER")) {
+    const [activatedLogs, statusLogs, learningLogs, interactionLogs, fundedLogs] = await Promise.all([
+      client.getLogs({ address: nfaAddress, event: NFA_ACTIVATED_EVENT, fromBlock, toBlock }),
+      client.getLogs({ address: nfaAddress, event: STATUS_CHANGED_EVENT, fromBlock, toBlock }),
+      client.getLogs({ address: nfaAddress, event: LEARNING_UPDATED_EVENT, fromBlock, toBlock }),
+      client.getLogs({ address: nfaAddress, event: INTERACTION_RECORDED_EVENT, fromBlock, toBlock }),
+      client.getLogs({ address: nfaAddress, event: AGENT_FUNDED_EVENT, fromBlock, toBlock }),
+    ])
+
+    nfaCount += await processNfaActivatedLogs(db, activatedLogs)
+    nfaCount += await processStatusChangedLogs(db, statusLogs)
+    nfaCount += await processLearningUpdatedLogs(db, learningLogs)
+    nfaCount += await processInteractionRecordedLogs(db, interactionLogs)
+    nfaCount += await processAgentFundedLogs(db, fundedLogs)
+  }
+
+  // ERC-8004 Reputation events
+  let repCount = 0
+  if (reputationAddress) {
+    const [feedbackLogs, revokedLogs] = await Promise.all([
+      client.getLogs({ address: reputationAddress, event: NEW_FEEDBACK_EVENT, fromBlock, toBlock }),
+      client.getLogs({ address: reputationAddress, event: FEEDBACK_REVOKED_EVENT, fromBlock, toBlock }),
+    ])
+
+    repCount += await processNewFeedbackLogs(db, feedbackLogs)
+    repCount += await processFeedbackRevokedLogs(db, revokedLogs)
+  }
+
   await updateLastSyncedBlock(db, toBlock)
 
   return {
-    synced: mintCount + levelUpCount,
+    synced: mintCount + levelUpCount + nfaCount + repCount,
     fromBlock: fromBlock.toString(),
     toBlock: toBlock.toString(),
   }

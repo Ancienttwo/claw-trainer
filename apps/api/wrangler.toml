@@ -10,6 +10,8 @@ CONTRACT_DEPLOY_BLOCK = "88823136"
 CORS_ORIGINS = "http://localhost:5173,http://localhost:4321,https://app.clawtrainer.ai,https://clawtrainer-app.pages.dev"
 POLYMARKET_GAMMA_URL = "https://gamma-api.polymarket.com"
 POLYMARKET_CLOB_URL = "https://clob.polymarket.com"
+CLAWTRAINER_NFA_ADDRESS = "PLACEHOLDER_DEPLOY_ADDRESS"
+ERC8004_REPUTATION_ADDRESS = "0x8004B663056A597Dffe9eCcC1965A193B7388713"
 
 [[r2_buckets]]
 binding = "SKILLS_BUCKET"
