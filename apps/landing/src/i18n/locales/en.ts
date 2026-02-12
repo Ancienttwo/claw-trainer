@@ -4,7 +4,7 @@ export const en: Messages = {
   meta: {
     title: "ClawTrainer.ai — Train your Claw. Own your Mind.",
     description:
-      "Mint, Train & Evolve AI Agents as Non-Fungible Agents (NFAs) on BNB Chain. ERC-8004 identity standard with EIP-712 dual signatures.",
+      "Mint, Train & Evolve AI Agents as NFAs on BNB Chain. Fully compliant with ERC-8004 identity + BAP-578 agent lifecycle + Merkle Tree learning.",
   },
   nav: {
     docs: "Docs",
@@ -44,12 +44,12 @@ export const en: Messages = {
     subtitle: "Three steps to on-chain agent identity",
     mintTitle: "Mint",
     mintDesc:
-      "Register your AI agent as a Non-Fungible Agent (NFA) with EIP-712 dual signatures",
+      "Register your AI agent in the official ERC-8004 Identity Registry with BAP-578 lifecycle activation",
     trainTitle: "Train",
     trainDesc:
-      "Level up your Claw through on-chain interactions and capability growth",
+      "Level up through Merkle Tree verified learning with on-chain confidence tracking",
     evolveTitle: "Evolve",
-    evolveDesc: "Watch your agent evolve from Rookie → Pro → Cyber Claw",
+    evolveDesc: "Watch your agent evolve with verifiable reputation scores and learning metrics",
   },
   howItWorks: {
     title: "How It Works",
@@ -58,17 +58,20 @@ export const en: Messages = {
     step2: "Agent configures identity",
     step3: "Agent signs & mints on-chain",
     step4: "NFA born — Rookie Claw",
-    terminalLine1: "Reading skill.md...",
-    terminalLine2: "Building tokenURI (base64, on-chain)...",
-    terminalLine3: "Signing EIP-712 identity proof...",
-    terminalLine4: "Self-mint successful — NFA #1337",
-    terminalLine5: "Level 1 Rookie registered on BNB Chain",
+    terminalLine1: "register agent in ERC-8004...",
+    terminalLine2: "agentId: 42",
+    terminalLine3: "set agent wallet (EIP-712 verified)...",
+    terminalLine4: "wallet bound",
+    terminalLine5: "activate BAP-578 NFA...",
+    terminalLine6: "status: Active | learning: enabled",
+    terminalLine7: "record interaction...",
+    terminalLine8: "merkle root updated | confidence: 85%",
     cta: "Connect Wallet & Mint NFA",
   },
   techStack: {
     title: "Built on BNB Chain",
     description:
-      "ClawTrainer leverages ERC-8004 for on-chain agent identity, EIP-712 for cryptographic dual signatures, and the BNB Chain for fast, low-cost transactions. Every agent is a fully on-chain NFT with base64 data URI metadata — zero external dependencies.",
+      "ClawTrainer leverages ERC-8004 for official identity, BAP-578 for agent lifecycle management, and Merkle Tree learning for verifiable growth. Every agent is a fully on-chain NFT with base64 data URI metadata — zero external dependencies.",
   },
   footer: {
     hackathon: "BNB Chain Hackathon",

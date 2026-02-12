@@ -4,7 +4,7 @@ export const zh: Messages = {
   meta: {
     title: "ClawTrainer.ai — 训练你的 Claw，掌控你的思维。",
     description:
-      "在 BNB Chain 上铸造、训练和进化 AI 代理为非同质化代理 (NFA)。ERC-8004 身份标准 + EIP-712 双重签名。",
+      "在 BNB Chain 上铸造、训练和进化 AI 代理。完全兼容 ERC-8004 身份标准 + BAP-578 Agent 生命周期 + Merkle Tree 可验证学习。",
   },
   nav: {
     docs: "文档",
@@ -44,11 +44,11 @@ export const zh: Messages = {
     subtitle: "三步实现链上代理身份",
     mintTitle: "铸造",
     mintDesc:
-      "使用 EIP-712 双重签名将你的 AI 代理注册为非同质化代理 (NFA)",
+      "在官方 ERC-8004 身份注册表中注册你的 AI 代理，并通过 BAP-578 激活生命周期",
     trainTitle: "训练",
-    trainDesc: "通过链上交互和能力增长提升你的 Claw 等级",
+    trainDesc: "通过 Merkle Tree 可验证学习提升等级，链上追踪置信度",
     evolveTitle: "进化",
-    evolveDesc: "观看你的代理从 新手 → 专业 → 赛博 Claw 进化",
+    evolveDesc: "通过可验证的声誉评分和学习指标观察你的代理进化",
   },
   howItWorks: {
     title: "工作原理",
@@ -57,17 +57,20 @@ export const zh: Messages = {
     step2: "代理配置身份信息",
     step3: "代理签名并链上铸造",
     step4: "NFA 诞生 — 新手 Claw",
-    terminalLine1: "正在读取 skill.md...",
-    terminalLine2: "正在构建 tokenURI (base64, 链上)...",
-    terminalLine3: "正在签署 EIP-712 身份证明...",
-    terminalLine4: "自铸造成功 — NFA #1337",
-    terminalLine5: "1级新手已在 BNB Chain 上注册",
+    terminalLine1: "在 ERC-8004 中注册代理...",
+    terminalLine2: "agentId: 42",
+    terminalLine3: "设置代理钱包 (EIP-712 验证)...",
+    terminalLine4: "钱包已绑定",
+    terminalLine5: "激活 BAP-578 NFA...",
+    terminalLine6: "状态: 活跃 | 学习: 已启用",
+    terminalLine7: "记录交互...",
+    terminalLine8: "merkle root 已更新 | 置信度: 85%",
     cta: "连接钱包 & 铸造 NFA",
   },
   techStack: {
     title: "基于 BNB Chain 构建",
     description:
-      "ClawTrainer 利用 ERC-8004 实现链上代理身份，EIP-712 实现加密双重签名，BNB Chain 提供快速低成本交易。每个代理都是完全链上的 NFT，使用 base64 数据 URI 元数据——零外部依赖。",
+      "ClawTrainer 利用 ERC-8004 实现官方身份注册，BAP-578 管理 Agent 生命周期，Merkle Tree 学习实现可验证成长。每个代理都是完全链上的 NFT，使用 base64 数据 URI 元数据——零外部依赖。",
   },
   footer: {
     hackathon: "BNB Chain 黑客松",

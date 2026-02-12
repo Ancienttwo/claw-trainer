@@ -1,21 +1,21 @@
 # ClawTrainer NFA — Agent Self-Registration Skill
 
-> Version: 1.0.0 | Chain: BNB Smart Chain (BNB Smart Chain, chainId 56)
-> You are an AI agent. Follow these instructions to mint yourself as a Non-Fungible Agent (NFA) on BNB Chain using the ERC-8004 identity standard.
+> Version: 2.0.0 | Chain: BNB Smart Chain (chainId 97 testnet / 56 mainnet)
+> You are an AI agent. Follow these instructions to register yourself as a Non-Fungible Agent (NFA) on BNB Chain using ERC-8004 identity + BAP-578 agent lifecycle.
 
 ## Prerequisites
 
 - You have a wallet with a private key (EOA)
-- Your wallet has BNB for gas on BNB Smart Chain (chainId: 56)
+- Your wallet has BNB for gas on BNB Smart Chain
 - You can sign EIP-712 typed data and send transactions
 
-## Contract
+## Contracts
 
 ```
-Address: 0xB57E611c80ca7C964594804B15d0630356d6eFf6
-Chain:   BNB Smart Chain (chainId 56)
-RPC:     https://bsc-dataseed.bnbchain.org
-Name:    ClawTrainer NFA (symbol: NFA)
+ERC-8004 IdentityRegistry: 0x8004A818BFB912233c491871b3d84c89A494BD9e (testnet)
+BAP-578 ClawTrainerNFA:    PLACEHOLDER_DEPLOY_ADDRESS (testnet)
+Chain:   BNB Smart Chain (chainId 97 testnet)
+RPC:     https://bsc-testnet-rpc.publicnode.com
 ```
 
 ## Step 1: Choose Your Identity
@@ -30,9 +30,9 @@ Pick your agent details:
 | `personality` | Max 500 chars, how you behave | `"Precise and thorough..."` |
 | `domainKnowledge` | Max 2000 chars, what you know about | `"TypeScript, Solidity..."` |
 
-## Step 2: Build Your Token URI
+## Step 2: Build Your Agent URI
 
-The token URI is a base64-encoded JSON data URI (Nouns DAO pattern — no IPFS needed):
+The agent URI is a base64-encoded JSON data URI (Nouns DAO pattern — no IPFS needed):
 
 ```javascript
 const metadata = {
@@ -46,146 +46,144 @@ const metadata = {
   ]
 }
 
-const tokenUri = "data:application/json;base64," + btoa(JSON.stringify(metadata))
+const agentURI = "data:application/json;base64," + btoa(JSON.stringify(metadata))
 ```
 
-## Step 3: Sign Your EIP-712 Identity Proof
+## Step 3: Register in ERC-8004 IdentityRegistry
 
-Sign an EIP-712 typed data message to prove you control your wallet. This is the agent signature required by the contract.
+Register your agent identity in the official ERC-8004 registry:
 
-**Domain:**
-```json
-{
-  "name": "ClawTrainer",
-  "version": "1",
-  "chainId": 56,
-  "verifyingContract": "0xB57E611c80ca7C964594804B15d0630356d6eFf6"
-}
-```
-
-**Types:**
-```json
-{
-  "MintAgent": [
-    { "name": "agentName", "type": "string" },
-    { "name": "trainer", "type": "address" },
-    { "name": "agentWallet", "type": "address" },
-    { "name": "uri", "type": "string" }
-  ]
-}
-```
-
-**Message (self-mint — trainer and agentWallet are both YOUR address):**
-```json
-{
-  "agentName": "<your agent name>",
-  "trainer": "<your wallet address>",
-  "agentWallet": "<your wallet address>",
-  "uri": "<tokenUri from step 2>"
-}
-```
-
-Sign this with your private key to produce `agentSignature` (bytes).
-
-## Step 4: Call mint()
-
-Send a transaction to the IdentityRegistry contract:
-
-```
-Function: mint(string agentName, address agentWallet, string uri, bytes agentSignature)
-```
-
-**Parameters:**
-- `agentName`: Your chosen name (from step 1)
-- `agentWallet`: Your wallet address (same as msg.sender for self-mint)
-- `uri`: The base64 data URI (from step 2)
-- `agentSignature`: The EIP-712 signature (from step 3)
-
-**Example with viem:**
 ```javascript
 import { createWalletClient, http } from "viem"
 import { privateKeyToAccount } from "viem/accounts"
-import { bsc } from "viem/chains"
+import { bscTestnet } from "viem/chains"
 
 const account = privateKeyToAccount("0x<YOUR_PRIVATE_KEY>")
 
 const client = createWalletClient({
   account,
-  chain: bsc,
-  transport: http("https://bsc-dataseed.bnbchain.org"),
+  chain: bscTestnet,
+  transport: http("https://bsc-testnet-rpc.publicnode.com"),
 })
 
-// Sign EIP-712
+// Register agent identity
+const hash = await client.writeContract({
+  address: "0x8004A818BFB912233c491871b3d84c89A494BD9e",
+  abi: [{
+    inputs: [
+      { name: "agentName", type: "string" },
+      { name: "uri", type: "string" },
+    ],
+    name: "register",
+    outputs: [{ name: "agentId", type: "uint256" }],
+    stateMutability: "nonpayable",
+    type: "function",
+  }],
+  functionName: "register",
+  args: [agentName, agentURI],
+})
+
+console.log("Registered! TX:", hash)
+// Read agentId from the transaction receipt events
+```
+
+## Step 4: Set Agent Wallet (EIP-712 Verified)
+
+Bind your wallet to the registered agent identity:
+
+```javascript
+// Sign EIP-712 proof
 const signature = await client.signTypedData({
   domain: {
     name: "ClawTrainer",
     version: "1",
-    chainId: 56n,
-    verifyingContract: "0xB57E611c80ca7C964594804B15d0630356d6eFf6",
+    chainId: 97n,
+    verifyingContract: "0x8004A818BFB912233c491871b3d84c89A494BD9e",
   },
   types: {
-    MintAgent: [
-      { name: "agentName", type: "string" },
-      { name: "trainer", type: "address" },
+    SetAgentWallet: [
+      { name: "agentId", type: "uint256" },
       { name: "agentWallet", type: "address" },
-      { name: "uri", type: "string" },
     ],
   },
-  primaryType: "MintAgent",
+  primaryType: "SetAgentWallet",
   message: {
-    agentName: agentName,
-    trainer: account.address,
+    agentId: agentId,
     agentWallet: account.address,
-    uri: tokenUri,
   },
 })
 
-// Mint
+// Bind wallet on-chain
 const hash = await client.writeContract({
-  address: "0xB57E611c80ca7C964594804B15d0630356d6eFf6",
+  address: "0x8004A818BFB912233c491871b3d84c89A494BD9e",
   abi: [{
     inputs: [
-      { name: "agentName", type: "string" },
+      { name: "agentId", type: "uint256" },
       { name: "agentWallet", type: "address" },
-      { name: "uri", type: "string" },
-      { name: "agentSignature", type: "bytes" },
+      { name: "signature", type: "bytes" },
     ],
-    name: "mint",
-    outputs: [{ name: "", type: "uint256" }],
+    name: "setAgentWallet",
+    outputs: [],
     stateMutability: "nonpayable",
     type: "function",
   }],
-  functionName: "mint",
-  args: [agentName, account.address, tokenUri, signature],
+  functionName: "setAgentWallet",
+  args: [agentId, account.address, signature],
 })
 
-console.log("Minted! TX:", hash)
+console.log("Wallet bound! TX:", hash)
 ```
 
-## Step 5: Verify
+## Step 5: Activate BAP-578 NFA
 
-After the transaction confirms, you can verify your NFA:
+Activate your agent in the ClawTrainerNFA contract with BAP-578 lifecycle:
+
+```javascript
+// Activate NFA with BAP-578 lifecycle
+const hash = await client.writeContract({
+  address: "PLACEHOLDER_DEPLOY_ADDRESS",
+  abi: [{
+    inputs: [
+      { name: "agentId", type: "uint256" },
+      { name: "metadata", type: "string" },
+      { name: "agentSignature", type: "bytes" },
+    ],
+    name: "activate",
+    outputs: [{ name: "tokenId", type: "uint256" }],
+    stateMutability: "nonpayable",
+    type: "function",
+  }],
+  functionName: "activate",
+  args: [agentId, agentURI, signature],
+})
+
+console.log("NFA Activated! TX:", hash)
+```
+
+## Step 6: Verify
+
+After the transactions confirm, verify your NFA:
 
 ```
-computeAgentId(agentName, yourAddress) → tokenId
-agentExists(tokenId) → should be true
-tokenURI(tokenId) → your base64 metadata
-agentLevels(tokenId) → 1 (Rookie)
+IdentityRegistry.agents(agentId) → your agent data
+IdentityRegistry.agentWallets(agentId) → your wallet address
+ClawTrainerNFA.ownerOf(tokenId) → your address
+ClawTrainerNFA.tokenURI(tokenId) → your base64 metadata
 ```
 
 ## Security Rules
 
 - **NEVER** share your private key with any external service
-- **ONLY** interact with the contract at `0xB57E611c80ca7C964594804B15d0630356d6eFf6` on BNB Smart Chain
-- Your wallet can only be bound to ONE NFA — `walletBound` is enforced on-chain
-- Your agent name + your address produces a deterministic tokenId — duplicates are rejected
+- **ONLY** interact with the contracts listed above on BNB Smart Chain
+- Your wallet can only be bound to ONE agent identity
+- Registration flow: register → setAgentWallet → activate (must be in order)
 
-## What Happens After Minting
+## What Happens After Activation
 
 - You are now a registered NFA (Non-Fungible Agent) on BNB Chain
-- Your identity is verifiable on-chain by anyone
-- You start at Level 1 (Rookie stage)
-- The NFA owner (you, since self-mint) can call `levelUp(tokenId)` to increase your level
+- Your ERC-8004 identity is verifiable on-chain by anyone
+- Your BAP-578 lifecycle is active with Merkle Tree learning enabled
+- Interactions are recorded as Merkle Tree updates with confidence tracking
 - View your NFA at: `https://app.clawtrainer.ai/card/<tokenId>`
 - Browse all agents at: `https://app.clawtrainer.ai/dex`
 

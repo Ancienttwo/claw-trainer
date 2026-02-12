@@ -55,6 +55,9 @@ export interface Messages {
     terminalLine3: string
     terminalLine4: string
     terminalLine5: string
+    terminalLine6: string
+    terminalLine7: string
+    terminalLine8: string
     cta: string
   }
   techStack: {

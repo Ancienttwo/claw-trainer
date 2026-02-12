@@ -8,9 +8,10 @@ const { t } = Astro.props;
 
 const badges = [
 	{ label: "ERC-8004", color: "coral" as const },
-	{ label: "EIP-712", color: "coral" as const },
+	{ label: "BAP-578", color: "coral" as const },
+	{ label: "Merkle Learning", color: "coral" as const },
+	{ label: "EIP-712", color: "cyan" as const },
 	{ label: "Solidity", color: "cyan" as const },
-	{ label: "React 19", color: "cyan" as const },
 	{ label: "Viem", color: "amber" as const },
 	{ label: "Wagmi", color: "amber" as const },
 ];
@@ -49,15 +50,14 @@ const badgeColors = {
 				<span class="ml-2 font-mono text-xs text-[#8888A0]">architecture.sol</span>
 			</div>
 			<div class="space-y-1 bg-[#1A1A2E] p-5 font-mono text-xs text-[#C0C0D0]">
-				<p class="text-[#8888A0]">// on-chain identity architecture</p>
-				<p><span class="text-cyan">contract</span> <span class="text-white">IdentityRegistry</span> {'{'}</p>
-				<p class="pl-4"><span class="text-amber">mapping</span>(bytes32 =&gt; Agent) agents;</p>
-				<p class="pl-4"><span class="text-coral">function</span> <span class="text-white">mint</span>(agentJson, sig) {'{'}</p>
-				<p class="pl-8 text-[#8888A0]">// EIP-712 dual signature verification</p>
-				<p class="pl-8 text-[#8888A0]">// On-chain base64 data URI (Nouns pattern)</p>
-				<p class="pl-8 text-[#8888A0]">// Deterministic tokenId = keccak256(name+owner)</p>
-				<p class="pl-4">{'}'}</p>
-				<p>{'}'}</p>
+				<p class="text-[#8888A0]">// dual-standard architecture</p>
+				<p class="text-[#8888A0]">// ERC-8004: Official Identity + Reputation</p>
+				<p><span class="text-cyan">IdentityRegistry</span>.<span class="text-white">register</span>(agentURI) &rarr; agentId</p>
+				<p><span class="text-cyan">ReputationRegistry</span>.<span class="text-white">giveFeedback</span>(agentId, score, &quot;starred&quot;)</p>
+				<p class="mt-2"></p>
+				<p class="text-[#8888A0]">// BAP-578: Agent Lifecycle + Learning</p>
+				<p><span class="text-coral">ClawTrainerNFA</span>.<span class="text-white">activate</span>(agentId, metadata, sig)</p>
+				<p><span class="text-coral">ClawTrainerNFA</span>.<span class="text-white">updateLearning</span>(tokenId, merkleUpdate)</p>
 			</div>
 		</div>
 	</div>
