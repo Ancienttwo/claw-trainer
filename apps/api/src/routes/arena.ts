@@ -10,6 +10,7 @@ import type { AppEnv } from "../types"
 const DEFAULT_PAGE_SIZE = 20
 const MAX_PAGE_SIZE = 100
 const CACHE_TTL_MS = 60_000
+const CACHE_TTL_BOOK_MS = 10_000
 const FAUCET_AMOUNT = 1000
 const FAUCET_COOLDOWN_MS = 24 * 60 * 60 * 1000
 const USER_AGENT = "Mozilla/5.0 (compatible; ClawTrainer/1.0)"
@@ -38,7 +39,8 @@ const marketCache = new Map<string, MarketCacheEntry>()
 function getCached(key: string): unknown | null {
   const entry = marketCache.get(key)
   if (!entry) return null
-  if (Date.now() - entry.ts > CACHE_TTL_MS) {
+  const ttl = key.startsWith("book:") ? CACHE_TTL_BOOK_MS : CACHE_TTL_MS
+  if (Date.now() - entry.ts > ttl) {
     marketCache.delete(key)
     return null
   }
@@ -123,6 +125,43 @@ arenaRoutes.get("/markets/:slug", async (c) => {
   return c.json({ market })
 })
 
+arenaRoutes.get("/markets/:slug/participants", async (c) => {
+  const slug = c.req.param("slug")
+  const cacheKey = `participants:${slug}`
+  const cached = getCached(cacheKey)
+  if (cached) return c.json({ participants: cached })
+
+  const db = c.get("db")
+  const rows = await db.all(sql`
+    SELECT
+      b.agent_token_id AS "agentTokenId",
+      a.name AS "agentName",
+      COUNT(*) AS "betCount",
+      ROUND(SUM(b.amount), 2) AS "totalAmount",
+      ROUND(
+        SUM(CASE
+          WHEN b.status = 'won' THEN COALESCE(b.payout, 0) - b.amount
+          WHEN b.status = 'lost' THEN -b.amount
+          ELSE 0
+        END),
+        2
+      ) AS "pnl",
+      MAX(b.created_at) AS "lastBetAt",
+      (SELECT b2.trade_type FROM ${bets} b2
+       WHERE b2.agent_token_id = b.agent_token_id AND b2.market_slug = ${slug}
+       GROUP BY b2.trade_type ORDER BY COUNT(*) DESC LIMIT 1
+      ) AS "tradeType"
+    FROM ${bets} b
+    LEFT JOIN ${agents} a ON b.agent_token_id = a.token_id
+    WHERE b.market_slug = ${slug}
+    GROUP BY b.agent_token_id
+    ORDER BY "totalAmount" DESC
+  `)
+
+  setCache(cacheKey, rows)
+  return c.json({ participants: rows })
+})
+
 arenaRoutes.get("/price/:tokenId", async (c) => {
   const tokenId = c.req.param("tokenId")
   const url = `${c.env.POLYMARKET_CLOB_URL}/price?token_id=${encodeURIComponent(tokenId)}&side=buy`
@@ -133,6 +172,47 @@ arenaRoutes.get("/price/:tokenId", async (c) => {
 
   const data: unknown = await res.json()
   return c.json({ price: data })
+})
+
+arenaRoutes.get("/book/:tokenId", async (c) => {
+  const tokenId = c.req.param("tokenId")
+  const cacheKey = `book:${tokenId}`
+  const cached = getCached(cacheKey)
+  if (cached) return c.json(cached)
+
+  const url = `${c.env.POLYMARKET_CLOB_URL}/book?token_id=${encodeURIComponent(tokenId)}`
+  const res = await fetch(url, { headers: { "User-Agent": USER_AGENT } })
+  if (!res.ok) return c.json({ error: "Polymarket CLOB unavailable" }, 502)
+  const ct = res.headers.get("content-type") ?? ""
+  if (!ct.includes("application/json")) return c.json({ error: "Polymarket CLOB unavailable" }, 502)
+
+  const data = (await res.json()) as { bids: unknown[]; asks: unknown[] }
+  setCache(cacheKey, data)
+  return c.json(data)
+})
+
+arenaRoutes.get("/history/:tokenId", async (c) => {
+  const tokenId = c.req.param("tokenId")
+  const interval = c.req.query("interval") ?? "1d"
+  const fidelity = c.req.query("fidelity") ?? "60"
+  const cacheKey = `history:${tokenId}:${interval}:${fidelity}`
+  const cached = getCached(cacheKey)
+  if (cached) return c.json(cached)
+
+  const params = new URLSearchParams({
+    market: tokenId,
+    interval,
+    fidelity,
+  })
+  const url = `${c.env.POLYMARKET_CLOB_URL}/prices-history?${params}`
+  const res = await fetch(url, { headers: { "User-Agent": USER_AGENT } })
+  if (!res.ok) return c.json({ error: "Polymarket CLOB unavailable" }, 502)
+  const ct = res.headers.get("content-type") ?? ""
+  if (!ct.includes("application/json")) return c.json({ error: "Polymarket CLOB unavailable" }, 502)
+
+  const data = (await res.json()) as { history: unknown[] }
+  setCache(cacheKey, data)
+  return c.json(data)
 })
 
 arenaRoutes.post(
