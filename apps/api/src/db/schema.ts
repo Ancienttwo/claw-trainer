@@ -160,6 +160,7 @@ export const bets = sqliteTable("bets", {
   amount: real("amount").notNull(),
   entryPrice: real("entry_price").notNull(),
   source: text("source").notNull().default("human"),
+  tradeType: text("trade_type").notNull().default("paper"),
   status: text("status").notNull().default("open"),
   payout: real("payout"),
   createdAt: text("created_at")
@@ -171,6 +172,8 @@ export const bets = sqliteTable("bets", {
   index("idx_bets_status").on(t.status),
   index("idx_bets_source").on(t.source),
   index("idx_bets_wallet").on(t.walletAddress),
+  index("idx_bets_market_slug").on(t.marketSlug),
+  index("idx_bets_trade_type").on(t.tradeType),
 ])
 
 export const faucetBalances = sqliteTable("faucet_balances", {
