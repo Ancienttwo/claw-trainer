@@ -8,8 +8,11 @@ import { usePublicClient } from "wagmi"
 import type { Address, PublicClient } from "viem"
 import { parseAbiItem } from "viem"
 import {
-  IDENTITY_REGISTRY_ADDRESS,
-  IDENTITY_REGISTRY_ABI,
+  ERC8004_IDENTITY_ADDRESS,
+  ERC8004_IDENTITY_ABI,
+  CLAWTRAINER_NFA_ADDRESS,
+  CLAWTRAINER_NFA_ABI,
+  CLAWTRAINER_NFA_DEPLOY_BLOCK,
 } from "../lib/contract"
 import {
   decodeTokenUri,
@@ -21,11 +24,10 @@ import {
 } from "../lib/decode-token-uri"
 import { apiFetch } from "../lib/api"
 
-const MINT_EVENT = parseAbiItem(
-  "event NFAMinted(uint256 indexed tokenId, address indexed owner, address indexed agentWallet, string tokenURI)",
+const NFA_ACTIVATED_EVENT = parseAbiItem(
+  "event NFAActivated(uint256 indexed tokenId, uint256 indexed erc8004AgentId, address indexed owner)",
 )
 
-const CONTRACT_DEPLOY_BLOCK = 88_823_136n
 const QUERY_KEY = "agents-list"
 
 export interface AgentListItem {
@@ -37,6 +39,7 @@ export interface AgentListItem {
   stage: string
   capabilities: string[]
   version: string
+  status?: string
 }
 
 interface ApiAgent {
@@ -48,6 +51,7 @@ interface ApiAgent {
   stage: string
   capabilities: string
   version: string
+  status?: string
 }
 
 function apiToAgent(a: ApiAgent): AgentListItem {
@@ -60,6 +64,7 @@ function apiToAgent(a: ApiAgent): AgentListItem {
     stage: a.stage,
     capabilities: a.capabilities ? a.capabilities.split(",").map((s) => s.trim()) : [],
     version: a.version,
+    status: a.status,
   }
 }
 
@@ -68,63 +73,57 @@ async function fetchFromApi(): Promise<AgentListItem[]> {
   return data.agents.map(apiToAgent)
 }
 
-interface MintLog {
-  args: {
-    tokenId: bigint
-    owner: Address
-    agentWallet: Address
-    tokenURI: string
-  }
-}
-
-function parseMintLog(log: MintLog): AgentListItem | null {
-  const { tokenId, owner, agentWallet, tokenURI } = log.args
-  const metadata = decodeTokenUri(tokenURI)
-  if (!metadata) return null
-  return {
-    tokenId,
-    name: getAgentName(metadata),
-    owner,
-    agentWallet,
-    level: getLevel(metadata),
-    stage: getStage(metadata),
-    capabilities: getCapabilities(metadata),
-    version: getVersion(metadata),
-  }
-}
-
-async function fetchAgentLevels(
-  client: PublicClient,
-  agents: AgentListItem[],
-): Promise<AgentListItem[]> {
-  if (agents.length === 0) return agents
-  const calls = agents.map((agent) => ({
-    address: IDENTITY_REGISTRY_ADDRESS,
-    abi: IDENTITY_REGISTRY_ABI,
-    functionName: "agentLevels" as const,
-    args: [agent.tokenId] as const,
-  }))
-  const results = await client.multicall({ contracts: calls })
-  return agents.map((agent, i) => {
-    const result = results[i]
-    if (result?.status === "success" && typeof result.result === "number") {
-      return { ...agent, level: result.result }
-    }
-    return agent
-  })
-}
-
 async function fetchFromChain(client: PublicClient): Promise<AgentListItem[]> {
   const logs = await client.getLogs({
-    address: IDENTITY_REGISTRY_ADDRESS,
-    event: MINT_EVENT,
-    fromBlock: CONTRACT_DEPLOY_BLOCK,
+    address: CLAWTRAINER_NFA_ADDRESS,
+    event: NFA_ACTIVATED_EVENT,
+    fromBlock: CLAWTRAINER_NFA_DEPLOY_BLOCK,
     toBlock: "latest",
   })
-  const agents = logs
-    .map((log) => parseMintLog(log as unknown as MintLog))
-    .filter((a): a is AgentListItem => a !== null)
-  return fetchAgentLevels(client, agents)
+
+  const agents: AgentListItem[] = []
+
+  for (const log of logs) {
+    const tokenId = log.args.tokenId
+    const erc8004Id = log.args.erc8004AgentId
+    const owner = log.args.owner
+    if (tokenId === undefined || erc8004Id === undefined || !owner) continue
+
+    try {
+      const [uri, wallet] = await Promise.all([
+        client.readContract({
+          address: ERC8004_IDENTITY_ADDRESS,
+          abi: ERC8004_IDENTITY_ABI,
+          functionName: "tokenURI",
+          args: [erc8004Id],
+        }) as Promise<string>,
+        client.readContract({
+          address: CLAWTRAINER_NFA_ADDRESS,
+          abi: CLAWTRAINER_NFA_ABI,
+          functionName: "agentWallets",
+          args: [tokenId],
+        }) as Promise<Address>,
+      ])
+
+      const metadata = decodeTokenUri(uri)
+      if (!metadata) continue
+
+      agents.push({
+        tokenId,
+        name: getAgentName(metadata),
+        owner,
+        agentWallet: wallet,
+        level: getLevel(metadata),
+        stage: getStage(metadata),
+        capabilities: getCapabilities(metadata),
+        version: getVersion(metadata),
+      })
+    } catch {
+      continue
+    }
+  }
+
+  return agents
 }
 
 export function useAgents() {

@@ -4,11 +4,13 @@
  */
 
 import { useQuery } from "@tanstack/react-query"
-import { useReadContracts } from "wagmi"
+import { usePublicClient } from "wagmi"
 import { type Address, zeroAddress } from "viem"
 import {
-  IDENTITY_REGISTRY_ADDRESS,
-  IDENTITY_REGISTRY_ABI,
+  ERC8004_IDENTITY_ADDRESS,
+  ERC8004_IDENTITY_ABI,
+  CLAWTRAINER_NFA_ADDRESS,
+  CLAWTRAINER_NFA_ABI,
 } from "../lib/contract"
 import {
   type NfaMetadata,
@@ -25,6 +27,8 @@ import type { AgentListItem } from "./use-agents"
 export interface AgentDetail extends AgentListItem {
   description: string
   rawMetadata: NfaMetadata
+  erc8004AgentId: bigint | undefined
+  persona: string | undefined
 }
 
 interface ApiAgent {
@@ -38,6 +42,9 @@ interface ApiAgent {
   version: string
   description: string
   token_uri: string
+  erc8004_agent_id?: string
+  persona?: string
+  status?: string
 }
 
 function apiToDetail(a: ApiAgent): AgentDetail | null {
@@ -54,83 +61,77 @@ function apiToDetail(a: ApiAgent): AgentDetail | null {
     version: a.version,
     description: a.description,
     rawMetadata: metadata,
-  }
-}
-
-const CONTRACT_CONFIG = {
-  address: IDENTITY_REGISTRY_ADDRESS,
-  abi: IDENTITY_REGISTRY_ABI,
-} as const
-
-function buildContractCalls(tokenId: bigint) {
-  return [
-    { ...CONTRACT_CONFIG, functionName: "ownerOf", args: [tokenId] },
-    { ...CONTRACT_CONFIG, functionName: "agentWallets", args: [tokenId] },
-    { ...CONTRACT_CONFIG, functionName: "agentLevels", args: [tokenId] },
-    { ...CONTRACT_CONFIG, functionName: "tokenURI", args: [tokenId] },
-  ] as const
-}
-
-const OWNER_INDEX = 0
-const WALLET_INDEX = 1
-const LEVEL_INDEX = 2
-const URI_INDEX = 3
-
-interface ContractResult {
-  status: string
-  result?: unknown
-}
-
-function getSuccessResult(result: ContractResult | undefined): unknown {
-  if (result?.status === "success") return result.result
-  return undefined
-}
-
-function buildAgentDetail(
-  tokenId: bigint,
-  results: ReadonlyArray<ContractResult>,
-): AgentDetail | null {
-  const uriValue = getSuccessResult(results[URI_INDEX])
-  if (typeof uriValue !== "string") return null
-  const metadata = decodeTokenUri(uriValue)
-  if (!metadata) return null
-  const levelValue = getSuccessResult(results[LEVEL_INDEX])
-  const onChainLevel =
-    typeof levelValue === "number" ? levelValue : getLevel(metadata)
-
-  return {
-    tokenId,
-    name: getAgentName(metadata),
-    owner: (getSuccessResult(results[OWNER_INDEX]) as Address) ?? (zeroAddress as Address),
-    agentWallet: (getSuccessResult(results[WALLET_INDEX]) as Address) ?? (zeroAddress as Address),
-    level: onChainLevel,
-    stage: getStage(metadata),
-    capabilities: getCapabilities(metadata),
-    version: getVersion(metadata),
-    description: metadata.description,
-    rawMetadata: metadata,
+    erc8004AgentId: a.erc8004_agent_id ? BigInt(a.erc8004_agent_id) : undefined,
+    persona: a.persona,
+    status: a.status,
   }
 }
 
 export function useAgent(tokenId: bigint) {
-  const contractQuery = useReadContracts({
-    contracts: buildContractCalls(tokenId),
-    query: { staleTime: 15_000, enabled: false },
-  })
+  const client = usePublicClient()
 
   const { data, isLoading, isError, error, refetch } = useQuery({
     queryKey: ["agent-detail", tokenId.toString()],
-    queryFn: async () => {
+    queryFn: async (): Promise<AgentDetail | null> => {
       try {
         const resp = await apiFetch<{ agent: ApiAgent }>(`/agents/${tokenId}`)
-        const detail = apiToDetail(resp.agent)
-        if (detail) return detail
+        return apiToDetail(resp.agent)
       } catch {
-        // fallback to on-chain
+        // on-chain fallback
       }
-      const result = await contractQuery.refetch()
-      if (!result.data) return null
-      return buildAgentDetail(tokenId, result.data as ReadonlyArray<ContractResult>)
+
+      if (!client) return null
+
+      try {
+        const [erc8004Id, owner, wallet] = await Promise.all([
+          client.readContract({
+            address: CLAWTRAINER_NFA_ADDRESS,
+            abi: CLAWTRAINER_NFA_ABI,
+            functionName: "erc8004AgentId",
+            args: [tokenId],
+          }) as Promise<bigint>,
+          client.readContract({
+            address: CLAWTRAINER_NFA_ADDRESS,
+            abi: CLAWTRAINER_NFA_ABI,
+            functionName: "ownerOf",
+            args: [tokenId],
+          }) as Promise<Address>,
+          client.readContract({
+            address: CLAWTRAINER_NFA_ADDRESS,
+            abi: CLAWTRAINER_NFA_ABI,
+            functionName: "agentWallets",
+            args: [tokenId],
+          }) as Promise<Address>,
+        ])
+
+        const uri = (await client.readContract({
+          address: ERC8004_IDENTITY_ADDRESS,
+          abi: ERC8004_IDENTITY_ABI,
+          functionName: "tokenURI",
+          args: [erc8004Id],
+        })) as string
+
+        const metadata = decodeTokenUri(uri)
+        if (!metadata) return null
+
+        return {
+          tokenId,
+          name: getAgentName(metadata),
+          owner: owner ?? (zeroAddress as Address),
+          agentWallet: wallet ?? (zeroAddress as Address),
+          level: getLevel(metadata),
+          stage: getStage(metadata),
+          capabilities: getCapabilities(metadata),
+          version: getVersion(metadata),
+          description: metadata.description,
+          rawMetadata: metadata,
+          erc8004AgentId: erc8004Id,
+          persona: undefined,
+          status: undefined,
+        }
+      } catch {
+        return null
+      }
     },
     staleTime: 15_000,
   })
