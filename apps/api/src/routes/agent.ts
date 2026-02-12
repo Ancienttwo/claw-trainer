@@ -1,6 +1,7 @@
 import { Hono } from "hono"
 import { eq, like, desc, or } from "drizzle-orm"
-import { agents } from "../db/schema"
+import { agents, reputationFeedback } from "../db/schema"
+import { dualAuth } from "../middleware/dual-auth"
 import type { AppEnv } from "../types"
 
 const DEFAULT_PAGE_SIZE = 20
@@ -78,4 +79,80 @@ agentRoutes.get("/:tokenId", async (c) => {
 
   if (!agent) return c.json({ error: "Agent not found" }, 404)
   return c.json({ agent })
+})
+
+agentRoutes.get("/:tokenId/reputation", async (c) => {
+  const db = c.get("db")
+  const tokenId = c.req.param("tokenId")
+
+  if (!/^\d+$/.test(tokenId)) {
+    return c.json({ error: "Invalid tokenId format" }, 400)
+  }
+
+  const rows = await db
+    .select()
+    .from(reputationFeedback)
+    .where(eq(reputationFeedback.agentId, tokenId))
+    .orderBy(desc(reputationFeedback.id))
+
+  return c.json({ feedback: rows })
+})
+
+agentRoutes.get("/:tokenId/learning", async (c) => {
+  const db = c.get("db")
+  const tokenId = c.req.param("tokenId")
+
+  if (!/^\d+$/.test(tokenId)) {
+    return c.json({ error: "Invalid tokenId format" }, 400)
+  }
+
+  const [agent] = await db
+    .select({
+      learningRoot: agents.learningRoot,
+      totalInteractions: agents.totalInteractions,
+      learningEvents: agents.learningEvents,
+      confidenceScore: agents.confidenceScore,
+      learningVelocity: agents.learningVelocity,
+    })
+    .from(agents)
+    .where(eq(agents.tokenId, tokenId))
+    .limit(1)
+
+  if (!agent) return c.json({ error: "Agent not found" }, 404)
+  return c.json({ learning: agent })
+})
+
+agentRoutes.post("/:tokenId/status", dualAuth, async (c) => {
+  const db = c.get("db")
+  const tokenId = c.req.param("tokenId")
+
+  if (!/^\d+$/.test(tokenId)) {
+    return c.json({ error: "Invalid tokenId format" }, 400)
+  }
+
+  const body = await c.req.json<{ status: string }>()
+  const validStatuses = ["Active", "Paused", "Terminated"]
+  if (!validStatuses.includes(body.status)) {
+    return c.json({ error: `Invalid status. Must be one of: ${validStatuses.join(", ")}` }, 400)
+  }
+
+  const [agent] = await db
+    .select({ tokenId: agents.tokenId, owner: agents.owner })
+    .from(agents)
+    .where(eq(agents.tokenId, tokenId))
+    .limit(1)
+
+  if (!agent) return c.json({ error: "Agent not found" }, 404)
+
+  const auth = c.get("auth")
+  if (auth?.role === "trainer" && auth.wallet !== agent.owner) {
+    return c.json({ error: "Not the agent owner" }, 403)
+  }
+
+  await db
+    .update(agents)
+    .set({ status: body.status, updatedAt: new Date().toISOString() })
+    .where(eq(agents.tokenId, tokenId))
+
+  return c.json({ success: true, status: body.status })
 })
