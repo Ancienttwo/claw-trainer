@@ -1,5 +1,60 @@
 # Development Progress
 
+## 2026-02-13 Session — ERC-8004 + BAP-578 Full Compliance Implementation
+### Completed
+- [x] **ClawTrainerNFA.sol** — New BAP-578 compliant contract
+  - IBAP578 interface: state machine (Active/Paused/Terminated), metadata, execute, fund
+  - ILearningModule interface: Merkle root storage, verifyLearning, recordInteraction, metrics
+  - EIP-712 agent signature on activate(), soul-bound via _update() override
+  - Links to official ERC-8004 IdentityRegistry (immutable reference)
+  - 106 tests passing (state machine, metadata, execution, funding, learning, soul-bound, pause)
+  - Deploy script ready (`scripts/deploy-nfa.ts`)
+
+- [x] **API updates** — BAP-578 schema + indexer + routes
+  - Schema: 15 new BAP-578 columns on agents table + reputationFeedback table
+  - Indexer: NFAActivated, StatusChanged, MetadataUpdated, LearningUpdated, InteractionRecorded, AgentFunded, NewFeedback, FeedbackRevoked events
+  - Routes: GET /:tokenId/reputation, GET /:tokenId/learning, POST /:tokenId/status
+
+- [x] **Frontend updates** — 3-contract architecture
+  - contract.ts: ERC8004 Identity + Reputation + ClawTrainerNFA ABIs
+  - New hooks: use-reputation, use-learning, use-agent-state
+  - New components: agent-state-badge, reputation-tags, learning-panel
+  - Updated: agent-card (status badge), agent-resume (persona/reputation/learning sections), activity-feed (API data), agent-profile (full integration)
+  - Updated: use-agents, use-agent (dual-contract reads), build-token-uri (ERC-8004 format)
+  - mint.tsx: updated code snippets for 3-step flow
+  - 7/7 clawbook tests passing, build succeeds
+
+- [x] **Landing page updates** — ERC-8004 + BAP-578 messaging
+  - i18n, TechStack, Features, HowItWorks updated
+  - skill.md updated with new architecture
+  - Build succeeds
+
+### Remaining
+- [ ] Deploy ClawTrainerNFA to BSC Testnet (needs faucet BNB)
+- [ ] Update CLAWTRAINER_NFA_ADDRESS placeholder after deploy
+- [ ] D1 migration for new schema columns
+- [ ] E2E smoke test on testnet
+
+## 2026-02-13 Session — ERC-8004 Ecosystem Research
+### Completed
+- [x] **ERC-8004 & NFA ecosystem research** — full report at `docs/architecture/erc8004-research.md`
+  - ERC-8004 standard analysis (Identity + Reputation + Validation registries)
+  - BAP-578 NFA standard comparison
+  - BNB Chain ecosystem mapping (6 projects, 6 SDKs)
+  - Gap analysis: ClawTrainer custom contract vs official ERC-8004
+  - Hackathon strategy: keep custom contract, label ERC-8004 compatibility
+- [x] **Spec update**: `specs/modules/nfa-mint.md` — fixed outdated IPFS references → on-chain base64 data URI
+- [x] **ADR-004**: ERC-8004 Custom Profile vs Official Registry — decision: keep custom
+- [x] **ADR-005**: ReputationRegistry Integration Strategy — decision: defer
+- [x] **TODO.md**: added ERC-8004 ecosystem + BAP-578 extension backlog items
+- [x] **MEMORY.md**: added official ERC-8004 BSC registry addresses
+
+### Key Findings
+- BNB Chain officially supports ERC-8004 as of 2026-02-04
+- Official BSC Testnet ReputationRegistry: `0x8004B663056A597Dffe9eCcC1965A193B7388713`
+- ClawTrainer's custom contract is a stronger MVP choice (soul-bound, dual sig, on-chain metadata)
+- Pitch narrative: "First ERC-8004 native Agent Marketplace on BNB Chain"
+
 ## 2026-02-06 Session 5
 ### Phase 3 Completed (team mode — 2 parallel subagents)
 - [x] **landing-dev**: Landing page (9 files)

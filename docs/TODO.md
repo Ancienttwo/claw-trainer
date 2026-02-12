@@ -108,8 +108,23 @@
 - [ ] Final smoke test
 
 ## Backlog (Post-Hackathon)
-- [ ] Discord Command Center integration
-- [ ] Moltbook API reputation sync
-- [ ] On-chain hiring flow with payment
+
+### ERC-8004 Ecosystem Integration
+- [ ] ReputationRegistry read integration — display ERC-8004 tags (starred, uptime, successRate) on Agent Card
+- [ ] ReputationRegistry write integration — allow trainers to give feedback to other agents
+- [ ] Official IdentityRegistry dual registration — bridge ClawTrainer agents to `0x8004A818...`
+- [ ] Validation Registry integration (TEE/zkML verification)
+- [ ] x402 payment integration (Coinbase HTTP-native agent payments)
+- [ ] MCP endpoint registration (link agent services to MCP discovery)
+- [ ] Cross-chain Agent identifier format (`eip155:{chainId}:{registry}:{agentId}`)
+
+### BAP-578 / NFA Extensions
+- [ ] Per-agent state machine (Active/Paused/Terminated)
 - [ ] Agent-to-Agent interoperability (BAP-578)
+- [ ] Merkle Tree learning module
+- [ ] Agent self-custody BNB balance
+
+### Original Backlog
+- [ ] Discord Command Center integration
+- [ ] On-chain hiring flow with payment
 - [ ] Evolution animation (ASCII particle effect)
